@@ -1,0 +1,337 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<HTML>
+<HEAD>
+<META name="keywords" content="PLDWorld, Altera, Quartus, Quartus II, online documentation, web online help, web help, chm2web">
+
+ 
+  <LINK REL="stylesheet" href="../share/stylesheet.htm" TYPE="text/css">
+  
+  <!-- Index 12-18, 12-27-->
+  
+  <META NAME="keywords" CONTENT="Quartus II Command-Line Syntax; command-line commands: syntax; command line: using; Quartus II command line: using;">
+   
+  <TITLE>Quartus&nbsp;II Command-Line Syntax</TITLE>
+   
+<!-- insert autoupdate script here -->
+
+<SCRIPT TYPE="text/javascript">
+</SCRIPT>
+
+<SCRIPT LANGUAGE="vbscript">
+<!--
+sub mouseover()    
+	window.event.srcElement.className = "mwover"
+end sub
+sub mouseout()
+	window.event.srcElement.className = "mw"
+end sub
+
+sub domenu1(menuid, imageid)
+	dim x, y
+	x = window.event.srcElement.offsetLeft
+	x = x + document.all.item(imageid).offsetLeft
+	y = window.event.srcElement.offsetTop
+	y = y + window.event.srcElement.offsetHeight
+	y = y + document.all.item(imageid).offsetTop
+	domenu menuid, x, y
+end sub
+
+sub domenu2(menuid, popupid)
+	dim x, y
+	x = document.all.item(popupid).offsetParent.offsetParent.offsetleft
+	x = x + document.all.item(popupid).offsetParent.offsetleft
+	x = x + document.all.item(popupid).offsetLeft
+	y = document.all.item(popupid).offsetParent.offsetparent.offsettop
+	y = y + document.all.item(popupid).offsetParent.offsettop
+	y = y + document.all.item(popupid).offsetHeight
+	domenu menuid, x, y
+end sub
+-->
+</SCRIPT>
+<SCRIPT TYPE="text/javascript">
+
+	var nChunk;
+	var useragent = navigator.userAgent;
+	var AnimatedMenu = null;
+		 
+	function HideErrors()
+	{
+		return true;
+	}
+
+	function doMenu(id, x, y) 
+	{
+		var thisMenu = document.all(id);
+		if (useragent.indexOf("Windows 3.1") != -1) 
+		{
+			if(x > 0) 
+			{
+				x = x * .80;
+			}
+		}
+		if (useragent.indexOf("X11") != -1) 
+		{
+			if(x > 0) 
+			{
+				x = x * .7;
+			}
+		}
+
+		if (thisMenu == AnimatedMenu) 
+		{
+			window.event.cancelBubble = true;
+			return false;
+		}
+		if (AnimatedMenu != null) AnimatedMenu.style.display = "none";
+
+		window.event.cancelBubble = true;
+
+		thisMenu.style.top = y;
+		
+		thisMenu.style.left = x;
+		AnimatedMenu = thisMenu;
+		if(useragent.indexOf("Mac") != -1) 
+		{
+			AnimatedMenu.style.display = "";
+		}
+		else 
+		{
+			thisMenu.style.clip = "rect(0 0 0 0)";
+			thisMenu.style.display = "block";
+			nChunk = 25;
+			window.setTimeout("showMenu()", 30);
+		}
+		return true;
+	}
+
+	function showMenu() 
+	{
+		AnimatedMenu.style.clip = "rect(0 "+ nChunk + "% " + nChunk + "% 0)"
+		nChunk +=25
+		nChunk<=100?window.setTimeout("showMenu()",25):null	
+		document.onmouseover = hideMenu; 
+	}
+
+	function hideMenu()
+	{
+		AnimatedMenu.style.display = "none";
+		AnimatedMenu = StartMenu;
+		window.event.cancelBubble = true;
+	}
+
+	function keepMenu()
+	{
+		window.event.cancelBubble = true;
+	}
+	
+	if (AnimatedMenu != null)
+	{
+		document.onmouseover = hideMenu; 
+	}
+	window.onerror = HideErrors;
+
+</SCRIPT>
+
+ 
+
+<SCRIPT language="JavaScript">
+var pageid = "global/gl_cmd_hlp.htm";
+</SCRIPT>
+
+</HEAD>
+
+<BODY><script language="javascript"> 
+if ((window.name != "content") && (navigator.userAgent.indexOf("Opera") <= -1) )   document.write(' <table width="100%" bgcolor="#e1e1e1"cellspacing="2" collspacing="2" style="border-collapse: collapse; font-family: Tahoma, Verdana; font-size: 14px; color: #000000; text-decoration: none;  "> <tr> <td align="center" style="border-bottom: 2px solid gray" > <br>&nbsp;Click <a href="../../default.htm?page=source/global/gl_cmd_hlp.htm">here</a> to show toolbars of the Web Online Help System: <a href="../../default.htm?page=source/global/gl_cmd_hlp.htm">show toolbars</a><br>&nbsp;</TD></TR></table><br> '); 
+</script>
+<!-- this header was added by chm2web -->
+
+
+<!-- insert autoupdate object here -->
+
+<IMG src="../image/global.gif" WIDTH=32 HEIGHT=32 HSPACE=5 ALIGN="left" ALT="Global" BORDER="0">
+
+<A NAME="top"><H2>Quartus&nbsp;II Command-Line Syntax</H2></A>
+
+<!--TOOLBAR_START-->
+
+<SPAN ID="StartMenu" STYLE="display:none; position:absolute; visibility: visible"> 
+</SPAN>
+<BR>
+
+
+<SCRIPT TYPE="text/javascript">
+    if (navigator.userAgent.indexOf("MSIE")!=-1) 
+    {
+		var AnimatedMenu = StartMenu;
+	}
+</SCRIPT>
+
+<TABLE ID="Procedures_menu" BORDER=0 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#C0C0C0" ONMOUSEOVER="keepMenu();" STYLE="padding-left:0;padding-bottom:0;display:none;position:absolute;background-color:white;z-index:9;visibility: visible">
+  <TR>
+    <TD CLASS="mw">
+	  <A CLASS="mw" TARGET="_top" ONMOUSEOVER="mouseover()" ONMOUSEOUT="mouseout()">&nbsp;&nbsp;(Not Applicable)&nbsp;&nbsp;</A><BR>
+    </TD>
+  </TR>
+</TABLE>
+
+<TABLE ID="Overviews_menu" BORDER=0 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#C0C0C0" ONMOUSEOVER="keepMenu();" STYLE="padding-left:0;padding-bottom:0;display:none;position:absolute;background-color:white;z-index:9;visibility: visible">
+  <TR>
+    <TD CLASS="mw">
+	  <A CLASS="mw" TARGET="_top" ONMOUSEOVER="mouseover()" ONMOUSEOUT="mouseout()">&nbsp;&nbsp;(Not Applicable)&nbsp;&nbsp;</A><BR>
+    </TD>
+  </TR>
+</TABLE>
+
+
+<!--TOOLBAR_END-->
+<!--begin-->
+
+<HR SIZE=1>
+
+<P>The Quartus<FONT SIZE='-1'><SUP>&#174;</SUP></FONT>&nbsp;II command-line commands allow you to operate the Quartus&nbsp;II software from a UNIX or DOS prompt.</P>
+
+<TABLE CELLPADDING="6" CELLSPACING="1" WIDTH="0" BORDER="0" ID="table">
+  <TR ALIGN="left" VALIGN="top">
+    <TD><IMG src="../image/hand.gif" WIDTH=32 HEIGHT=16 ALT="NOTE"></TD>
+    <TD>Altera<FONT SIZE='-1'><SUP>&#174;</SUP></FONT> strongly recommends that you not use a slash (<CODE>/</CODE>) preceding command-line commands from a UNIX prompt as this may cause serious problems. In addition, you cannot use the slash (<CODE>/</CODE>) preceding command-line commands from a DOS prompt when operating the command-line version of the Quartus&nbsp;II software.</TD>
+  </TR> 
+</TABLE>
+
+<P>The following Quartus&nbsp;II command-line commands are available when you are operating the Quartus&nbsp;II graphical user interface:</P>
+
+<TABLE BORDER="1" WIDTH="900" CELLPADDING="6" CELLSPACING="1">
+  <TR> 
+    <TH WIDTH="216">Commands to Enter from a UNIX or DOS Prompt</TH>
+	<TH WIDTH="217">Commands to Enter from a DOS Prompt</TH>
+    <TH WIDTH="419">Description</TH>
+  </TR>
+  
+  <TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="216"><CODE>quartus&nbsp;-regserver</CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="217"><CODE>quartus&nbsp;/regserver</CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Registers the Quartus&nbsp;II software by adding entries to the system 
+      registry, which the Quartus&nbsp;II software uses during operation. After the command 
+      completes successfully, you can start the Quartus&nbsp;II software. Although generally needed only at the time of installation, the command fixes system registry 
+      corruption or problems running the Quartus&nbsp;II software.</TD>
+  </TR>
+  
+  <TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="216"><CODE>quartus&nbsp;-reset_desktop</CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="217"><CODE>quartus&nbsp;/reset_desktop</CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Resets the default settings for the entire desktop in the 
+      Quartus&nbsp;II software by clearing out all stored dockable window position settings, 
+      toolbar position settings, and toolbar customization. After the command 
+      completes successfully, you can then start the Quartus&nbsp;II software. You can 
+      also type this command to fix problems relating to registry corruption (for 
+      example, if the desktop section of the registry is corrupted).</TD>
+  </TR>
+  
+  <TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="216"><CODE>quartus&nbsp;-h</CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="217"><CODE>quartus&nbsp;/h</CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Brings up Help and opens this topic: &quot;Quartus&nbsp;II Command-Line Syntax.&quot;</TD>
+  </TR>
+  
+  <TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="216"><CODE>quartus&nbsp;-?</CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="217"><CODE>quartus&nbsp;/?</CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Brings up Help and opens this topic: &quot;Quartus&nbsp;II Command-Line Syntax.&quot;</TD>
+  </TR>
+  
+  <TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="216"><CODE>quartus&nbsp;-f&nbsp;<I>&lt;script_file&gt;</I></CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="217"><CODE>quartus&nbsp;/f&nbsp;<I>&lt;script_file&gt;</I></CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Starts the Quartus&nbsp;II software and runs the script specified 
+      by <I>&lt;script_file&gt;</I>.</TD>
+  </TR>
+</TABLE>
+
+<P>&nbsp;</P>
+
+<P>The following Quartus&nbsp;II command-line commands are available when you are operating the command-line version of the Quartus&nbsp;II software:</P>
+
+<TABLE BORDER="1" WIDTH="900" CELLPADDING="6" CELLSPACING="1">
+  <TR> 
+    <TH WIDTH="448">Commands to Enter from a UNIX or DOS Prompt</TH>
+    <TH WIDTH="419">Description</TH>
+  </TR>
+  
+  <TR>
+    <TD WIDTH="448" height="36"><CODE>quartus_cmd</CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419" height="36">Brings up Quartus&nbsp;II command-line Help, which 
+      includes information about the Quartus&nbsp;II version number.</TD>
+  </TR>
+  
+  <TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="448"><CODE>quartus_cmd&nbsp;-h</CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Brings up Quartus&nbsp;II command-line Help, which includes 
+      information about the Quartus&nbsp;II version number.</TD>
+  </TR>
+  
+  <TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="448"><CODE>quartus_cmd&nbsp;-?</CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Brings up Quartus&nbsp;II command-line Help, which includes 
+      information about the Quartus&nbsp;II version number.</TD>
+  </TR>
+  
+  <TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="448"><CODE>quartus_cmd&nbsp;-f&nbsp;<I>&lt;script_file&gt;</I></CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Starts the command-line version of the Quartus&nbsp;II software 
+      and runs the script specified by <I>&lt;script_file&gt;</I>.</TD>
+  </TR>
+  
+  <TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="448"><CODE>quartus_cmd&nbsp;<I>&lt;project_name&gt;</I>&nbsp;-c&nbsp;<I>&lt;CSF&gt;</I></CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Compiles the design with the <A href="../acf/acf_file_cap.htm">Compiler 
+      Settings File (<B>.csf</B>)</A> (specified by <I>&lt;CSF&gt;</I>) in the 
+      project (specified by <I>&lt;project_name&gt;</I>).</TD>
+  </TR>
+
+  <TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="448"><CODE>quartus_cmd&nbsp;<I>&lt;project_name&gt;</I>&nbsp;-s&nbsp;<I>&lt;SSF&gt;</I></CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Simulates the design with the <A href="../acf/acf_file_sap.htm">Simulator 
+      Settings File (<B>.ssf</B>)</A> (specified by <I>&lt;SSF&gt;</I>) in the 
+      project (specified by <I>&lt;project_name&gt;</I>).</TD>
+  </TR>
+  
+  <TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="448"><CODE>quartus_cmd&nbsp;<I>&lt;project_name&gt;</I>&nbsp;-w&nbsp;<I>&lt;Software Build Settings File&gt;</I></CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Builds the design with the <A href="../acf/acf_file_fsf.htm">Software Build
+      Settings File (<B>.fsf</B>)</A> (specified by <I>&lt;Software Build Settings File&gt;</I>) in the project (specified by <I>&lt;project_name&gt;</I>).</TD>
+  </TR>
+
+<TR ALIGN="left" VALIGN="top"> 
+    <TD WIDTH="448"><CODE>quartus_cmd <I>&lt;project_name&gt;</I> -c&nbsp;<I>&lt;CSF&gt;</I>&nbsp; &raquo; <I>&lt;name&gt;.txt</I></CODE>&nbsp;<IMG src="../image/return.gif" WIDTH=18 HEIGHT=11 ALT="Return" BORDER="0"></TD>
+    <TD WIDTH="419">Saves messages to a text file (specified by <CODE><I>&lt;name&gt;.txt</I></CODE>) during a compilation, rather than waiting until the completion of the compilation of a project (specified by <I>&lt;project_name&gt;</I>) with the <A href="../acf/acf_file_cap.htm">Compiler Settings File (<B>.csf</B>)</A> (specified by <I>&lt;CSF&gt;</I>). You can view messages after compilation, regardless of how compilation is terminated.</TD>
+  </TR>
+</TABLE>
+
+<P><BR></P>
+<P><A href="#top">Back to Top</A></P>
+  
+<!--end-->
+<table cellpadding="3" cellspacing="0" width="100%" style="background-color:rgb(206,207,255); border-top-width:1px; border-bottom-width:1px; border-top-color:rgb(51,51,51); border-bottom-color:rgb(51,51,51); border-top-style:solid; border-bottom-style:solid;">
+  <tr>
+    <td>
+      <p style="font-family:Verdana; font-style:italic; font-weight:bold; font-size:10px;">-&nbsp;PLDWorld&nbsp;-</p>
+    </td>
+    <td align="right">
+      <p style="font-family:Verdana; font-style:italic; font-weight:bold; font-size:10px;"><script language="JavaScript">
+      <!--
+        document.write("-&nbsp;Last Modified: "+document.lastModified+"&nbsp;-")
+      // -->
+      </script></p>
+    </td>
+  </tr>
+</table>
+<table cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="right">
+      <p style="font-size:5px;">&nbsp;</p>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" collspacing="0" style="border-collapse: collapse; font-family: Tahoma, Verdana; font-size: 11px; color: #000000; text-decoration: none;  "> <tr> <td align="right" style="border-top: 1px solid gray" > Created by <a href="http://chm2web.aklabs.com" target="_blank">chm2web</a> html help conversion utility. </TD></TR></table> 
+</BODY>
+</HTML>
