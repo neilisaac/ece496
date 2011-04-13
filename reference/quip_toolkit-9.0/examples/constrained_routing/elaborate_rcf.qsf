@@ -1,0 +1,66 @@
+# Copyright (C) 1991-2004 Altera Corporation
+# Any  megafunction  design,  and related netlist (encrypted  or  decrypted),
+# support information,  device programming or simulation file,  and any other
+# associated  documentation or information  provided by  Altera  or a partner
+# under  Altera's   Megafunction   Partnership   Program  may  be  used  only
+# to program  PLD  devices (but not masked  PLD  devices) from  Altera.   Any
+# other  use  of such  megafunction  design,  netlist,  support  information,
+# device programming or simulation file,  or any other  related documentation
+# or information  is prohibited  for  any  other purpose,  including, but not
+# limited to  modification,  reverse engineering,  de-compiling, or use  with
+# any other  silicon devices,  unless such use is  explicitly  licensed under
+# a separate agreement with  Altera  or a megafunction partner.  Title to the
+# intellectual property,  including patents,  copyrights,  trademarks,  trade
+# secrets,  or maskworks,  embodied in any such megafunction design, netlist,
+# support  information,  device programming or simulation file,  or any other
+# related documentation or information provided by  Altera  or a megafunction
+# partner, remains with Altera, the megafunction partner, or their respective
+# licensors. No other licenses, including any licenses needed under any third
+# party's intellectual property, are provided herein.
+
+
+# The default values for assignments are stored in the file
+#		assignment_defaults.qdf
+
+# Altera recommends that you do not modify this file. This
+# file is updated automatically by the Quartus II software
+# and any changes you make may be lost or overwritten.
+
+
+# Project-Wide Assignments
+# ========================
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 4.0
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "13:46:16  JANUARY 29, 2004"
+set_global_assignment -name LAST_QUARTUS_VERSION 4.0
+set_global_assignment -name BDF_FILE elaborate_rcf.bdf
+
+# Pin & Location Assignments
+# ==========================
+set_global_assignment -name RESERVE_PIN "AS INPUT TRI-STATED"
+set_location_assignment PIN_D4 -to Input1
+set_location_assignment PIN_D2 -to Input2
+set_location_assignment PIN_C1 -to Input3
+set_location_assignment PIN_E3 -to Input4
+set_location_assignment PIN_C2 -to Output1
+set_location_assignment PIN_B3 -to Output2
+set_location_assignment PIN_D3 -to Output3
+set_location_assignment PIN_C4 -to Output4
+set_location_assignment LC_X1_Y1_N5 -to buf1
+set_location_assignment LC_X1_Y30_N2 -to buf2
+set_location_assignment LC_X52_Y30_N9 -to buf3
+set_location_assignment LC_X52_Y30_N7 -to buf4
+set_location_assignment LC_X1_Y30_N6 -to buf5
+set_location_assignment LC_X19_Y19_N4 -to nor1
+set_location_assignment LC_X33_Y7_N8 -to nor3
+set_location_assignment PIN_F16 -to ~DATA0~
+
+# Analysis & Synthesis Assignments
+# ================================
+set_global_assignment -name FAMILY Stratix
+set_global_assignment -name TOP_LEVEL_ENTITY elaborate_rcf
+
+# Fitter Assignments
+# ==================
+set_global_assignment -name AUTO_RESTART_CONFIGURATION OFF
+set_global_assignment -name DEVICE EP1S10B672C6
+set_global_assignment -name ROUTING_BACK_ANNOTATION_MODE NORMAL

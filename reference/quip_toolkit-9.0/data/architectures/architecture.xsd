@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2002. The Altera Corporation, San Jose, California, USA. All rights reserved. -->
+<xs:schema targetNamespace="http://www.altera.com" xmlns="http://www.altera.com" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="ATTRIBUTE" mixed="1">
+		<xs:annotation>
+			<xs:documentation>The ATTRIBUTE type allows for simple (name, value) paired information to be expressed. It provides additional information about its parent or containing element that is possibly non-essential, but perhaps useful.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="COORDINATE">
+		<xs:annotation>
+			<xs:documentation>A cartesian coordinate type.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="x" type="xs:integer" use="optional"/>
+		<xs:attribute name="y" type="xs:integer" use="optional"/>
+		<xs:attribute name="z" type="xs:integer" use="optional"/>
+		<xs:attribute name="subloc" type="xs:integer" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="PORT">
+		<xs:annotation>
+			<xs:documentation>The PORT element appears (optionally) below a SUBTYPE element and defines a uniquely named port, the direction of the port, and the bus width of the port. It optionally provides additional DETAILS about the port. Please be aware that the port names, directions, and bus widths can change from SUBTYPE to SUBTYPE for a BLOCK. For example: the IO block for the Stratix architecture has no less then 8 different SUBTYPES for the different IO standards supported by the architecture. Each SUBTYPE of the IO block has a set of PORTs that provide an appropriate interface for the standard being implemented.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DETAILS" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The DETAILS element provides additional information about a sub-set of input or output wires on a PORT element. If a PORT were to have 128 input wires then two separate DETAILS sections for that PORT could tell us that wires [0-63] had a particular x and y offset and that wires [64-127] had an alternate offset, maybe even on the other side of the PORT block.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ATTRIBUTE" type="ATTRIBUTE" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="INPUT"/>
+					<xs:enumeration value="OUTPUT"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="width" type="xs:integer" use="optional" default="1"/>
+	</xs:complexType>
+	<xs:complexType name="PORTOFFSET">
+		<xs:annotation>
+			<xs:documentation>The PORTOFFSET element defines a physical (x, y) location offset for a port relative to the (0, 0), or the bottom left corner, of the containing BLOCK. For blocks larger then 1 x 1 on the device coordinate system this allows you to pin point the location of ports on the block. For example: a 5 x 1 block has three similar input ports, each located at (0,0), (2,0), and (4,0) respectively. If you were hoping to connect another 1 x 1 block located near the top of the 5 x 5 block it would be beneficial to know that third input port at (4, 0) is physically closer to the top right corner of the 5 x 5 block and therefore closer to the 1 x 1 block we are looking to make the connection with.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="x" type="xs:integer" use="optional" default="0"/>
+		<xs:attribute name="y" type="xs:integer" use="optional" default="0"/>
+	</xs:complexType>
+	<xs:element name="SUBTYPE">
+		<xs:annotation>
+			<xs:documentation>The SUBTYPE element can be thought of as the physical manifestation of the abstract BLOCK on the DEVICE. It is a particular arrangement of electrical elements that perform a specific set of functions. For example the HIO subtype of the IO block in the Stratix architecture is an arrangement of electrical elements specifically designed to perform high-speed I/O functions.
+
+A SUBTYPE can have any number of ATTRIBUTEs. Typically you will see an X_EXTENT and Y_EXTENT attribute defined so the physical size of the this subtype instance of the block can be known. For more information on the ATTRIBUTE element see Section 6.2.
+
+A SUBTYPE can have any number of PORTs, each must have a unique name can only be of type INPUT or OUTPUT. These PORTSs may additionally have DETAILS about them.
+
+The PORTOFFSET provides physical locality information for a PORT relative to the bottom left corner of a physical instance of this block’s subtype.
+
+The SUB_BLOCK element defines instances of other blocks within this subtype instance of a block.
+</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ATTRIBUTE" type="ATTRIBUTE" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="PORT" type="PORT" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="PORT_OFFSET" type="PORTOFFSET" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="SUB_BLOCK" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SUB_BLOCK">
+		<xs:annotation>
+			<xs:documentation>The SUB_BLOCK element defines instances of other blocks within this subtype instance of a block. These instantiations are guaranteed to never be circular. That is, a block will never have a SUB_BLOCK of type itself. The LOCATIONs for the sub-blocks are given as either unique subloc indexes, or as physical locations relative to the bottom left corner of a physical instance of their parent block. For example: a LAB block in the Stratix architecture, with its small 1 x 1 extent, has 10 LE sub-blocks with only unique subloc indices from 0 through 9 to identify their locations. However a MAC block in the same architecture has MAC_MULT sub-blocks with various relative locations and subloc indices owing to the larger, 2 x 8, extent of the MAC block.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="LOCATION" type="COORDINATE" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="type" type="xs:string" use="required"/>
+			<xs:attribute name="subtype" type="xs:string" use="optional" default="DEFAULT"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="BLOCK">
+		<xs:annotation>
+			<xs:documentation>The BLOCK element describes one of the building blocks of a DEVICE in this ARCHITECTURE. A block has any number of ATTRIBUTE elements followed by one or SUBTYPE elements. The SUBTYPE elements provide additional information about a block and allow it to take on possibly different configurations. When a block is instantiated in a device it is done so by name then by subtype name.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ATTRIBUTE" type="ATTRIBUTE" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="SUBTYPE" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="type" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="PACKAGE">
+		<xs:annotation>
+			<xs:documentation>The PACKAGE element defines a physical packaging method available for a device. There are five child elements to a PACKAGE: the TYPE of packaging, the PINS available on the package, the speed GRADEs available in this packaging, and optionally the PAD and PINS bonded together for this package configuration. Each DEVICE can have multiple PACKAGE instances.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="TYPE" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>The TYPE element refers to specific type of physical packaging used to house a DEVICE. For example: a ball grid array package type.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="PINS" type="xs:integer">
+					<xs:annotation>
+						<xs:documentation>The PINS element defines the number of physical connection pins available on a specific PACKAGE for a DEVICE. Not all package pins are bonded to pads on the silicon.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="GRADE" type="xs:string" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>The GRADE element defines a speed grade available for a device. Using the lowest GRADE number when referencing timing models for a device will give you the fastest possible performance metrics when doing a timing analysis for the device.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="ATTRIBUTE" type="ATTRIBUTE" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="PAD" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>The PAD element represents one I/O pad on the silicon wafer that is the physical Altera device. Pads are bonded to pins on packing containing the silicon wafer. The PAD element represents each pad on the device with a unique ID integer and a LOCATION. The LOCATION of the PAD determines the I/O bank to which the PAD belongs. Only pads bonded to physical pins have PAD information in the architecture file.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ATTRIBUTE" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="value" type="xs:string" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="LOCATION" type="COORDINATE"/>
+						</xs:sequence>
+						<xs:attribute name="id" type="xs:integer" use="required"/>
+						<xs:attribute name="name" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="PIN" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>The PIN element represents a physical pin on the exterior of the package that is bonded to a PAD on the silicon wafer. A PIN element has three attributes: the id attributes gives a unique integer identifying this pin, the pads attribute is a comma-separated list of pad IDs to which this pin is bonded and the name attribute is the string name of the pin. Only bonded pins are listed so the total count of PIN elements may be less than the number reported by the PINS element. Certainly it will never be greater than this number.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ATTRIBUTE" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="name" type="xs:string" use="required"/>
+									<xs:attribute name="value" type="xs:string" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="id" type="xs:integer" use="required"/>
+						<xs:attribute name="pads" type="xs:string" use="required"/>
+						<xs:attribute name="name" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="BLOCK_INSTANCE" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>The BLOCK_INSTANCE element is used to create a physical instance of an architecture block. The block instantiated is picked by the name attribute of the element and the subtype attribute of the tag picks the blocks physical implementation (if there are multiple implementations to choose from). The subtype attribute may be omitted, if so the DEFAULT block subtype is assumed.
+
+The only children of the BLOCK_INSTANCE element are one or more LOCATION elements that specify physical locations of the block relative to the origin of the DEVICE.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="LOCATION" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>A simple element, the LOCATION has four optional attributes: x, y, subloc and name. The x attribute is an integer value representing a horizontal location. The y attribute is an integer value representing a vertical location. The subloc attribute represents an indexed location in a 1 x 1 block. The name value represents a 'friendly' name for this location. Typically the name value is the name of the location you would see reported if you moused over the location in an Altera architecture viewer like the Quartus II Floorplanning tool or ACE tool.
+
+An example: a LAB in a Stratix device occupies a 1 x 1 region but contains 10 LE sub-blocks. The LAB has a coordinate with x and y attributes whereas each LE sub-block has a coordinate with a zero valued x and y attribute and an indexed subloc attribute value in the range [0,9]. No two LABs share the same coordinate, and no two LEs in a LAB share the same subloc. This is done to allow sub-block, or clustered block, access without defining a rigid sub-location scheme. The unique subloc value is enough to indicate that the LE has a unique, non-overlapping, location at the same coordinate as its containing LAB element.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:complexContent>
+										<xs:extension base="COORDINATE">
+											<xs:attribute name="name" type="xs:string" use="optional"/>
+										</xs:extension>
+									</xs:complexContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="type" type="xs:string" use="required"/>
+						<xs:attribute name="subtype" type="xs:string" use="optional" default="DEFAULT"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="PART">
+		<xs:annotation>
+			<xs:documentation>
+				The PART element provides the name of a part and
+				attributes that define the part's device, speed grade,
+				pin count and package type. These can be used to
+				determine which device description should be used to get
+				information about the given part and helps isolate users
+				of the file from changes to naming conventions.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="device_name" type="xs:string"
+			use="required" />
+		<xs:attribute name="speed_grade" type="xs:string"
+			use="required" />
+		<xs:attribute name="pin_count" type="xs:integer" use="required" />
+		<xs:attribute name="package_type" type="xs:string"></xs:attribute>
+	</xs:complexType>
+	<xs:element name="DEVICE">
+		<xs:annotation>
+			<xs:documentation>The DEVICE element defines the physical instances of the architecture building blocks. There can be any number of PACKAGE elements that correspond to the different physical device packages available for this is device, any number of ATTRIBUTE elements for this device and at least one, but most likely many more, BLOCK_INSTANCEs of architecture blocks.
+
+Typical DEVICE level attributes you will encounter are the X_EXTENT and Y_EXTENT of the device and the X_ORIGIN and Y_ORIGIN of the device. The former defines the maximum (x, y) coordinate available in the Cartesian plane mapped on the surface of the device for the purpose of placing block instances; this (X_EXTENT, Y_EXTENT) point is always the upper right hand corner of the device. The latter defines the minimum (x, y) coordinate available in the Cartesian plane mapped on the surface of the device; this (X_ORIGIN, Y_ORIGIN) point is always the bottom left corner of the device.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="PACKAGE" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="ATTRIBUTE" type="ATTRIBUTE" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="BLOCK_INSTANCE" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>The BLOCK_INSTANCE element is used to create a physical instance of an architecture block. The block instantiated is picked by the name attribute of the element and the subtype attribute of the tag picks the blocks physical implementation (if there are multiple implementations to choose from). The subtype attribute may be omitted, if so the DEFAULT block subtype is assumed.
+
+The only children of the BLOCK_INSTANCE element are one or more LOCATION elements that specify physical locations of the block relative to the origin of the DEVICE.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="LOCATION" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>A simple element, the LOCATION has four optional attributes: x, y, subloc and name. The x attribute is an integer value representing a horizontal location. The y attribute is an integer value representing a vertical location. The subloc attribute represents an indexed location in a 1 x 1 block. The name value represents a 'friendly' name for this location. Typically the name value is the name of the location you would see reported if you moused over the location in an Altera architecture viewer like the Quartus II Floorplanning tool or ACE tool.
+
+An example: a LAB in a Stratix device occupies a 1 x 1 region but contains 10 LE sub-blocks. The LAB has a coordinate with x and y attributes whereas each LE sub-block has a coordinate with a zero valued x and y attribute and an indexed subloc attribute value in the range [0,9]. No two LABs share the same coordinate, and no two LEs in a LAB share the same subloc. This is done to allow sub-block, or clustered block, access without defining a rigid sub-location scheme. The unique subloc value is enough to indicate that the LE has a unique, non-overlapping, location at the same coordinate as its containing LAB element.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:complexContent>
+										<xs:extension base="COORDINATE">
+											<xs:attribute name="name" type="xs:string" use="optional"/>
+										</xs:extension>
+									</xs:complexContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="type" type="xs:string" use="required"/>
+						<xs:attribute name="subtype" type="xs:string" use="optional" default="DEFAULT"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="blk_list_id" type="xs:string" use="optional"/>
+			<xs:attribute name="pin_table_version" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ARCHITECTURE">
+		<xs:annotation>
+			<xs:documentation>The ARCHITECTURE element is the root of all Altera EDA XML Architecture files. This is the first element encountered as it encapsulates BLOCKs and DEVICEs that are common to this architecture. The attributes provide a version for the architecture description and a name for the architecture.
+
+The ARCHITECTURE tag may have an optional number of ATTRIBUTE elements followed by at least one BLOCK, but most likely more, and then at least one DEVICE</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="COPYRIGHT" type="xs:string" />
+				<xs:element name="ATTRIBUTE" type="ATTRIBUTE"
+					minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="BLOCK" maxOccurs="unbounded" />
+                <xs:element ref="PARTS" maxOccurs="1" minOccurs="0"></xs:element>
+				<xs:element ref="DEVICE" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:string" use="required"/>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="PARTS">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded" minOccurs="0">
+				<xs:element name="PART" type="PART"></xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

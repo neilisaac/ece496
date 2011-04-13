@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XML Spy v4.0 U (http://www.xmlspy.com) by Ian R Chesal (Altera Corporation) -->
+<!-- Copyright 2002. The Altera Corporation, San Jose, California, USA. All rights reserved. -->
+<xs:schema targetNamespace="http://www.altera.com" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.altera.com" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="INTRACELLDELAYS">
+		<xs:annotation>
+			<xs:documentation>The ARCHITECTURE element is the root of all Altera XML Point To Point Delay files. This is the first element encountered and it is meant to contain delay information for one or more DEVICEs in the architecture family.
+
+Every point-to-point delay file is guaranteed to have only one INTRACELLDELAYS element with at least one SPEED element that has as at least one DEVICE element with at least one BLOCK element with one LOCATION with one MODE that possibly contains point-to-point delay numbers.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="COPYRIGHT" type="xs:string"/>
+				<xs:element name="DELAY_UNITS" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Defines the units of delay used for all delay numbers reported in the SPS file.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="SPEED" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="DEVICE">
+		<xs:annotation>
+			<xs:documentation>The DEVICE element contains all the point-to-point delay information for the blocks in a specific device. Device names do not include the package type, pin counts or speed grades. Delays are broken down below the DEVICE element into delays that are common across all devices for a specific SPEED grade, and delays that differ from device to device within a SPEED grade. Device packaging does not affect point-to-point delay numbers.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="BLOCK" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="optional" default="COMMON"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="BLOCK">
+		<xs:annotation>
+			<xs:documentation>The BLOCK element contains all the point-to-point delay information for a block with a specific name and subtype.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="LOCATION" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="type" type="xs:string" use="required"/>
+			<xs:attribute name="subtype" type="xs:string" use="optional" default="DEFAULT"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="LOCATION">
+		<xs:annotation>
+			<xs:documentation>A simple element, the LOCATION has three optional attributes: x, y and subloc. The x attribute is an integer value representing a horizontal location. The y attribute is an integer value representing a vertical location. The subloc attribute represents an indexed location in a 1 x 1 block.
+
+Location information in the point-to-point delay file is provide if and only if the delay values for a block differ depending on its location inside it’s parent block. If the delay values for a block do not differ depending on location one default location (0,0,0) is written in the point-to-point delay file.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="MODE" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="x" type="xs:integer" use="optional" default="0"/>
+			<xs:attribute name="y" type="xs:integer" use="optional" default="0"/>
+			<xs:attribute name="subloc" type="xs:integer" use="optional" default="0"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MODE">
+		<xs:annotation>
+			<xs:documentation>The MODE element contains a set of point-to-point delays for a block when specific block attributes are set. For blocks that have no discernable attributes one MODE will be defined that contains no ATTRIBUTE elements. </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ATTRIBUTE" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="I" maxOccurs="unbounded"/>
+				<xs:element ref="MICROPARAMETER" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ATTRIBUTE">
+		<xs:annotation>
+			<xs:documentation>The ATTRIBUTE element allows for simple (name, value) paired information to be expressed. It provides additional information about its parent or containing element that is possibly non-essential, but perhaps useful.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="I">
+		<xs:annotation>
+			<xs:documentation>The I element defines a set of point-to-point delays from this “in” port with a specific name. It is a child of a MODE element and only appears in a mode if the input is logically available for the block in the particular mode. It is important to realize that an “in” port does not necessarily mean a port with an input direction in to the block, rather it is the starting port from which you want to obtain a point-to-point delay. The I element can contain multiple O elements, the ports to which you want the point-to-point delay information from this I port.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="O" maxOccurs="unbounded"/>
+				<xs:element ref="MICROPARAMETER" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="O">
+		<xs:annotation>
+			<xs:documentation>The O element defines a delay value in some units of time from one port to the port named in this O element. The element contains some text information that represents a delay value. Time units are always given at the start of the delay file using the DELAY_UNITS element.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType mixed="true">
+			<xs:attribute name="name" type="xs:string" use="required" />
+			<xs:attribute name="delay_type" use="optional"
+				default="max">
+                <xs:annotation>
+                	<xs:documentation>Specifies the transition type of the delay, which can be rise-rise, rise-fall, fall-rise or fall-fall. If this element is not specified, the provided delay is assumed to be the maximum delay of the four.</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="rise_rise"></xs:enumeration>
+						<xs:enumeration value="rise_fall"></xs:enumeration>
+						<xs:enumeration value="fall_rise"></xs:enumeration>
+						<xs:enumeration value="fall_fall"></xs:enumeration>
+
+						<xs:enumeration value="max"></xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MICROPARAMETER">
+		<xs:annotation>
+			<xs:documentation>The MICROPARAMETER element defines a microparameter delay value in some units of time for a particular port or block. The element contains some text information that represents a delay value. Time units are always given at the start of the delay file using the DELAY_UNITS element.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType mixed="true">
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SPEED">
+		<xs:annotation>
+			<xs:documentation>The SPEED element contains one or more DEVICE elements. It encapsulates a set of delays that are common for a single speed grade across several DEVICEs.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="DEVICE" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="grade" type="xs:string" use="optional" default="COMMON"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
