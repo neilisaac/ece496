@@ -39,13 +39,25 @@ set echo
 quartus_map $proj || exit 1
 quartus_cdb $proj --vqm=$top.vqm
 
+./fix_placement.py \
+	--file $top.vqm \
+	--output $proj.qsf \
+	--name table \
+	--cell cycloneii_lcell_comb \
+	--min-x 18 \
+	--min-y 2 \
+	--max-y 8 \
+	--n-values 2,6,10,14 || exit 1
+
 quartus_fit $proj || exit 1
-quartus_cdb $proj --back_annotate=lab
-quartus_cdb $proj --back_annotate=routing
 
 quartus_asm $proj || exit 1
 
 #quartus_pgm -c USB_Blaster -m JTAG -o "P;$proj.sof" || exit 1
+
+cp $proj.qsf $proj.in.qsf
+quartus_cdb $proj --back_annotate=lab
+quartus_cdb $proj --back_annotate=routing
 
 unset echo
 
@@ -53,6 +65,6 @@ echo saving result to $rename.tgz and $rename.sof
 
 mv $proj.sof $rename.sof
 rm -f $proj.pof
-tar czf $rename.tgz $proj.* $top.*
+tar czf $rename.tgz $proj.* $top.* db incremental_db
 rm -rf db incremental_db $proj.* $top.*
 

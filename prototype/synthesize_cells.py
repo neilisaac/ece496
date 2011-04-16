@@ -96,10 +96,13 @@ out.close()
 
 if options.input not in used:
 	print "warning: input signal %s was not used!" % options.input
+else:
+	used.remove(options.input)
 
-used.remove("vdd")
-used.remove("gnd")
-used.remove(options.input)
+if "vdd" in used:
+	used.remove("vdd")
+if "gnd" in used:
+	used.remove("gnd")
 
 print "created module: %s" % options.module
 print "used %d of %d output signals" % (len(used), len(outputs) - 3)
