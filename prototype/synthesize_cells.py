@@ -95,7 +95,8 @@ print >>out, "endmodule"
 out.close()
 
 if options.input not in used:
-	print "warning: input signal %s was not used!" % options.input
+	print "ERROR: input signal %s was not used!" % options.input
+	sys.exit(2)
 else:
 	used.remove(options.input)
 
