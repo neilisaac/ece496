@@ -7,9 +7,9 @@ import re
 
 parser = optparse.OptionParser()
 		
-parser.add_option("-n", "--name", action="store", type="string",
-		dest="name", default="table",
-		help="name used to match instacnes")
+parser.add_option("-i", "--instance-patterns", action="store", type="string",
+		dest="instpat", default="table",
+		help="instance patterns to match")
 		
 parser.add_option("-c", "--cell", action="store", type="string",
 		dest="cell", default="cycloneii_lcell_comb",
@@ -41,6 +41,7 @@ if len(args) != 3:
 
 filename = args[1]
 output = args[2]
+patterns = options.instpat.split(",")
 
 # simple and awful parser used to get instance names matching cell and name
 instances = list()
@@ -48,8 +49,10 @@ f = open(filename, "r")
 for line in f.readlines():
 	if line.find("//") < 0 and re.search("%s (.*) \(" % options.cell, line):
 		name = line.split()[1]
-		if name.find(options.name) >= 0:
-			instances.append(name)
+		for pattern in patterns:
+			if name.find(pattern) >= 0:
+				instances.append(name)
+				break
 			
 f.close()
 

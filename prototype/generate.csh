@@ -46,7 +46,7 @@ quartus_map $proj || exit 1
 quartus_cdb $proj --vqm=$top.vqm
 
 ./fix_placement.py $top.vqm $proj.place \
-	--name table --cell cycloneii_lcell_comb \
+	--instance-patterns "table" --cell cycloneii_lcell_comb \
 	--min-x 19 --min-y 2 --max-x 26 \
 	--fix-luts --luts-per-lab 3 || exit 1
 
