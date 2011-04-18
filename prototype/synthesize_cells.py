@@ -50,7 +50,7 @@ print >>out, "input %s;" % options.input
 print >>out, "output %s;\n" % options.output
 
 # define names for all wires that can drive a value
-outputs = ["vdd", "gnd"] + ["output%d" % i for i in range(options.cells)]
+outputs = ["vdd", "gnd"] + ["table_%04d_out" % i for i in range(options.cells)]
 for wire in outputs:
 	print >>out, "(* keep *) wire %s;" % wire
 
@@ -62,7 +62,7 @@ print >>out, "\nassign vdd = 1'b1;"
 print >>out, "assign gnd = 1'b0;\n"
 
 # connect the output of cell 0 to the module's output
-print >>out, "assign %s = output0;\n" % options.output
+print >>out, "assign %s = table_0000_out;\n" % options.output
 
 # keep set of used outputs
 used = set()
@@ -70,7 +70,7 @@ used = set()
 # create the lookup tables
 for i in range(options.cells):
 	# instantiate module
-	name = "table%d" % i
+	name = "table_%04d" % i
 	print >>out, "\ncycloneii_lcell_comb %s (" % name
 
 	# create input wires with randomly assigned drivers
@@ -80,7 +80,7 @@ for i in range(options.cells):
 		used.add(wire)
 
 	# assign module output
-	print >>out, "\t.combout(output%d) );\n" % i;
+	print >>out, "\t.combout(%s_out) );\n" % name;
 
 	# set the module's function
 	mask = random.randint(0x0000, 0xFFFF)
