@@ -87,18 +87,29 @@ print >>verilog, "\t%s\n);\n" % options.output
 
 print >>verilog, "input %s;" % options.input
 print >>verilog, "output %s;\n" % options.output
+print >>verilog, ""
 
-# define names for all wires that can drive a value
-outputs = ["vdd", "gnd"] + ["table_%04d_out" % i for i in range(options.cells)]
-for wire in outputs:
-	print >>verilog, "(* keep *) wire %s;" % wire
-
-# the module's input can also drive cell inputs
-outputs.append(options.input)
+# defind vdd and gnd
+print >>verilog, "wire vdd;"
+print >>verilog, "wire gnd;"
 
 # set values for vdd and gnd
 print >>verilog, "\nassign vdd = 1'b1;"
 print >>verilog, "assign gnd = 1'b0;\n"
+
+# define names for all wires that can drive a value
+outputs = ["table_%04d_out" % i for i in range(options.cells)]
+for wire in outputs:
+	print >>verilog, "(* keep *) wire %s;" % wire
+
+print >>verilog, ""
+
+# the module's input can also drive cell inputs
+outputs.append(options.input)
+
+# vdd and gnd can also drive cell inputs
+outputs.append("vdd")
+outputs.append("gnd")
 
 # connect the output of cell 0 to the module's output
 print >>verilog, "assign %s = table_0000_out;\n" % options.output
