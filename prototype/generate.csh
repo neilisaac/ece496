@@ -37,11 +37,12 @@ set echo
 	--module $module \
 	--csv $module.csv \
 	--place $module.place \
+	--cells 128 \
 	--min-x 5 --max-x 12 \
 	--min-y 3 --labs 2,10,18,26 \
-	--input PIN_A13 \
-	--output PIN_B13 \
-	--cells 128 || exit 1
+	--inputs PIN_A13 \
+	--outputs PIN_B13 \
+	--tie-unused || exit 1
 
 # complete functional synthesis
 quartus_map $proj || exit 1

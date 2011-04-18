@@ -13,11 +13,11 @@ parser.add_option("-v", "--verilog", action="store", type="string",
 parser.add_option("-m", "--module", action="store", type="string",
 		dest="module", default="mutated_individual", help="verilog module name")
 
-parser.add_option("-i", "--input", action="store", type="string",
-		dest="input", default="in", help="input signal")
+parser.add_option("-i", "--inputs", action="store", type="string",
+		dest="inputs", default="in", help="input signals")
 
-parser.add_option("-o", "--output", action="store", type="string",
-		dest="output", default="out", help="output signal")
+parser.add_option("-o", "--outputs", action="store", type="string",
+		dest="outputs", default="out", help="output signals")
 
 parser.add_option("-f", "--csv", action="store", type="string",
 		dest="csv", default=None, help="store configuration to specified CSV file")
@@ -48,6 +48,9 @@ parser.add_option("-s", "--seed", action="store", type="string",
 parser.add_option("-k", "--keep", action="store", type="int",
 		dest="keep", default=0, help="number of LE functions to keep")
 
+parser.add_option("-t", "--tie-unused", action="store_true", dest="tieunused",
+		help="add a moudle output signal to guarantee all signals are used")
+
 (options, args) = parser.parse_args(sys.argv)
 
 if len(args) > 1:
@@ -66,11 +69,15 @@ if options.cells <= 0:
 	print "--cells must be at least 1"
 	sys.exit(1)
 
-verilog = open(options.filename, "w")
-
 # convert LUT string to integer list
 options.luts = [int(l) for l in options.luts.split(",")]
 options.luts.sort(reverse=True)
+
+# conver input and output strings into lists
+options.inputs = options.inputs.split(",")
+options.outputs = options.outputs.split(",")
+
+verilog = open(options.filename, "w")
 
 place = False
 if options.place is not None:
@@ -82,11 +89,24 @@ if options.csv is not None:
 
 # create module
 print >>verilog, "module %s (" % options.module
-print >>verilog, "\t%s," % options.input
-print >>verilog, "\t%s\n);\n" % options.output
+print >>verilog, "\t%s," % ", ".join(options.inputs)
+print >>verilog, "\t%s" % ", ".join(options.outputs),
 
-print >>verilog, "input %s;" % options.input
-print >>verilog, "output %s;\n" % options.output
+if options.tieunused:
+	print >>verilog, ",\n\ttie_unused",
+
+print >>verilog, "\n);\n"
+
+# declare inputs and outputs
+for signal in options.inputs:
+	print >>verilog, "input %s;" % signal
+
+for signal in options.outputs:
+	print >>verilog, "output %s;" % signal
+
+if options.tieunused:
+	print >>verilog, "output tie_unused;"
+
 print >>verilog, ""
 
 # defind vdd and gnd
@@ -105,14 +125,16 @@ for wire in outputs:
 print >>verilog, ""
 
 # the module's input can also drive cell inputs
-outputs.append(options.input)
+outputs.extend(options.inputs)
 
 # vdd and gnd can also drive cell inputs
 outputs.append("vdd")
 outputs.append("gnd")
 
-# connect the output of cell 0 to the module's output
-print >>verilog, "assign %s = table_0000_out;\n" % options.output
+# randomly assign LUT outputs to the module's output signals
+for signal in options.outputs:
+	number = random.randint(0, options.cells)
+	print >>verilog, "assign %s = table_%04d_out;" % (signal, number)
 
 # keep set of used outputs
 used = set()
@@ -160,18 +182,26 @@ for i in range(options.cells):
 		print >>csv, "%s,%s,%s,%s,%s,%s_out,%04X,%d,%d,%d" % (name,
 				data[0], data[1], data[2], data[3], name, mask, x, y, n)
 
+print >>verilog, "\n"
+
 # make sure the input signals are assigned
-if options.input not in used:
-	print "ERROR: input signal %s was not used!" % options.input
-	sys.exit(2)
+for signal in options.inputs:
+	if signal not in used:
+		print "ERROR: input signal %s was not used!" % signal
+		sys.exit(2)
 
 # check for unused output signals that would otherwise get synthesized out
 unused = set(outputs).difference(used)
 if len(unused) > 0:
-	print "WARNING: %d unused signals: %s" % (len(unused), " ".join(unused))
+	if options.tieunused:
+		print >>verilog, "assign tie_unused = %s;\n\n" % " & ".join(unused)
+		print "INFO: %d unused signals tied to output: %s" % (len(unused), " ".join(unused))
+	else:
+		print >>verilog, "assign tie_unused = gnd;\n\n"
+		print "WARNING: %d unused signals: %s" % (len(unused), " ".join(unused))
 
 # end of module
-print >>verilog, "\n\nendmodule\n"
+print >>verilog, "endmodule\n"
 
 # close files
 verilog.close()
