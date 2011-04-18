@@ -6,3 +6,14 @@
 *.tmp
 *.log
 *.out
+*.log
+*.dat
+
+*/db/*
+*/incremental_db/*
+
+*.pof
+*.qpf
+*.rpt
+*.summary
+
