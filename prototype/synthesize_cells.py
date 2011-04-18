@@ -52,7 +52,7 @@ print >>out, "output %s;\n" % options.output
 # define names for all wires that can drive a value
 outputs = ["vdd", "gnd"] + ["output%d" % i for i in range(options.cells)]
 for wire in outputs:
-	print >>out, "wire %s;" % wire
+	print >>out, "(* keep *) wire %s;" % wire
 
 # the module's input can also drive cell inputs
 outputs.append(options.input)
