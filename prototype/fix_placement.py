@@ -63,7 +63,7 @@ f = open(output, "a+")
 x = options.minx
 y = options.miny
 for i in range(len(instances)):
-	name = re.sub(r'_I$', '', re.sub(r'^\\', '', instances[i]))
+	name = re.sub(r'[_~]I$', '', re.sub(r'^\\', '', instances[i]))
 	if options.fixluts:
 		n = (i % options.luts) * 2
 		print >>f, "set_location_assignment LCCOMB_X%d_Y%d_N%d -to %s" % (x, y, n, name)
