@@ -2,6 +2,7 @@
 
 set rename = "output"
 set proj = "evolution"
+set top = "fitness"
 set module = "individual"
 set family = "Cyclone II"
 set device = "EP2C20F484C7"
@@ -20,28 +21,31 @@ set q = '"'
 echo "creating $out"
 cat /dev/null > $out
 echo "$tcl PROJECT_CREATION_TIME_DATE $q`date '+%T  %B %d, %Y'`$q" >> $out
-echo "$tcl TOP_LEVEL_ENTITY $module" >> $out
+echo "$tcl TOP_LEVEL_ENTITY $top" >> $out
 echo "$tcl FAMILY $q$family$q" >> $out
 echo "$tcl DEVICE $q$device$q" >> $out
+echo "$tcl VERILOG_FILE $top.v" >> $out
 echo "$tcl VERILOG_FILE $module.v" >> $out
 echo "$tcl CYCLONEII_OPTIMIZATION_TECHNIQUE AREA" >> $out
 echo "$tcl SYNTHESIS_EFFORT FAST" >> $out
-echo "$tcl TRUE_WYSIWYG_FLOW ON" >> $out
 echo "$tcl ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON" >> $out
-#echo "$tcl IGNORE_PARTITIONS ON" >> $out
+
+## this seems to actually be for HardCopy (but not 100% sure)
+#echo "$tcl TRUE_WYSIWYG_FLOW ON" >> $out
 
 set echo
 
 ./synthesize_cells.py \
 	--verilog $module.v \
 	--module $module \
+	--prefix "individual:mutant|" \
 	--csv $module.csv \
 	--place $module.place \
 	--cells 128 \
 	--min-x 5 --max-x 12 \
 	--min-y 3 --labs 2,10,18,26 \
-	--inputs PIN_A13 \
-	--outputs PIN_B13 \
+	--inputs in1 \
+	--outputs out1 \
 	--tie-unused || exit 1
 
 # complete functional synthesis

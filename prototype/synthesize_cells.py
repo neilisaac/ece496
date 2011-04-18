@@ -13,6 +13,9 @@ parser.add_option("-v", "--verilog", action="store", type="string",
 parser.add_option("-m", "--module", action="store", type="string",
 		dest="module", default="mutated_individual", help="verilog module name")
 
+parser.add_option("-r", "--prefix", action="store", type="string",
+		dest="prefix", default="", help="instance name prefix for top-level instanciation")
+
 parser.add_option("-i", "--inputs", action="store", type="string",
 		dest="inputs", default="in", help="input signals")
 
@@ -170,7 +173,8 @@ for i in range(options.cells):
 	n = options.luts[i % len(options.luts)]
 	if place:
 		print >>verilog, "/* placment assigned to LCCOMB_X%d_Y%d_N%d */" % (x, y, n)
-		print >>place, "set_location_assignment LCCOMB_X%d_Y%d_N%d -to %s_out" % (x, y, n, name)
+		print >>place, "set_location_assignment LCCOMB_X%d_Y%d_N%d -to %s%s_out" % \
+				(x, y, n, options.prefix, name)
 		if i % len(options.luts) == len(options.luts) - 1:
 			x += 1
 			if x > options.maxx:
