@@ -33,6 +33,9 @@ echo "$tcl ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON" >> $out
 ## this seems to actually be for HardCopy (but not 100% sure)
 #echo "$tcl TRUE_WYSIWYG_FLOW ON" >> $out
 
+# add DE1 pin definitions to project file
+cat pins.tcl >> $out
+
 set echo
 
 ./synthesize_cells.py \
