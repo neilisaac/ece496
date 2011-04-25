@@ -58,19 +58,8 @@ set echo
 # complete functional synthesis
 quartus_map $proj || exit 1
 
-## get synthesized instance names and fix them
-#quartus_cdb $proj --vqm=$module.vqm
-#
-#./fix_placement.py $module.vqm $proj.place \
-#	--instance-patterns "table" --cell cycloneii_lcell_comb \
-#	--min-x 19 --min-y 2 --max-x 26 \
-#	--fix-luts --luts-per-lab 3 || exit 1
-
 # append placement information to the project file
 cat $module.place >> $proj.qsf
-
-## need to delete the synthesized verilog first
-#rm $module.vqm 
 
 # run placement and routing, then produce output files
 quartus_fit $proj || exit 1
