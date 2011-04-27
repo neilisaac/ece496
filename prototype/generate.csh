@@ -4,7 +4,7 @@ set rename = "output"
 set proj = "evolution"
 set top = "fitness"
 set module = "individual"
-set files = "delay hex_digits"
+set files = "delay hex_digits uart"
 set family = "Cyclone II"
 set device = "EP2C20F484C7"
 
