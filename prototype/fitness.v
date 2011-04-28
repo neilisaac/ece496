@@ -26,7 +26,7 @@ wire VDD = 1'b1;
 wire GND = 1'b0;
 
 wire clock = CLOCK_50;
-wire reset = ~KEY[0];
+wire reset = ~KEY[3];
 
 
 wire sig1, sig2, second;
@@ -74,7 +74,7 @@ individual mutant (
 );
 
 
-wire uart_read, uart_active;
+wire uart_read, uart_write, uart_ready, uart_active;
 wire [7:0] uart_out;
 
 uart serial (
@@ -84,8 +84,13 @@ uart serial (
 	.reset(reset),
 	.out_valid(uart_read),
 	.out_data(uart_out),
+	.in_ready(uart_ready),
+	.in_valid(uart_write),
+	.in_data(uart_buf),
 	.active(uart_active)
 );
+
+assign uart_write = second;
 
 reg [7:0] uart_buf;
 always @ (posedge clock)
