@@ -95,8 +95,10 @@ always @ (posedge clock)
 assign LEDR[0] = uart_active;
 assign LEDG = uart_buf;
 
-hex_digits display0 (uart_buf[3:0], HEX0);
-hex_digits display1 (uart_buf[7:4], HEX1);
+hex_digits display0 (1, uart_buf[3:0], HEX0);
+hex_digits display1 (1, uart_buf[7:4], HEX1);
+hex_digits display2 (0, 0, HEX2);
+hex_digits display3 (0, 0, HEX3);
 
 
 endmodule
