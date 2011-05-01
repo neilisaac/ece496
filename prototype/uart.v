@@ -23,11 +23,11 @@ reg read, read_full;
 reg [7:0] read_buf;
 reg [2:0] read_count;
 
-reg write, write_ready;
+reg write, write_ready_n;
 reg [7:0] write_buf;
 reg [3:0] write_count;
 
-always @ (posedge main_clk or posedge reset) begin
+always @ (posedge main_clk) begin
 	integer i;
 
 	if (reset) begin
@@ -36,7 +36,7 @@ always @ (posedge main_clk or posedge reset) begin
 		read_count <= 0;
 
 		write <= 0;
-		write_ready <= 1;
+		write_ready_n <= 0;
 		write_count <= 0;
 	end
 
@@ -76,7 +76,7 @@ always @ (posedge main_clk or posedge reset) begin
 				else begin
 					tx <= 1;
 					write <= 0;
-					write_ready <= 1;
+					write_ready_n <= 0;
 					write_count <= 0;
 				end
 			end
@@ -88,7 +88,7 @@ always @ (posedge main_clk or posedge reset) begin
 
 		if (in_valid & ~write) begin
 			write <= 1;
-			write_ready <= 0;
+			write_ready_n <= 1;
 			write_count <= 0;
 			write_buf <= in_data;
 		end
@@ -99,7 +99,7 @@ end
 assign out_clk = uart_clk;
 assign out_data = read_buf;
 assign out_valid = read_full;
-assign in_ready = write_ready;
+assign in_ready = ~write_ready_n;
 assign active = read | write;
 
 
