@@ -201,8 +201,10 @@ if len(unused) > 0:
 		print >>verilog, "assign tie_unused = %s;\n\n" % " & ".join(unused)
 		print "INFO: %d unused signals tied to output: %s" % (len(unused), " ".join(unused))
 	else:
-		print >>verilog, "assign tie_unused = gnd;\n\n"
-		print "WARNING: %d unused signals: %s" % (len(unused), " ".join(unused))
+		print "WARNING: %d unused signals may be removed: %s" % (len(unused), " ".join(unused))
+
+elif options.tieunused:
+	print >>verilog, "assign tie_unused = gnd;\n\n"
 
 # end of module
 print >>verilog, "endmodule\n"
