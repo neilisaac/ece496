@@ -67,17 +67,22 @@ always @ (posedge main_clk or posedge reset) begin
 					tx <= 0;
 
 				else if (write_count <= 8) begin
-					tx <= write_buf[7];
+					tx <= write_buf[0];
 
 					for (i = 0; i < 7; i = i + 1)
-						write_buf[i+1] <= write_buf[i];
+						write_buf[i] <= write_buf[i+1];
 				end
 
 				else begin
+					tx <= 1;
 					write <= 0;
 					write_ready <= 1;
 					write_count <= 0;
 				end
+			end
+
+			else begin
+				tx <= 1;
 			end
 		end
 
