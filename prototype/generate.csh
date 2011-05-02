@@ -48,13 +48,13 @@ $scripts/synthesize_cells.py \
 	--min-y 3 --labs 2,10,18,26 \
 	--inputs in1 \
 	--outputs out1 \
-	--tie-unused || exit 1
+	--tie-unused || exit $?
 
 # complete functional synthesis
-quartus_map $proj || exit 1
+quartus_map $proj || exit $?
 
 # check for synthesis wanrnings
-$scripts/check_warnings.py "$proj.map.rpt" > /dev/null || exit 1
+$scripts/check_warnings.py "$proj.map.rpt" > /dev/null || exit $?
 
 # exit early for stress test
 if ($?STRESS) then
@@ -65,8 +65,8 @@ endif
 cat $module.place >> $proj.qsf
 
 # run placement and routing, then produce output files
-quartus_fit $proj || exit 1
-quartus_asm $proj || exit 1
+quartus_fit $proj || exit $?
+quartus_asm $proj || exit $?
 
 # back-annotate results for debugging
 if ($?DEBUG) then
@@ -78,9 +78,11 @@ endif
 # clean up
 rm -f $proj.pof
 
-## program board
-#quartus_pgm -c USB-Blaster -m JTAG -o "P;$proj.sof" || exit 1
-#
-## check score
-#$scripts/read_score.py || exit 1
+if ($?RUN) then
+	# program board
+	quartus_pgm -c USB-Blaster -m JTAG -o "P;$proj.sof" || exit $?
+
+	# check score
+	$scripts/read_score.py || exit $?
+endif
 
