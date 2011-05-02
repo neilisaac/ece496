@@ -73,9 +73,10 @@ quartus_asm $proj || exit 1
 
 # clean up
 rm -f $proj.pof
-#tar czf $rename.tgz $proj.* $module.*
-#rm -rf db incremental_db
 
 ## program board
-quartus_pgm -c USB-Blaster -m JTAG -o "P;$proj.sof" || exit 1
+#quartus_pgm -c USB-Blaster -m JTAG -o "P;$proj.sof" || exit 1
+#
+## check score
+#$scripts/read_score.py || exit 1
 
