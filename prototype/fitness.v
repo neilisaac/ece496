@@ -1,84 +1,47 @@
 module fitness (
-	CLOCK_50,
-	UART_RXD,
-	SW,
-	KEY,
-	UART_TXD,
-	LEDR,
-	LEDG,
-	HEX0,
-	HEX1,
-	HEX2,
-	HEX3
+	input CLOCK_50,
+	input UART_RXD,
+	input [3:0] KEY,
+	input [9:0] SW,
+
+	output UART_TXD,
+	output [7:0] LEDG,
+	output [9:0] LEDR,
+	output [6:0] HEX0, HEX1, HEX2, HEX3
 );
-
-input CLOCK_50;
-input UART_RXD;
-input [3:0] KEY;
-input [9:0] SW;
-
-output UART_TXD;
-output [7:0] LEDG;
-output [9:0] LEDR;
-output [6:0] HEX0, HEX1, HEX2, HEX3;
-
-wire VDD = 1'b1;
-wire GND = 1'b0;
 
 wire clock = CLOCK_50;
-wire reset = ~KEY[3];
+wire reset = SW[9];
 
 
-wire sig1, sig2, second;
 
-// 100kHz
-divider # (500000, 20) divider1 (
-	.clk_in(CLOCK_50),
+// tester
+
+reg test_start;
+wire test_done, test_unused;
+wire [31:0] test_score;
+
+tester test (
+	.clock(clock),
 	.reset(reset),
-	.clk_out(sig1)
-);
-
-// 10kHz
-divider # (5000000, 23) divider2 (
-	.clk_in(CLOCK_50),
-	.reset(reset),
-	.clk_out(sig2)
-);
-
-// 1 second (single-cycle pulse)
-delay # (50000000, 26) divider3 (
-	.clk_in(CLOCK_50),
-	.reset(reset),
-	.clk_out(second)
-);
-
-assign LEDR[8] = second;
-
-
-reg freq_select;
-always @ (posedge CLOCK_50)
-begin
-	
-end
-
-
-wire in1 = freq_select ? sig1 : sig2;
-wire out1;
-wire unused;
-assign LEDR[9] = unused;
-
-individual mutant (
-	.in1(in1),
-	.out1(out1),
-	.tie_unused(unused)
+	.start(test_start),
+	.done(test_done),
+	.score(test_score),
+	.unused(test_unused)
 );
 
 
-wire uart_read, uart_write, uart_ready, uart_active;
+
+// serial port controller
+
+wire uart_read, uart_active, uart_ready;
 wire [7:0] uart_out;
 
+reg uart_write;
+reg [7:0] uart_in;
+
 uart serial (
-	.main_clk(CLOCK_50),
+	.main_clk(clock),
 	.rx(UART_RXD),
 	.tx(UART_TXD),
 	.reset(reset),
@@ -86,24 +49,89 @@ uart serial (
 	.out_data(uart_out),
 	.in_ready(uart_ready),
 	.in_valid(uart_write),
-	.in_data(uart_buf),
+	.in_data(uart_in),
 	.active(uart_active)
 );
 
-assign uart_write = second;
 
-reg [7:0] uart_buf;
-always @ (posedge clock)
-	if (uart_read)
-		uart_buf <= uart_out;
 
-assign LEDR[0] = uart_active;
-assign LEDG = uart_buf;
+// coordinate test
 
-hex_digits display0 (1, uart_buf[3:0], HEX0);
-hex_digits display1 (1, uart_buf[7:4], HEX1);
-hex_digits display2 (0, 0, HEX2);
-hex_digits display3 (0, 0, HEX3);
+reg running, complete;
+reg [2:0] return_select;
+
+always @ (posedge clock) begin
+
+	if (reset) begin
+		running <= 0;
+		complete <= 0;
+		return_select <= 0;
+	end
+
+	else begin
+
+		// wait for start signal from host
+		if (~running & uart_read & uart_out == "S") begin
+			running <= 1;
+			complete <= 0;
+			test_start <= 1;
+		end
+		else test_start <= 0;
+
+		// wait for test-complete signal from tester
+		if (running & test_done) begin
+			running <= 0;
+			complete <= 1;
+			return_select <= 0;
+		end
+
+		// return one byte at a time
+		if (complete & uart_ready) begin
+			uart_write <= 1;
+			return_select <= return_select + 1;
+		end
+		else uart_write <= 0;
+
+		// done
+		if (return_select == 5) begin
+			complete <= 0;
+			return_select <= 0;
+		end
+	end
+end
+
+// select output signal
+always @ (return_select, test_score)
+	case (return_select)
+		1: uart_in = "R";
+		2: uart_in = test_score[7:0];
+		3: uart_in = test_score[15:8];
+		4: uart_in = test_score[23:16];
+		5: uart_in = test_score[31:24];
+		default: uart_in = 0;
+	endcase
+
+
+
+// outputs
+
+assign LEDR[9] = test_unused;
+assign LEDR[8] = uart_active;
+assign LEDR[7:4] = 0;
+assign LEDR[3] = uart_ready;
+assign LEDR[2] = running;
+assign LEDR[1] = complete;
+assign LEDR[0] = test_done;
+
+assign LEDG[7:3] = 0;
+assign LEDG[2:0] = return_select;
+
+// 7-segment displays
+hex_digits display3 (1, test_score[23:20], HEX3);
+hex_digits display2 (1, test_score[19:16], HEX2);
+hex_digits display1 (1, test_score[15:12], HEX1);
+hex_digits display0 (1, test_score[11:8], HEX0);
+
 
 
 endmodule
