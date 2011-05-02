@@ -9,10 +9,6 @@ set files = "tester delay hex_digits uart"
 set family = "Cyclone II"
 set device = "EP2C20F484C7"
 
-if ($#argv >= 1) then
-	set rename = $1
-endif
-
 # delete old files
 rm -rf db incremental_db $proj.* $module.*
 
@@ -20,6 +16,7 @@ set out = "$proj.qsf"
 set tcl = "set_global_assignment -name"
 set q = '"'
 
+# generate new project file
 echo "creating $out"
 cat /dev/null > $out
 echo "$tcl PROJECT_CREATION_TIME_DATE $q`date '+%T  %B %d, %Y'`$q" >> $out
@@ -33,9 +30,6 @@ echo "$tcl VERILOG_FILE $module.v" >> $out
 foreach file ($files)
 	echo "$tcl VERILOG_FILE $file.v" >> $out
 end
-
-## this seems to actually be for HardCopy (but not 100% sure)
-#echo "$tcl TRUE_WYSIWYG_FLOW ON" >> $out
 
 # add DE1 pin definitions to project file
 cat pins.tcl >> $out
@@ -62,6 +56,11 @@ quartus_map $proj || exit 1
 # check for synthesis wanrnings
 $scripts/check_warnings.py "$proj.map.rpt" > /dev/null || exit 1
 
+# exit early for stress test
+if ($?STRESS) then
+	exit 0
+endif
+
 # append placement information to the project file
 cat $module.place >> $proj.qsf
 
@@ -69,10 +68,12 @@ cat $module.place >> $proj.qsf
 quartus_fit $proj || exit 1
 quartus_asm $proj || exit 1
 
-## back-annotate results for debugging
-#quartus_cdb $proj --vqm=$module.vqm
-#quartus_cdb $proj --back_annotate=lab
-#quartus_cdb $proj --back_annotate=routing
+# back-annotate results for debugging
+if ($?DEBUG) then
+	quartus_cdb $proj --vqm=$module.vqm
+	quartus_cdb $proj --back_annotate=lab
+	quartus_cdb $proj --back_annotate=routing
+endif
 
 # clean up
 rm -f $proj.pof
