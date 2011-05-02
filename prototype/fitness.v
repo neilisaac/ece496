@@ -18,7 +18,7 @@ wire reset = SW[9];
 // tester
 
 reg test_start;
-wire test_done, test_unused;
+wire test_done, test_unused, test_select;
 wire [31:0] test_score;
 
 tester test (
@@ -27,6 +27,7 @@ tester test (
 	.start(test_start),
 	.done(test_done),
 	.score(test_score),
+	.select(test_select),
 	.unused(test_unused)
 );
 
@@ -117,9 +118,10 @@ always @ (return_select, test_score)
 
 assign LEDR[9] = test_unused;
 assign LEDR[8] = uart_active;
-assign LEDR[7:4] = 0;
-assign LEDR[3] = uart_ready;
-assign LEDR[2] = running;
+assign LEDR[7] = uart_ready;
+assign LEDR[6:4] = 0;
+assign LEDR[3] = running;
+assign LEDR[2] = test_select;
 assign LEDR[1] = complete;
 assign LEDR[0] = test_done;
 

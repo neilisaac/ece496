@@ -3,6 +3,7 @@ module tester (
 	input reset,
 	input start,
 	output done,
+	output select,
 	output [31:0] score,
 	output unused
 );
@@ -103,6 +104,7 @@ end
 
 
 assign done = ~start & complete;
+assign select = freq_select;
 
 // calculate score: score = abs(1s for sig1 - 1s for sig2)
 assign score = (count1 > count2) ? (count1 - count2) : (count2 - count1);
