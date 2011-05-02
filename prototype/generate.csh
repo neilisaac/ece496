@@ -59,6 +59,9 @@ $scripts/synthesize_cells.py \
 # complete functional synthesis
 quartus_map $proj || exit 1
 
+# check for synthesis wanrnings
+$scripts/check_warnings.py "$proj.map.rpt" > /dev/null || exit 1
+
 # append placement information to the project file
 cat $module.place >> $proj.qsf
 
