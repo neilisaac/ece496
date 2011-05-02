@@ -19,11 +19,13 @@ module uart (
 wire uart_clk;
 delay # (5208, 13) uart_dly (main_clk, reset, uart_clk);
 
+
+
 reg read, read_full;
 reg [7:0] read_buf;
 reg [2:0] read_count;
 
-reg write, write_ready_n;
+reg write, write_busy;
 reg [7:0] write_buf;
 reg [3:0] write_count;
 
@@ -36,7 +38,7 @@ always @ (posedge main_clk) begin
 		read_count <= 0;
 
 		write <= 0;
-		write_ready_n <= 0;
+		write_busy <= 0;
 		write_count <= 0;
 	end
 
@@ -76,7 +78,7 @@ always @ (posedge main_clk) begin
 				else begin
 					tx <= 1;
 					write <= 0;
-					write_ready_n <= 0;
+					write_busy <= 0;
 					write_count <= 0;
 				end
 			end
@@ -86,9 +88,13 @@ always @ (posedge main_clk) begin
 			end
 		end
 
+		else begin
+			read_full <= 0;
+		end
+
 		if (in_valid & ~write) begin
 			write <= 1;
-			write_ready_n <= 1;
+			write_busy <= 1;
 			write_count <= 0;
 			write_buf <= in_data;
 		end
@@ -96,10 +102,11 @@ always @ (posedge main_clk) begin
 end
 
 
+
 assign out_clk = uart_clk;
 assign out_data = read_buf;
 assign out_valid = read_full;
-assign in_ready = ~write_ready_n;
+assign in_ready = ~in_valid & ~write_busy;
 assign active = read | write;
 
 
