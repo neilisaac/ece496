@@ -154,7 +154,11 @@ for i in range(options.cells):
 
 	# create input wires with randomly assigned drivers
 	for letter in ["a", "b", "c", "d"]:
-		wire = random.choice(outputs)
+		while True:
+			wire = random.choice(outputs)
+			if wire != name + "_out":
+				break
+
 		print >>verilog, "\t.data%s(%s)," % (letter, wire)
 		used.add(wire)
 		data.append(wire)
