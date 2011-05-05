@@ -4,6 +4,8 @@ import sys
 import optparse
 import random
 
+from cell import Cell
+
 parser = optparse.OptionParser()
 
 parser.add_option("-v", "--verilog", action="store", type="string",
@@ -142,55 +144,45 @@ for signal in options.outputs:
 # keep set of used outputs
 used = set()
 
+# keep a list of cells
+cells = list()
+#TODO: load cells from csv
+
+print >>verilog, "\n"
+
 # create the lookup tables
 x = options.minx
 y = options.miny
-for i in range(options.cells):
-	# instantiate module
-	name = "table_%04d" % i
-	print >>verilog, "\n\ncycloneii_lcell_comb %s (" % name
+for i in range(len(cells), options.cells):
+	# create new Cell instance with random function
+	cell = Cell("table_%04d" % i, x, y, options.luts[i % len(options.luts)])
 
-	data = list()
+	# set input wires with randomly assigned drivers
+	count = 0
+	while count < 4:
+		wire = random.choice(outputs)
+		if cell.addInput(wire):
+			used.add(wire)
+			count += 1
 
-	# create input wires with randomly assigned drivers
-	for letter in ["a", "b", "c", "d"]:
-		while True:
-			wire = random.choice(outputs)
-			if wire != name + "_out":
-				break
+	# increment x and y
+	if i % len(options.luts) == len(options.luts) - 1:
+		x += 1
+		if x > options.maxx:
+			x = options.minx
+			y += 1
 
-		print >>verilog, "\t.data%s(%s)," % (letter, wire)
-		used.add(wire)
-		data.append(wire)
+	cells.append(cell)
 
-	# assign module output
-	print >>verilog, "\t.combout(%s_out) );\n" % name;
+Cell.connectCells(cells)
 
-	# set the module's function
-	mask = random.randint(0x0000, 0xFFFF)
-	print >>verilog, "defparam %s .lut_mask = \"%04X\";" % (name, mask)
+# output cell specs to files
+for cell in cells:
+	print >>verilog, cell.getVerilog()
+	if csv:   print >>csv, cell.getCSV()
+	if place: print >>place, cell.getPlacement(options.prefix)
 
-	## not sure what assigning .sum_lutc_input gives
-	#print >>verilog, "defparam %s .sum_lutc_input = \"cin\";" % name
-
-	# fix placement
-	n = options.luts[i % len(options.luts)]
-	if place:
-		print >>verilog, "/* placment assigned to LCCOMB_X%d_Y%d_N%d */" % (x, y, n)
-		print >>place, "set_location_assignment LCCOMB_X%d_Y%d_N%d -to %s%s_out" % \
-				(x, y, n, options.prefix, name)
-		if i % len(options.luts) == len(options.luts) - 1:
-			x += 1
-			if x > options.maxx:
-				x = options.minx
-				y += 1
-
-	# save LUT to CSV
-	if csv:
-		print >>csv, "%s,%s,%s,%s,%s,%s_out,%04X,%d,%d,%d" % (name,
-				data[0], data[1], data[2], data[3], name, mask, x, y, n)
-
-print >>verilog, "\n"
+print >>verilog, ""
 
 # make sure the input signals are assigned
 for signal in options.inputs:
