@@ -8,52 +8,52 @@ from cell import Cell
 
 parser = optparse.OptionParser()
 
-parser.add_option("-v", "--verilog", action="store", type="string",
+parser.add_option("--verilog", action="store", type="string",
 		dest="filename", default="mutated_individual.v",
 		help="output verilog file name")
 
-parser.add_option("-m", "--module", action="store", type="string",
+parser.add_option("--module", action="store", type="string",
 		dest="module", default="mutated_individual", help="verilog module name")
 
-parser.add_option("-r", "--prefix", action="store", type="string",
+parser.add_option("--prefix", action="store", type="string",
 		dest="prefix", default="", help="instance name prefix for top-level instanciation")
 
-parser.add_option("-i", "--inputs", action="store", type="string",
+parser.add_option("--inputs", action="store", type="string",
 		dest="inputs", default="in", help="input signals")
 
-parser.add_option("-o", "--outputs", action="store", type="string",
+parser.add_option("--outputs", action="store", type="string",
 		dest="outputs", default="out", help="output signals")
 
-parser.add_option("-f", "--csv", action="store", type="string",
+parser.add_option("--csv", action="store", type="string",
 		dest="csv", default=None, help="store configuration to specified CSV file")
 
-parser.add_option("-c", "--cells", action="store", type="int",
+parser.add_option("--cells", action="store", type="int",
 		dest="cells", default=10, help="number of LEs")
 
-parser.add_option("-p", "--place", action="store", type="string",
+parser.add_option("--place", action="store", type="string",
 		dest="place", default=None,
 		help="enable fixed placement and set output file")
 
-parser.add_option("-l", "--labs", action="store", type="string",
+parser.add_option("--labs", action="store", type="string",
 		dest="luts", default="0",
 		help="comma-separated list of LUT numbers to use in each LAB")
 
-parser.add_option("-x", "--min-x", action="store", type="int",
+parser.add_option("--min-x", action="store", type="int",
 		dest="minx", default=1, help="starting x LAB")
 		
-parser.add_option("-y", "--min-y", action="store", type="int",
+parser.add_option("--min-y", action="store", type="int",
 		dest="miny", default=1, help="starting y LAB")
 		
-parser.add_option("-X", "--max-x", action="store", type="int",
+parser.add_option("--max-x", action="store", type="int",
 		dest="maxx", default=16, help="maximum x LAB")
 
-parser.add_option("-s", "--seed", action="store", type="string",
+parser.add_option("--seed", action="store", type="string",
 		dest="seed", default=None, help="seed CSV file")
 
-parser.add_option("-k", "--keep", action="store", type="int",
+parser.add_option("--keep", action="store", type="int",
 		dest="keep", default=0, help="number of LE functions to keep untouched")
 
-parser.add_option("-t", "--tie-unused", action="store_true", dest="tieunused",
+parser.add_option("--tie-unused", action="store_true", dest="tieunused",
 		help="add a moudle output signal to guarantee all signals are used")
 
 (options, args) = parser.parse_args(sys.argv)
