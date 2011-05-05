@@ -2,8 +2,11 @@
 
 set echo
 
-rm -rf individual.*
-rm -rf evolution.*
+rm *.pyc *.pyo
+
+rm -f individual.*
+rm -f evolution.*
+
 rm -rf db
 rm -rf incremental_db 
 
