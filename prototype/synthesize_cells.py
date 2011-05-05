@@ -51,7 +51,7 @@ parser.add_option("-s", "--seed", action="store", type="string",
 		dest="seed", default=None, help="seed CSV file")
 
 parser.add_option("-k", "--keep", action="store", type="int",
-		dest="keep", default=0, help="number of LE functions to keep")
+		dest="keep", default=0, help="number of LE functions to keep untouched")
 
 parser.add_option("-t", "--tie-unused", action="store_true", dest="tieunused",
 		help="add a moudle output signal to guarantee all signals are used")
@@ -60,14 +60,6 @@ parser.add_option("-t", "--tie-unused", action="store_true", dest="tieunused",
 
 if len(args) > 1:
 	print "invalid arguments: " + " ".join(args[1:])
-	sys.exit(1)
-
-if options.seed is not None:
-	print "--seed is not implemented"
-	sys.exit(1)
-
-if options.keep is not 0:
-	print "--keep is not implemented"
 	sys.exit(1)
 
 if options.cells <= 0:
@@ -146,7 +138,38 @@ used = set()
 
 # keep a list of cells
 cells = list()
-#TODO: load cells from csv
+
+# read cell descriptions from seed file
+if options.seed:
+	seed = open(options.seed, 'r')
+
+	for line in seed.readlines():
+		line = line.strip()
+		if len(line) > 0:
+			cell = Cell.readCSV(line)
+			if cell is not None:
+				cells.append(cell)
+
+	seed.close()
+
+# modify some of the cells
+for i in range(len(cells) - options.keep):
+	cell = random.choice(cells)
+
+	bits = random.randint(0, 16)
+	cell.mutateFunction(bits)
+
+	swaps = random.randint(0, 4)
+	for j in range(swaps):
+		new = random.choice(outputs)
+		cell.swapInput(new)
+
+	print "modified %s: %d function bits and %d input swaps" % (str(cell), bits, swaps)
+
+# find nets already used as inputs
+for cell in cells:
+	for net in cell.inputs:
+		used.add(net)
 
 print >>verilog, "\n"
 

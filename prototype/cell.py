@@ -29,6 +29,18 @@ class Cell:
 
 
 
+	def swapInput(self, new, old=None):
+		if old is None:
+			old = random.choice(self.inputs)
+		elif old not in self.inputs:
+			raise Exception, "%s doesn't have input net %s" % (self.name, old)
+		
+		index = self.inputs.index(old)
+		self.inputs[index] = new
+		return old
+
+
+
 	def mutateFunction(self, bits=1):
 		mask = 0
 		for i in range(bits):
@@ -80,6 +92,9 @@ class Cell:
 
 
 	def getCSV(self):
+		if len(self.inputs) != 4:
+			raise Exception, "%s doesn't have 4 inputs: %s" % (self.name, ", ".join(self.inputs))
+
 		x, y, n = self.location
 		return "%s,%s,%s,%s,%s,%s,%04X,%d,%d,%d" % (self.name,
 				self.inputs[0], self.inputs[1], self.inputs[2], self.inputs[3],
@@ -120,7 +135,7 @@ class Cell:
 	def readCSV(line):
 		parts = line.split(",")
 		name = parts[0]
-		inputs = parts[1:4]
+		inputs = parts[1:5]
 		output = parts[5]
 		function = int(parts[6], 16)
 		x = int(parts[7])
