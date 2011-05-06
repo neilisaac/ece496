@@ -3,40 +3,68 @@
 import sys
 import time
 import serial
+import stats
+import optparse
 
-device = "/dev/ttyUSB0"
-timeout = 5
+parser = optparse.OptionParser()
 
-if len(sys.argv) > 1:
-	device = sys.argv[1]
+parser.add_option("-d", "--device", dest="device", type="string",
+		default="/dev/ttyUSB0", help="serial port device")
+parser.add_option("-b", "--baud", dest="baud", type="int",
+		default=9600, help="device baud rate")
+parser.add_option("-t", "--timeout", dest="timeout", type="float",
+		default=0.1, help="device write timeout")
+parser.add_option("-s", "--samples", dest="samples", type="int",
+		default=10, help="number of smaples")
+parser.add_option("-f", "--failures", dest="failures", type="int",
+		default=4, help="maximum number of tolerated failures")
 
-s = serial.Serial(device, baudrate=9600, bytesize=8,
-		parity=serial.PARITY_NONE, timeout=timeout)
+options, args = parser.parse_args(sys.argv)
+
+s = serial.Serial(options.device,baudrate=options.baud, timeout=options.timeout,
+		bytesize=8, parity=serial.PARITY_NONE)
 
 time.sleep(0.001)
-s.write("S")
 
-time.sleep(0.001)
-data = s.read()
+failed = 0
+scores = list()
 
-if len(data) != 1:
-	print "ERROR: test board didn't respond at all"
-	sys.exit(1)
+while len(scores) < options.samples:
+	# run test and request result
+	s.write("S")
+	data = s.read()
 
-if data != "R":
-	print "ERROR: test board didn't respond properly"
-	sys.exit(1)
+	if len(data) != 1 or data != "R":
+		print "test failed: no acknowledgment"
+		failed += 1
+		if failed >= options.failures:
+			print "ERROR: maximum read failures reached"
+			sys.exit(1)
+		else:
+			continue
 
-else:
 	score = 0
-
 	data = s.read(4)
 	if len(data) != 4:
-		print "ERROR: test board didn't sent valid score bytes"
-		sys.exit(1)
+		print "test failed: invalid score bytes"
+		failed += 1
+		if failed >= options.failures:
+			print "ERROR: maximum read failures reached"
+			sys.exit(1)
+		else:
+			continue
 
-	for value, i in zip(data, [0, 8, 16, 24]):
-		score += ord(value) << i
+	for value, shift in zip(data, [0, 8, 16, 24]):
+		score += ord(value) << shift
+	
+	print "read score: %8d (0x%08X)" % (score, score)
+	scores.append(score)
 
-	print "score is: %8d (0x%08X)" % (score, score)
+mean = stats.lmean(scores)
+stdev = stats.lstdev(scores)
+rating = mean / stdev
+
+print "average score: %.2f" % mean
+print "standard deviation: %.2f" % stdev
+print "rating: %.6f" % rating
 

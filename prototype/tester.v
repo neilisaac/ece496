@@ -25,7 +25,7 @@ divider # (5000, 13) divider2 (
 );
 
 // test clock
-delay # (20000000, 25) delay1 (
+delay # (1000000, 20) delay1 (
 	.clk_in(clock),
 	.reset(reset),
 	.clk_out(test)
