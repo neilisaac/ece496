@@ -1,5 +1,6 @@
 #!/bin/tcsh -f
 
+# global options
 set scripts = "."
 set proj = "evolution"
 set top = "fitness"
@@ -9,14 +10,10 @@ set files = "tester delay hex_digits uart"
 set family = "Cyclone II"
 set device = "EP2C20F484C7"
 
-# delete old files
-rm -rf db incremental_db $proj.* $module.*
-
+# generate new project file
 set out = "$proj.qsf"
 set tcl = "set_global_assignment -name"
 set q = '"'
-
-# generate new project file
 echo "creating $out"
 cat /dev/null > $out
 echo "$tcl PROJECT_CREATION_TIME_DATE $q`date '+%T  %B %d, %Y'`$q" >> $out
@@ -36,6 +33,12 @@ cat pins.tcl >> $out
 
 set echo
 
+# generate some optional arguments
+set seed_file = ""
+if ( -e "$module.seed" ) then
+	set seed_file = "--seed=$module.seed"
+endif
+
 # generate mutant instance
 $scripts/synthesize_cells.py \
 	--verilog "$module.v" \
@@ -48,7 +51,9 @@ $scripts/synthesize_cells.py \
 	--min-y 3 --labs 2,10,18,26 \
 	--inputs in1 \
 	--outputs out1 \
-	--tie-unused || exit $?
+	--tie-unused \
+	$seed_file \
+	| tee individual.generation.log || exit $?
 
 # complete functional synthesis
 quartus_map $proj || exit $?

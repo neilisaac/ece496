@@ -50,8 +50,8 @@ parser.add_option("--max-x", action="store", type="int",
 parser.add_option("--seed", action="store", type="string",
 		dest="seed", default=None, help="seed CSV file")
 
-parser.add_option("--keep", action="store", type="int",
-		dest="keep", default=0, help="number of LE functions to keep untouched")
+parser.add_option("--mutate", action="store", type="float",
+		dest="mutate", default=0.05, help="fraction of cells to mutate")
 
 parser.add_option("--tie-unused", action="store_true", dest="tieunused",
 		help="add a moudle output signal to guarantee all signals are used")
@@ -153,7 +153,9 @@ if options.seed:
 	seed.close()
 
 # modify some of the cells
-for i in range(len(cells) - options.keep):
+mutate = int(len(cells) * options.mutate)
+print "mutating %d cells" % mutate
+for i in range(mutate):
 	cell = random.choice(cells)
 
 	bits = random.randint(0, 16)
@@ -164,7 +166,7 @@ for i in range(len(cells) - options.keep):
 		new = random.choice(outputs)
 		cell.swapInput(new)
 
-	print "modified %s: %d function bits and %d input swaps" % (str(cell), bits, swaps)
+	print "\tmodified %s: %d function bits and %d input swaps" % (str(cell), bits, swaps)
 
 # find nets already used as inputs
 for cell in cells:
