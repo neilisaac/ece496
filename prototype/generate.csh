@@ -2,6 +2,7 @@
 
 # global options
 set scripts = "."
+set verilog = "verilog"
 set proj = "evolution"
 set top = "fitness"
 set module = "individual"
@@ -9,6 +10,14 @@ set prefix = "tester:test|${module}:mutant|"
 set files = "tester delay hex_digits uart"
 set family = "Cyclone II"
 set device = "EP2C20F484C7"
+
+if ($?EVOLUTION_SCRIPTS) then
+	set scripts = "$EVOLUTION_SCRIPTS"
+endif
+
+if ($?EVOLUTION_VERILOG) then
+	set verilog = "$EVOLUTION_VERILOG"
+endif
 
 # generate new project file
 set out = "$proj.qsf"
@@ -22,10 +31,9 @@ echo "$tcl FAMILY $q$family$q" >> $out
 echo "$tcl DEVICE $q$device$q" >> $out
 echo "$tcl SYNTHESIS_EFFORT FAST" >> $out
 echo "$tcl ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON" >> $out
-echo "$tcl VERILOG_FILE $top.v" >> $out
 echo "$tcl VERILOG_FILE $module.v" >> $out
-foreach file ($files)
-	echo "$tcl VERILOG_FILE $file.v" >> $out
+foreach file ($top $files)
+	echo "$tcl VERILOG_FILE $verilog/$file.v" >> $out
 end
 
 # add DE1 pin definitions to project file
@@ -53,7 +61,7 @@ $scripts/synthesize_cells.py \
 	--outputs out1 \
 	--tie-unused \
 	$seed_file \
-	| tee individual.generation.log || exit $?
+	| tee $module.generation.rpt || exit $?
 
 # complete functional synthesis
 quartus_map $proj || exit $?
@@ -82,12 +90,13 @@ endif
 
 # clean up
 rm -f $proj.pof
+mv $proj.sof $module.sof
 
-if ($?RUN) then
+if ($?EVOLUTION_RUN) then
 	# program board
-	quartus_pgm -c USB-Blaster -m JTAG -o "P;$proj.sof" || exit $?
+	quartus_pgm -c USB-Blaster -m JTAG -o "P;$module.sof" || exit $?
 
 	# check score
-	$scripts/read_score.py || exit $?
+	$scripts/read_score.py | tee $module.score || exit $?
 endif
 
