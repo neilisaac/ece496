@@ -64,10 +64,10 @@ $scripts/synthesize_cells.py \
 	| tee $module.generation.rpt || exit $?
 
 # complete functional synthesis
-quartus_map $proj || exit $?
+quartus_map $proj | tee quartus.map.log || exit $?
 
 # check for synthesis wanrnings
-$scripts/check_warnings.py "$proj.map.rpt" > /dev/null || exit $?
+$scripts/check_warnings.py "$proj.map.rpt" || exit $?
 
 # exit early for stress test
 if ($?STRESS) then
@@ -78,8 +78,8 @@ endif
 cat $module.place >> $proj.qsf
 
 # run placement and routing, then produce output files
-quartus_fit $proj || exit $?
-quartus_asm $proj || exit $?
+quartus_fit $proj | tee quartus.fit.log || exit $?
+quartus_asm $proj | tee quartus.asm.log || exit $?
 
 # back-annotate results for debugging
 if ($?DEBUG) then
@@ -94,9 +94,9 @@ mv $proj.sof $module.sof
 
 if ($?EVOLUTION_RUN) then
 	# program board
-	quartus_pgm -c USB-Blaster -m JTAG -o "P;$module.sof" || exit $?
+	quartus_pgm -c USB-Blaster -m JTAG -o "P;$module.sof" | tee quartus.pgm.log || exit $?
 
 	# check score
-	$scripts/read_score.py | tee $module.score || exit $?
+	$scripts/read_score.py | tee $module.score.log || exit $?
 endif
 
