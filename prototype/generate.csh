@@ -37,7 +37,7 @@ foreach file ($top $files)
 end
 
 # add DE1 pin definitions to project file
-cat pins.tcl >> $out
+cat "$scripts/pins.tcl" >> $out
 
 set echo
 
