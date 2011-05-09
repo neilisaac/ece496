@@ -21,8 +21,10 @@ if len(args) == 4:
 	output = args[3]
 
 out = sys.stdout
+std = sys.stderr
 if output is not None:
 	out = open(output, 'w')
+	std = sys.stdout
 
 count = [0, 0]
 for lines in zip(open(input1).readlines(), open(input2).readlines()):
@@ -30,9 +32,9 @@ for lines in zip(open(input1).readlines(), open(input2).readlines()):
 	count[pick] += 1
 	print >> out, lines[pick],
 
-print >> sys.stderr, "picked %d lines from %s and %d from %s" % \
-		(count[0], input1, count[1], input2)
-
 if output is not None:
-	print >> sys.stderr, "saved result to " + output
+	print >> std, "%s:" % output,
+
+print >> std, "%d lines from %s and %d from %s" % \
+		(count[0], input1, count[1], input2)
 

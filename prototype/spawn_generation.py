@@ -16,10 +16,14 @@ INDIVIDUAL = "i%04d"
 
 def generate_individual(num, base, scripts):
 	# create unique folder
-	individual = INDIVIDUAL % num
-	folder = base + "/" + individual
+	name = INDIVIDUAL % num
+	folder = base + "/" + name
 	os.mkdir(folder)
 	os.chdir(folder)
+
+	# move seed file if it exists
+	if os.path.exists("%s.seed" % name):
+		os.rename("%s.seed" % name, "%s/individual.seed" % name)
 
 	# generate individual
 	result = util.execute("%s/generate.csh" % scripts, redirect="generate.log")
@@ -32,11 +36,11 @@ def generate_individual(num, base, scripts):
 	os.chdir(base)
 	if result == 0:
 		for ext in ["csv", "sof"]:
-			os.rename("%s/individual.%s" % (individual, ext), "%s.%s" % (individual, ext))
+			os.rename("%s/individual.%s" % (name, ext), "%s.%s" % (name, ext))
 
 	# compress any interesting files
-	util.execute("tar czf %s.tgz %s" % (individual, individual))
-	shutil.rmtree(individual)
+	util.execute("tar czf %s.tgz %s" % (name, name))
+	shutil.rmtree(name)
 
 	return result
 
@@ -76,8 +80,23 @@ def main():
 	
 	# get or set environment variable for verilog folder path
 	verilog = util.setenv("EVOLUTION_VERILOG", initial + "/verilog")
+	
+	# create seeds from previous generation
+	if options.generation > 0:
+		prev = options.generation - 1
+		print "creating seeds from generation", prev
+		inputs = glob.glob((INDIVIDUAL % prev) + re.sub("%.*", ".csv", INDIVIDUAL))
+		
+		if len(inputs) == 0:
+			print "ERROR: no seeds available in generation", prev
+			sys.exit(1)
 
-	# TODO: generate seeds if generation > 1
+		for i in range(options.population):
+			in1 = random.choice(inputs)
+			in2 = random.choice(inputs)
+			out = (INDIVIDUAL + ".seed") % i
+			util.execute("%s/merge_individuals.py %s %s %s" % \
+					(scripts, in1, in2, out), redirect="merge.log")
 
 	# don't test individuals in the generate script
 	os.unsetenv("EVOLUTION_RUN")
