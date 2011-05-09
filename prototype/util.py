@@ -1,13 +1,15 @@
 import os
+import sys
 import shutil
 
-def execute(cmd, wait=True, args=None):
+
+def execute(cmd, wait=True, args=None, redirect=None, append=False):
 	''' fork and exec to run a given command '''
 
 	cmd = cmd.split()
 	if args is not None:
 		cmd.extend(args)
-
+	
 	pid = os.fork()
 	if pid > 0:
 		if wait:
@@ -16,6 +18,12 @@ def execute(cmd, wait=True, args=None):
 		else:
 			return 0
 	else:
+		if redirect is not None:
+			flags = os.O_WRONLY | os.O_CREAT
+			if append:
+				flags |= os.O_APPEND
+			out = os.open(redirect, flags)
+			os.dup2(out, sys.stdout.fileno())
 		os.execvp(cmd[0], cmd)
 	
 	raise Exception, "fork or exec call malfunctioned"
