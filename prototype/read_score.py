@@ -18,6 +18,8 @@ parser.add_option("-s", "--samples", dest="samples", type="int",
 		default=10, help="number of smaples")
 parser.add_option("-f", "--failures", dest="failures", type="int",
 		default=4, help="maximum number of tolerated failures")
+parser.add_option("-o", "--output", dest="output", type="string",
+		default="individual.score", help="output file containing score")
 
 options, args = parser.parse_args(sys.argv)
 
@@ -61,10 +63,15 @@ while len(scores) < options.samples:
 	scores.append(score)
 
 mean = stats.lmean(scores)
-stdev = stats.lstdev(scores)
-rating = mean / stdev
-
 print "average score: %.2f" % mean
-print "standard deviation: %.2f" % stdev
-print "rating: %.6f" % rating
+
+out = open(options.output, "w")
+print >> out, mean
+
+if options.samples > 1:
+	stdev = stats.lstdev(scores)
+	rating = mean / stdev
+
+	print "standard deviation: %.2f" % stdev
+	print "rating: %.6f" % rating
 
