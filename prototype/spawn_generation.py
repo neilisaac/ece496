@@ -6,6 +6,7 @@ import optparse
 import glob
 import re
 import threading
+import shutil
 
 import util
 
@@ -21,7 +22,11 @@ def generate_individual(num, base, scripts):
 	os.chdir(folder)
 
 	# generate individual
-	result = util.execute("%s/generate.csh" % scripts)
+	result = util.execute("%s/generate.csh" % scripts, redirect="generate.log")
+
+	# delete the databases
+	shutil.rmtree("db", True)
+	shutil.rmtree("incremental_db", True)
 
 	# save output files
 	os.chdir(base)
@@ -29,12 +34,9 @@ def generate_individual(num, base, scripts):
 		for ext in ["csv", "sof"]:
 			os.rename("%s/individual.%s" % (individual, ext), "%s.%s" % (individual, ext))
 
-	# compress other interesting files
-	files = " ".join(glob.glob("%s/individual.*" % individual))
-	util.execute("tar czf %s.tgz %s" % (individual, files))
-
-	# delete the rest
-	#util.execute("rm -rf %s" % folder)
+	# compress any interesting files
+	util.execute("tar czf %s.tgz %s" % (individual, individual))
+	shutil.rmtree(individual)
 
 	return result
 
@@ -80,27 +82,22 @@ def main():
 	# don't test individuals in the generate script
 	os.unsetenv("EVOLUTION_RUN")
 
+	print "generating", options.population, "individuals"
+
 	# run threads
 	if options.threads > 1:
 		# create that many threads
+		print "creating", options.threads, "parallel threads"
 		threads = list()
 		for i in range(options.threads):
 			args = (i, options.threads, options.population, base, scripts)
 			thread = threading.Thread(target=run_thread, args=args)
 			thread.start()
-			threads.append((i, thread))
+			threads.append(thread)
 
 		# wait for all threads to complete
-		while len(threads) > 0:
-			for obj in threads:
-				num, thread = obj
-				thread.join(1)
-				if thread.is_alive():
-					continue
-				
-				print "generated individual", num
-				threads.remove(obj)
-				break
+		for thread in threads:
+			thread.join()
 
 	else:
 		# just run it directly if there's only one thread
