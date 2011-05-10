@@ -67,6 +67,9 @@ def main():
 	parser.add_option("-t", "--threads", dest="threads", type="int",
 			default=1, help="number of threads to use")
 
+	parser.add_option("-d", "--dry", dest="dry", action="store_true",
+			help="spawn generation without programming/testing")
+
 	options, args = parser.parse_args(sys.argv)
 
 	# make base folder for this generation
@@ -126,6 +129,9 @@ def main():
 
 	print "%d/%d individuals were generated sucessfully" % \
 			(len(outputs), options.population)
+
+	if options.dry:
+		return
 	
 	for sof in outputs:
 		print "testing " + sof
