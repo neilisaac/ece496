@@ -13,6 +13,8 @@ patterns = [
 		"Output pins are stuck at VCC or GND",
 		"hierarchies have connectivity warnings - see the Connectivity Checks report folder",
 		"Declared by entity but not connected by instance",
+		"Synthesized away node \"table_",
+		"Synthesized away the following",
 	]
 
 name = "evolution.map.rpt"

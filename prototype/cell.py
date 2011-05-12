@@ -33,8 +33,8 @@ class Cell:
 		if old is None:
 			old = random.choice(self.inputs)
 		elif old not in self.inputs:
-			raise Exception, "%s doesn't have input net %s" % (self.name, old)
-		
+			return None
+
 		index = self.inputs.index(old)
 		self.inputs[index] = new
 		return old

@@ -34,7 +34,7 @@ parser.add_option("--place", action="store", type="string",
 		dest="place", default=None,
 		help="enable fixed placement and set output file")
 
-parser.add_option("--labs", action="store", type="string",
+parser.add_option("--luts", action="store", type="string",
 		dest="luts", default="0",
 		help="comma-separated list of LUT numbers to use in each LAB")
 
@@ -133,6 +133,8 @@ for signal in options.outputs:
 	number = random.randint(0, options.cells)
 	print >>verilog, "assign %s = table_%04d_out;" % (signal, number)
 
+print >>verilog, "\n"
+
 # keep set of used outputs
 used = set()
 
@@ -173,31 +175,53 @@ for cell in cells:
 	for net in cell.inputs:
 		used.add(net)
 
-print >>verilog, "\n"
-
 # create the lookup tables
-x = options.minx
-y = options.miny
+stride = options.maxx + 1 - options.minx
 for i in range(len(cells), options.cells):
+	x = options.minx + (i % stride)
+	y = i // stride
+
 	# create new Cell instance with random function
-	cell = Cell("table_%04d" % i, x, y, options.luts[i % len(options.luts)])
+	cell = Cell("table_%04d" % i, x, options.miny + y // len(options.luts),
+			options.luts[y % len(options.luts)])
 
-	# set input wires with randomly assigned drivers
-	count = 0
-	while count < 4:
-		wire = random.choice(outputs)
-		if cell.addInput(wire):
-			used.add(wire)
-			count += 1
+	# set inputs (left, bottom, right, top)
+	left = "gnd"
+	below = "gnd"
+	right = "gnd"
+	above = "gnd"
 
-	# increment x and y
-	if i % len(options.luts) == len(options.luts) - 1:
-		x += 1
-		if x > options.maxx:
-			x = options.minx
-			y += 1
+	# find adjacent cell output names
+	if x > options.minx:
+		left = "table_%04d_out" % (i - 1)
+	if x < options.maxx:
+		right = "table_%04d_out" % (i + 1)
+	if y > options.miny:
+		below = "table_%04d_out" % (i - stride)
+	if i < options.cells - stride:
+		above = "table_%04d_out" % (i + stride)
+
+	# connect inputs to adjacent cells
+	cell.addInput(left)
+	cell.addInput(below)
+	cell.addInput(right)
+	cell.addInput(above)
+
+	# mark the nets as used
+	used.add(left)
+	used.add(below)
+	used.add(right)
+	used.add(above)
 
 	cells.append(cell)
+
+# connect the inputs randomly
+for net in options.inputs:
+	while True:
+		cell = random.choice(cells)
+		if cell.swapInput(net, "gnd") is not None:
+			break
+	used.add(net)
 
 Cell.connectCells(cells)
 

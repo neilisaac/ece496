@@ -56,7 +56,7 @@ $scripts/synthesize_cells.py \
 	--place "$module.place" \
 	--cells 128 \
 	--min-x 5 --max-x 12 \
-	--min-y 3 --labs 2,10,18,26 \
+	--min-y 3 --luts 2,10,18,26 \
 	--inputs in1 \
 	--outputs out1 \
 	--tie-unused \

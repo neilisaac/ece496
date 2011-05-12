@@ -68,7 +68,7 @@ print "average score: %.2f" % mean
 out = open(options.output, "w")
 print >> out, mean
 
-if options.samples > 1:
+if options.samples > 1 and mean != 0:
 	stdev = stats.lstdev(scores)
 	rating = mean / stdev
 
