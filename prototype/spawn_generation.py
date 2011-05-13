@@ -143,7 +143,7 @@ def main():
 
 	else:
 		# just run it directly if there's only one thread
-		run_thread(0, 1, options.population, base, scripts)
+		run_process(0, 1, options.population, base, scripts)
 	
 	outputs = glob.glob(re.sub("%.*", "*.sof", INDIVIDUAL))
 
