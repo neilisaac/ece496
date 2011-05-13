@@ -46,7 +46,25 @@ def generate_individual(num, base, scripts):
 
 
 
-def run_thread(number, total, population, base, scripts):
+def test_individual(sof, board, interface, scripts):
+	print "testing " + sof
+
+	# program
+	if util.execute("quartus_pgm -c %d -m JTAG -o P;%s" % \
+			(board, sof), redirect="quartus.pgm.log", append=True) != 0:
+		print "programming failed"
+
+	# test
+	else:
+		score = re.sub("\.sof$", ".score", sof)
+		if util.execute("%s/read_score.py -d %s -o %s" % \
+				(scripts, interface, score),
+				redirect="read_score.log", append=True) != 0:
+			print "testing failed"
+
+
+
+def run_process(number, total, population, base, scripts):
 	for i in range(number, population, total):
 		generate_individual(i, base, scripts)
 
@@ -136,20 +154,7 @@ def main():
 		return
 	
 	for sof in outputs:
-		print "testing " + sof
-
-		# program
-		if util.execute("quartus_pgm -c %d -m JTAG -o P;%s" % \
-				(1, sof), redirect="quartus.pgm.log", append=True) != 0:
-			print "programming failed"
-
-		# test
-		else:
-			score = re.sub("\.sof$", ".score", sof)
-			if util.execute("%s/read_score.py -d %s -o %s" % \
-					(scripts, "/dev/ttyUSB0", score),
-					redirect="read_score.log", append=True) != 0:
-				print "testing failed"
+		test_individual(sof, 1, "/dev/ttyUSB0", scripts)
 
 
 
