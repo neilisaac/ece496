@@ -61,11 +61,11 @@ def main():
 	parser.add_option("-f", "--folder", dest="folder", type="string",
 			default="run", help="folder to create generation in")
 	
-	parser.add_option("-p", "--population", dest="population", type="int",
+	parser.add_option("-n", "--population", dest="population", type="int",
 			default=20, help="population size")
 
-	parser.add_option("-t", "--threads", dest="threads", type="int",
-			default=1, help="number of threads to use")
+	parser.add_option("-p", "--processes", dest="processes", type="int",
+			default=1, help="number of processes to use")
 
 	parser.add_option("-d", "--dry", dest="dry", action="store_true",
 			help="spawn generation without programming/testing")
@@ -106,20 +106,22 @@ def main():
 
 	print "generating", options.population, "individuals"
 
-	# run threads
-	if options.threads > 1:
-		# create that many threads
-		print "creating", options.threads, "parallel threads"
-		threads = list()
-		for i in range(options.threads):
-			args = (i, options.threads, options.population, base, scripts)
-			thread = threading.Thread(target=run_thread, args=args)
-			thread.start()
-			threads.append(thread)
+	# run processes
+	if options.processes > 1:
+		# create that many processes
+		print "creating", options.processes, "parallel processes"
+		pids = list()
+		for i in range(options.processes):
+			pid = os.fork()
+			if pid > 0:
+				pids.append(pid)
+			else:
+				run_process(i, options.processes, options.population, base, scripts)
+				sys.exit(0)
 
-		# wait for all threads to complete
-		for thread in threads:
-			thread.join()
+		# wait for all processes to return
+		for pid in pids:
+			os.waitpid(pid, 0)
 
 	else:
 		# just run it directly if there's only one thread
