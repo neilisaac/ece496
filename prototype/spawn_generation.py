@@ -4,6 +4,7 @@ import sys
 import os
 import optparse
 import glob
+import random
 import re
 import threading
 import shutil
@@ -19,13 +20,13 @@ def generate_individual(num, base, scripts):
 	name = INDIVIDUAL % num
 	folder = base + "/" + name
 	os.mkdir(folder)
-	os.chdir(folder)
 
 	# move seed file if it exists
 	if os.path.exists("%s.seed" % name):
 		os.rename("%s.seed" % name, "%s/individual.seed" % name)
 
 	# generate individual
+	os.chdir(folder)
 	result = util.execute("%s/generate.csh" % scripts, redirect="generate.log")
 
 	# delete the databases
@@ -101,12 +102,14 @@ def main():
 	
 	# get or set environment variable for verilog folder path
 	verilog = util.setenv("EVOLUTION_VERILOG", initial + "/verilog")
+
+	print "generation %d:" % options.generation, options.population, "individuals"
 	
 	# create seeds from previous generation
 	if options.generation > 0:
 		prev = options.generation - 1
 		print "creating seeds from generation", prev
-		inputs = glob.glob((INDIVIDUAL % prev) + re.sub("%.*", ".csv", INDIVIDUAL))
+		inputs = glob.glob("../%s/%s" % (GENERATION % prev, re.sub("%.*", "*.csv", INDIVIDUAL)))
 		
 		if len(inputs) == 0:
 			print "ERROR: no seeds available in generation", prev
@@ -121,8 +124,6 @@ def main():
 
 	# don't test individuals in the generate script
 	os.unsetenv("EVOLUTION_RUN")
-
-	print "generating", options.population, "individuals"
 
 	# run processes
 	if options.processes > 1:
