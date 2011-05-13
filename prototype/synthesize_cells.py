@@ -130,7 +130,7 @@ outputs.append("gnd")
 
 # randomly assign LUT outputs to the module's output signals
 for signal in options.outputs:
-	number = random.randint(0, options.cells)
+	number = random.randint(0, options.cells - 1)
 	print >>verilog, "assign %s = table_%04d_out;" % (signal, number)
 
 print >>verilog, "\n"
