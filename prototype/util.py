@@ -22,7 +22,7 @@ def execute(cmd, wait=True, args=None, redirect=None, append=False):
 			flags = os.O_WRONLY | os.O_CREAT
 			if append:
 				flags |= os.O_APPEND
-			out = os.open(redirect, flags)
+			out = os.open(redirect, flags, 0666)
 			os.dup2(out, sys.stdout.fileno())
 			os.dup2(out, sys.stderr.fileno())
 		os.execvp(cmd[0], cmd)
