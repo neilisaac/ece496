@@ -10,3 +10,5 @@ rm -f evolution.*
 rm -rf db
 rm -rf incremental_db 
 
+rm -rf quartus.*.log
+
