@@ -1,0 +1,21 @@
+.\" /*
+.\"  * Revision Control Information
+.\"  *
+.\"  * $Source$
+.\"  * $Author$
+.\"  * $Revision$
+.\"  * $Date$
+.\"  *
+.\"
+.XX
+write_astg [-p] [<file-name>]
+.PP
+Write a text description of an ASTG to a file, or stdout if no filename
+is given.
+See read_astg for a description of the format.
+.PP
+The -p option forces implied places to be written explicitly in the
+description.
+Normally a place with exactly one fanin and one fanout transition
+is suppressed by specifying the fanout transition
+as adjacent to the fanin transition.

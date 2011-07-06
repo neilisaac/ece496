@@ -1,0 +1,35 @@
+#/*
+# * Revision Control Information
+# *
+# * $Source$
+# * $Author$
+# * $Revision$
+# * $Date$
+# *
+# */
+NAME: jedi
+DESCRIPTION: symbolic encoding program
+TYPE: T
+PACKAGES: utility options mm port
+MISC: benchmarks
+
+EXTRAFLAGS: 
+
+SOURCES: cluster.c expand.c hill.c hot.c jedi.c options.c random.c read.c rp.c util.c weights.c write.c
+HEADERS: jedi.h jedi_int.h rp.h rp_int.h util.h
+OBJECTS: cluster.o expand.o hill.o hot.o jedi.o options.o random.o read.o rp.o util.o weights.o write.o
+SYSLIBS:  -lm
+
+VERBATIMSTART
+test::
+	@(cd benchmarks; ${CADBIN}/jedi mc.kiss2 > out1; cmp -s out1 mc.extended.blif)
+	@(cd benchmarks; ${CADBIN}/jedi -p mc.kiss2 | ${CADBIN}/espresso > out2; cmp -s out2 mc.pla)
+
+clean::
+	-rm -f benchmarks/out1 benchmarks/out2
+
+VERBATIMEND
+
+TESTNAME: $(NAME)-test
+TESTSOURCES: 
+TESTOBJECTS: 

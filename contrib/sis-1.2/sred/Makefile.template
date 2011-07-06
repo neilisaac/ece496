@@ -1,0 +1,25 @@
+#/*
+# * Revision Control Information
+# *
+# * $Source$
+# * $Author$
+# * $Revision$
+# * $Date$
+# *
+# */
+NAME: sred
+DESCRIPTION: heuristic state minimization program
+TYPE: T
+PACKAGES: 
+MISC: 
+
+EXTRAFLAGS: 
+YFLAGS = -d
+
+SOURCES: main.c action.c gram.c lex.c label.c incompat.c connected.c comp.c coloring.c qsort.c qspivot.c qspart.c mxcomptbl.c closure.c generate.c exist.c strbar.c strcom.c solution.c choose.c clincop.c prime.c primeones.c clinclus.c chinclus.c chiusura.c clinchain.c existdf.c newprime.c boolcmp.c ibincompa.c obincompa.c iobincomp.c reduced.c newnstate.c newoutput.c procargs.c makeout.c misc.c esp_color.c
+HEADERS: reductio.h
+OBJECTS: main.o action.o gram.o lex.o label.o incompat.o connected.o comp.o coloring.o qsort.o qspivot.o qspart.o mxcomptbl.o closure.o generate.o exist.o strbar.o strcom.o solution.o choose.o clincop.o prime.o primeones.o clinclus.o chinclus.o chiusura.o clinchain.o existdf.o newprime.o boolcmp.o ibincompa.o obincompa.o iobincomp.o reduced.o newnstate.o newoutput.o procargs.o makeout.o misc.o esp_color.o
+
+LIBS    = $(SIS)/lib/libsis.a
+SYSLIBS:  -lm
+

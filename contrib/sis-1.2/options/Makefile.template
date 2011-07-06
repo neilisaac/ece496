@@ -1,0 +1,57 @@
+#/*
+# * Revision Control Information
+# *
+# * $Source: /vol/opua/opua2/sis/sis-1.2/common/src/options/RCS/Makefile.template,v $
+# * $Author: sis $
+# * $Revision: 1.3 $
+# * $Date: 1994/07/15 22:53:38 $
+# *
+# */
+NAME: options
+DESCRIPTION: option parsing and usage message package
+TYPE: P
+PACKAGES: utility errtrap mm port
+MISC: ${DRIVER}.usage ${DOC}.src
+
+EXTRAFLAGS: 
+
+SOURCES: options.c dfltoptions.c dflttap.c
+HEADERS: options.h
+OBJECTS: options.o dfltoptions.o dflttap.o
+SYSLIBS:  -lm
+
+VERBATIMSTART
+printout:
+	psgrind -2r ${HDR} ${DRVRSRC} ${SRC}
+
+.saberinit: Makefile
+	echo source ~/.saberinit-header > .saberinit
+	echo load ${INCLUDE} ${SRC} ${DRVRSRC} >> .saberinit
+	echo load ${LIBS} ${LDFLAGS} >> .saberinit
+
+test:: ${DRIVER}
+	-@${DRIVER} -j > sample.test 2>&1; true
+	@cmp -s sample.test ${DRIVER}.usage
+	@rm -f sample.test
+
+clean::
+	rm -f ${DOC}
+
+${DOC}: ${DOC}.src ${DRIVER}.usage
+	cp ${DOC}.src $@
+	chmod u+w $@
+	echo '' >> $@
+	echo 'EXAMPLE' >> $@
+	echo '' >> $@
+	echo 'The following program, `options-test'\'', when incorrectly called with a' >> $@
+	echo '`-j'\'' option, prints' >> $@
+	echo '' >> $@
+	cat ${DRIVER}.usage >> $@
+	echo '' >> $@
+	echo '-----------------------------------------------------------------------' >> $@
+	cat options-test.c >> $@
+VERBATIMEND
+
+TESTNAME: $(NAME)-test
+TESTSOURCES: options-test.c
+TESTOBJECTS: options-test.o

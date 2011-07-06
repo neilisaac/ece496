@@ -1,0 +1,27 @@
+.\" /*
+.\"  * Revision Control Information
+.\"  *
+.\"  * $Source: /vol/opua/opua2/sis/sis-1.1/common/src/sis/sis_lib/help/RCS/xl_absorb.1,v $
+.\"  * $Author: sis $
+.\"  * $Revision: 1.2 $
+.\"  * $Date: 1992/05/06 19:04:01 $
+.\"  *
+.\"
+.XX
+xl_absorb [-n support] [-f MAX_FANINS] [-v]
+.PP
+Given a possibly infeasible network, moves fanins of the nodes so as
+to decrease their number of fanins. Some infeasible
+nodes may become feasible and decomposition may not be applied on
+them. 
+.PP
+\fB-n\fP: support is the size of the TLU block (default = 5)
+.br
+.PP
+\fB-f\fP: Does not move fanins of a node if it has more than MAX_FANINS
+(default 15). 
+.br
+.PP
+\fB-v\fP: turns on the verbosity flag.  When used, information about the
+   algorithm is printed as it executes.
+

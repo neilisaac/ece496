@@ -1,0 +1,318 @@
+*** RELEASE-NOTES-1.2 file containing Release Notes for SIS-1.2 ***
+
+*** SIS is free to the public via anonymous ftp, or on tape for a
+    small fee through the ILP office.  PLEASE DO NOT REDISTRIBUTE
+    SIS in any other manner. ***
+
+RELEASE NOTES FOR SIS 1.2
+-------------------------
+
+This file contains the following information:
+
+GENERAL DESCRIPTION OF SIS
+DESCRIPTION OF DOCUMENTATION
+SUMMARY OF NEW FEATURES FOR SIS 1.2
+RECOMMENDED USE OF SIS
+
+GENERAL DESCRIPTION OF SIS
+
+sis is an interactive program for the synthesis of both synchronous
+and asynchronous sequential circuits.  The input can be given in state
+table format or as logical equations (for synchronous circuits), or
+as a signal transition graph (for asynchronous circuits); a target
+technology library is given in genlib format.  The output is a netlist
+of gates in the target technology.
+
+The system includes various capabilities that are controlled interactively
+by the user.  These include state minimization, state assignment,
+optimization for area and delay using retiming, optimization using
+standard algebraic and Boolean combinational techniques from MISII,
+performance optimization using restructuring, and technology mapping
+for optimal area and delay.  Redundancy removal and 100% testability
+are provided for combinational and scan-path circuits.  Formal verification
+is available for both combinational and sequential circuits, even for
+circuits with different state encodings.
+
+This distribution contains sis, nova (state assignment), jedi (state
+assignment), stamina (state minimization, from June Rho at University of
+Colorado, Boulder), sred (state minimization), espresso, blif2vst (mapped
+BLIF to structural VHDL translator), vst2blif (structural VHDL to BLIF
+translator), xsis (a front-end graphical interface to sis) and several stripped
+down packages from the OctTools (options, port, and utility) that are needed
+for some of the programs listed above.
+
+xsis is a graphical interface to sis based on the Athena widget set.
+This program provides support for the new command in sis, plot_blif.
+(The command plot is no longer available.)  It is portable under the
+MIT distribution of X11R4 and works with sis versions 1.1 and later.
+
+To run xsis, first set up the environment variable SIS as instructed
+in the README file, then type "xsis".  xsis runs a copy of sis as a
+child process.  After reading in a network, the "plot_blif" command
+can be used to plot the network on the screen.  For more information,
+see the xsis man page, xsis/xsis.1.
+
+xsis is useful for learning to use sis because the user can plot the
+network on the screen to track the changes made to the network during
+synthesis, and xsis has a nice graphical help mechanism.
+Many circuit examples of all types (combinational, sequential, asynchronous,
+etc) can be found in the sis/ex directory.
+
+DOCUMENTATION
+
+A paper describing the capabilities of sis with some examples of its
+use is contained in this directory in postscript format.  The file
+is SIS_paper.ps.  The paper contains examples showing how to use sis,
+and is a good starting point for new users.  Note that it describes
+SIS release 1.1.  This file (RELEASE-NOTES-1.2) contains the updates
+for SIS-1.2.
+
+The man page for sis is in sis/sis_lib/help/sis.1.  Run-time help can
+be obtained by typing "help" while in sis, which will list all
+of the available commands.  Help for each command can be obtained
+by typing "help command_name" while in sis.
+
+A description of the BLIF format is in sis/doc/blif.tex, and
+a description of the specification that state assignment and
+state minimization programs should conform to is in sis/doc/SPEC.
+
+Each package has a package.doc file describing the exported
+functions for that package.
+
+This file provides an overview of sis-1.2.
+
+SUMMARY OF NEW FEATURES FOR SIS 1.2
+
+1) New state minimization program : SRED
+
+SRED is a program that performs state minimization of completely and
+incompletely specified finite state machines.  It does not implement an exact
+algorithm, therefore it does not guarantee that it returns a finite state
+machine with the minimum number of states.  SRED turns out to be very effective
+in practice when minimizing large redundant machines, i.e., finite state
+machines with very many states that reduce to only a few states. In such cases,
+an exact approach is often impractical, while sred finds a fast answer that has
+been shown to be very close to the minimum in the cases in which the minimum
+is known.  It runs only in a default mode.  (Tiziano Villa)
+
+2) New format translator : vst2blif
+
+vst2blif translates structural VHDL to BLIF.  The syntax is a structural
+subset of the standard VHDL; it is the same subset as used in the Alliance
+CAD system - see the man page for details.
+
+3) New package in SIS : timing
+
+The timing package provides the much needed timing capabilities in a sequential
+synthesis system. The following assumptions are made:  every memory element has
+a clock signal (specified using the .clock construct in BLIF) as its control
+signal; other signals cannot be used to clock memory elements.  The package
+does timing verification provided the complete clock schedule (rise and fall
+times of all the clock signals) are specified. The restriction on the clock
+signals is that they all have the same frequency (and period). Memory elements
+may be level-sensitive or edge-triggered and a circuit can have both kinds.
+The optimum clock cycle, namely the smallest clock cycle at which the circuit
+will operate without set-up/hold errors can also be computed.  (Narendra Shenoy)
+
+4) New package in SIS : power
+
+A new power dissipation estimation package has been added to SIS.
+The average power dissipated by a gate in a circuit is assumed to be:
+
+P_avg = 0.5 * C_load * (V_dd^2 / T_cyc) * E(transitions)                [1]
+
+where P_avg denotes the average power, C_load is the load capacitance, V_dd
+is the supply voltage, T_cyc is the global clock period, and E(transitions)
+is the expected value of the number of gate output transitions per global
+clock cycle, or equivalently the average number of gate output transitions
+per clock cycle.  All of the parameters in Equation [1] above can be
+determined from technology or circuit layout information except E(transitions),
+which depends on the logic function being performed and the statistical
+properties of the primary inputs.
+
+To compute E(transitions), the power estimation package uses the symbolic
+simulation method presented in [Ghosh92].  Under a zero delay, unit delay
+or general delay model (where delays are obtained from library cells), the
+symbolic simulation method takes into account the correlation due to
+reconvergence of input signals and accurately measures switching activity,
+according to some given input probabilities.
+
+In the case of sequential circuits we need to model correlation between
+consecutive input vectors. The power package includes an exact and an
+approximate power estimation method for sequential circuits, both described
+in [Monteiro94].
+
+This package was contribued by Jose Monteiro and Srinivas Devadas of MIT.
+
+
+5) New package in SIS : linsolv
+
+The linsolv package provides routines to quickly and accurately solve large
+sparse systems of linear equations.  It is used in the power estimation package.
+
+6) New package in SIS : enc
+
+The enc package does exact encoding given encoding constraints in the form
+of dichotomies.  The exact procedure is potentially slow on large examples.
+It is used in the astg package.
+
+7) Updates to the atpg package:
+
+The ATPG package now has the ability to generate tests for both sequential
+and combinational circuits.  The redundancy removal command--which uses test
+generation as its core procedure--has been expanded as well; it can now
+identify and remove both sequential and combinational redundancies.  Finally,
+the ATPG package includes a new routine called "short_tests" which uses
+heuristics to generate relatively small test sets for sequential circuits.
+
+8) Integration of CMU BDD package
+
+David Long's fast efficient BDD package has replaced the Berkeley BDD
+package in SIS.  The new package includes dynamic variable ordering.
+
+9) Updates to the delay and speed packages in SIS
+
+(KJ Singh, Heather Harkness)
+A new/improved version of speed_up that works on 2-input AND and mapped circuits
+with the same ease.  The old code can now be invoked using the "-f" (fast mode)
+option.
+
+    --- User selectable transformations using the command "speedup_alg"
+    --- User control over a lot of the parameters
+    --- Integration of bypass code (though the command line interface is not
+        included).
+
+The command "speedup_alg" is to be used in conjunction with the "speed_up"
+command.  It sets the transformations that can be applied at a node.  In the
+case of mapped circuits, the transformations are applied on the logic
+description and then mapped into the gates for minimum delay. 
+
+The logic transformations that are provided are ---
+
+    divisor: 	timing-driven factoring based on kernels 
+    2c_kernel: 	timing-driven factoring based on 2-cube divisors
+    comp_div, comp2c:	The above methods applied to the complement of the fn.
+    bypass:	based on the bypass code of McGeer.Harkness
+    cofactor:	based on the  timing-driven-cofactoring work of Paul Gutwin
+
+In addition, there are a few alogorithms that are provided for mapped circuits
+these include 
+
+    noalg:	No transformations, simply remapping the area being transformed
+    repower:    Only change the gate selection --- Structure is unchanged
+    fanout:	Apply buffering to the multi-fanout nodes
+    duplicate:	Make a copy of the node rather than making a fanout tree at its 		output
+    dualize:	Replace a gate by its dual
+
+Once the algorithms have been specified, the speedup_algorithm allows you to
+control what regions these will be applied on and how will the best selection
+be made. The options used to exercise this control are ---
+
+"-d depth":	of the region that is being transformed. The units are 
+		in terms of the number of nodes in the representation at that
+		time. Be careful not to use a large depth for mapped circuits
+		as the logic may get huge. When specifying the scope (see below)
+		as being tree based, the depth is the number of trees.
+"-s scope":	In conjunction with the "-d" option, this determines how to 
+		select the region to transform. "crit" means select nodes along
+		the critical path, "transitive" selects all the nodes within
+		depth "d" of the node being transformed, "compromise" is an
+		intermediate strategy that looks along the critical path and
+		then adds extra nodes with early-arriving signals to get a
+		better decomposition. "tree" considers only the multi-fanout
+		nodes and single fanout nodes in the fanin as canditates for
+		transformation. Specifying depth > 1 means that the next tree
+		uin the transitive fanin will be duplicated. The region being
+		transformed is a tree.
+"-B"		By default, when selecting among the transformations at a node,
+		the one with most delay savings is chosen. This can be changed
+		with the -B option to be the one with the most benefit per
+		unit increase in area. Good for area constraints.
+"-A"		When decomposing a function, this does not delete the critical 
+		cubes.  Thus the resulting decompositions may be as good
+		but with smaller area. This increases the run-time.
+"-m model"	By default chooses the mapped model for mapped circuits and the
+		"unit-delay" model for unmapped circuits.  The optimization is
+		done with respect to this model.
+"-T"		Useful option to see the area/delay as the algorithm proceeds.
+"-I limit"	Timeout limit for each transformation. Useful when certain
+		cases when decomposition of a nasty function can cause the
+		iterations to stall. This timeout indicates that this
+		transformation should be ignored and the algorithm should
+		continue with other transformations.
+"-l limit" 	Use this option at your own risk !!!  It has not been
+		extensively tested.  It is an attempt to integrate the algorithm
+		reported in [Koshikawa91].
+
+USEFUL FEATURES
+
+When running the speed_up command, the user can dump out the optimized network
+so far by issuing a "kill -USR1" command to the sis process from the UNIX shell.
+This is most useful in conjunction with the "-T" option when you want to dump
+intermediate solutions.
+
+In addition, when running in batch mode, the user can specify a cpulimit using
+the "limit cputime" command from the shell.  When the shell sends the SIGXCPU
+signal, the last optimized network is also saved on disk. This is useful for
+running optimization with limited CPU resources.
+
+The algorithm does a resizing operation to reduce the load on the critical path
+due to non critical fanouts when there is no improvement during an iteration.
+This sometinmes reduces the delay and creates possibility for future iterations
+to succeed.
+	    
+NOTE
+
+The algorithm for fanout optimization that is implemented in the "buffer_opt"
+command is also available to the mapper as the "top_down" algorithm in
+"fanout_alg".  Experiments indicated that it outperforms the algorithms that
+are currently part of the mapper/fanout_optimization loop.  Refer to [Singh92]
+for a table/graph of these.  Try it out !!!
+
+11) Addition of the TDC (timing-driven-cofactoring) model to the delay package
+
+This is an implementation of the ideas in [Gutwin92].  The code is used to
+implement the timing driven cofactoring operation in the speed_up algorithm.
+(KJ Singh)
+
+12) Addition of redundant latch removal code.  (Herve Touati)
+
+RECOMMENDED USE OF SIS
+
+Several script files are provided with the SIS distribution.
+script, script.boolean, and script.algebraic were provided with
+MIS, and do combinational optimization.  script.rugged calls more
+aggressive optimization routines (fx, full_simplify) to do combinational
+optimization.  It is the recommended script for optimization; EXCEPT
+note that many of the routines used in that script use BDDs, which
+can be very costly in terms of CPU time and memory for some circuits.
+script.delay is an entire script (optimization to mapped netlist)
+targeted for minimal delay of the final implementation.  It uses new
+routines for delay optimization such as reduce_depth (for speed up
+before mapping) and fanout optimization with area recovery (part of
+the map package).
+
+[Ghosh92] A. Ghosh, S. Devadas, K. Keutzer, and J. White, "Estimation of
+Average Switching Activity in Combinational and Sequential Circuits", in
+Proceedings of the 29th Design Automation Conference, pp. 253-259, June 1992.
+
+[Monteiro94] J. Monteiro, S. Devadas, and B. Lin, "A Methodology for Efficient
+Estimation of Switching Activity in Sequential Logic Circuits", in Proceedings
+of the 31st Design Automation Conference, pp. 12-17, June 1994.
+
+[Gutwin92] P. Gutwin, P. McGeer, and R. Brayton, "Delay Prediction for
+Technology-Independent Logic Equations", in Proceedings of the International
+Conference on Computer Design, pp. 468-471, October 1992.
+
+[Singh92] K.J. Singh, "Performance Optimization of Digital Circuits}", Ph.D.
+Thesis, UCB/ERL Memorandum No. M92/149, Electronics Research Laboratory,
+College of Engineering, University of California, Berkeley, CA  94720,
+November 1992.
+
+[Koshikawa91] K. Yoshikawa, H. Ichiryu, H. Tanishita, S. Suzuki, N. Nomizu,
+A. Kondoh, "Timing Optimization on Mapped Circuits", in Proceedings of the
+28th Design Automation Conference, pp. 112-117, June 1991.
+
+Ellen M. Sentovich
+UC Berkeley
+1 July 1994

@@ -1,0 +1,7096 @@
+# 1 "pipefork.c"
+
+
+
+
+
+
+
+
+
+
+
+# 1 "./util.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "./ansi.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 30 "./util.h"
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/stdio.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+
+
+
+
+# 1 "/usr/include/standards.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 60 "/usr/include/stdio.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef unsigned long   size_t;
+
+
+
+
+typedef long    fpos_t;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef struct {
+	int	_cnt;
+	unsigned char	*_ptr;
+	unsigned char	*_base;
+	int	_bufsiz;
+	short	_flag;
+	short	_file;
+
+	int	_unused[2];
+	void	*_lock;			
+
+	unsigned char   *_bufendp;
+} FILE;
+
+
+extern FILE	_iob[8];
+
+
+
+
+
+
+
+
+
+extern int      fread();
+extern int      fwrite();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern int _flsbuf();
+extern int _filbuf();
+extern int	ferror();
+extern int	feof();
+extern void	clearerr();
+extern int	putchar();
+extern int	getchar();
+extern int	putc();
+extern int	getc();
+extern int	remove();
+extern int	rename();
+extern FILE 	*tmpfile();
+extern char 	*tmpnam();
+extern int 	fclose();
+extern int 	fflush();
+extern FILE	*fopen();
+extern FILE 	*freopen();
+extern void 	setbuf();
+extern int 	setvbuf();
+extern int	sprintf(); 
+extern int	fprintf(); 
+extern int	fscanf();
+extern int	printf();
+extern int	scanf();
+extern int	sscanf(); 
+extern int	vfprintf();
+extern int	vprintf(); 
+extern int	vsprintf();
+extern int 	fgetc();
+extern char 	*fgets();
+extern int 	fputc();
+extern int 	fputs();
+extern char 	*gets();
+extern int 	puts();
+extern int	ungetc();
+extern int	fgetpos();
+extern int 	fseek();
+extern int	fsetpos();
+extern long     ftell();
+extern void	rewind();
+extern void 	perror(); 
+
+
+
+
+# 292 "/usr/include/stdio.h"
+
+
+# 337 "/usr/include/stdio.h"
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/sys/types.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/standards.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+# 154 "/usr/include/standards.h"
+
+# 78 "/usr/include/sys/types.h"
+
+
+
+
+
+
+
+
+
+
+typedef signed long     ptrdiff_t;
+
+
+
+
+typedef unsigned short  wchar_t;
+
+
+
+
+
+
+
+
+
+typedef int            time_t;
+
+
+
+
+typedef int             clock_t;
+
+
+
+
+
+
+
+
+
+
+
+
+typedef long                    ssize_t; 
+
+
+
+
+typedef	unsigned char	uchar_t;
+typedef	unsigned short	ushort_t;
+typedef	unsigned int	uint_t;
+typedef unsigned long	ulong_t;
+typedef	volatile unsigned char	vuchar_t;
+typedef	volatile unsigned short	vushort_t;
+typedef	volatile unsigned int	vuint_t;
+typedef volatile unsigned long	vulong_t;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef	struct	{ long r[1]; } *physadr_t;
+
+
+
+
+typedef	struct	label_t	{
+	long	val[10];
+} label_t;
+
+
+typedef int		level_t;
+typedef	int		daddr_t;	
+typedef	char *		caddr_t;	
+typedef long *		qaddr_t;        
+typedef	uint_t		ino_t;		
+typedef short		cnt_t;
+typedef int		dev_t;		
+typedef	int		chan_t;		
+
+
+
+
+typedef long    off_t;			
+
+
+typedef unsigned long	rlim_t;		
+typedef	int		paddr_t;
+typedef	ushort_t	nlink_t;
+typedef int    		key_t;		
+typedef	uint_t		mode_t;		
+typedef uint_t		uid_t;		
+typedef uint_t		gid_t;		
+typedef	void *		mid_t;		
+typedef	int		pid_t;		
+typedef char		slab_t[12];	
+
+typedef ushort_t	shmatt_t;	
+typedef ushort_t	msgqnum_t;	
+typedef ushort_t	msglen_t;	
+
+
+typedef unsigned long	sigset_t;
+
+
+
+
+
+
+typedef long            timer_t;        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef void (*sig_t)();
+
+
+
+
+typedef uint_t	major_t;      
+typedef uint_t	minor_t;      
+typedef uint_t	devs_t;       
+typedef uint_t	unit_t;       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/mach/machine/vm_types.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef	unsigned long	vm_offset_t;
+typedef	unsigned long	vm_size_t;
+
+
+
+# 272 "/usr/include/sys/types.h"
+
+
+
+
+typedef	uchar_t		uchar;
+typedef	ushort_t	ushort;
+typedef	uint_t		uint;
+typedef ulong_t		ulong;
+
+typedef	physadr_t	physadr;
+
+
+
+typedef	uchar_t		u_char;
+typedef	ushort_t 	u_short;
+typedef	uint_t		u_int;
+typedef	ulong_t		u_long;
+typedef	vuchar_t	vu_char;
+typedef	vushort_t 	vu_short;
+typedef	vuint_t		vu_int;
+typedef	vulong_t	vu_long;
+
+
+
+
+typedef struct  _quad { int val[2]; } quad;
+
+
+typedef	long	swblk_t;
+typedef u_long	fixpt_t;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef int	fd_mask;
+
+
+
+
+
+
+typedef	struct fd_set {
+	fd_mask	fds_bits[(((4096)+(( (sizeof(fd_mask) * 8		)	)-1))/( (sizeof(fd_mask) * 8		)	))];
+} fd_set;
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 366 "/usr/include/stdio.h"
+
+
+
+
+
+extern int 	fileno();
+extern FILE	*fdopen();
+extern char *ctermid();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern char	*optarg;
+extern int	optind, opterr;
+
+
+
+
+extern int 	getw();
+extern int	getopt();
+extern int 	pclose();
+extern int 	putw();
+extern FILE 	*popen();
+extern char 	*tempnam();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/sys/limits.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+
+
+
+# 1 "/usr/include/standards.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+# 154 "/usr/include/standards.h"
+
+# 75 "/usr/include/sys/limits.h"
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/machine/machlimits.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					
+
+
+
+					
+
+
+
+
+
+
+
+
+
+
+
+# 88 "/usr/include/sys/limits.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/sys/syslimits.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 125 "/usr/include/sys/limits.h"
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/float.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/standards.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+# 154 "/usr/include/standards.h"
+
+# 56 "/usr/include/float.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern  unsigned   int SINFINITY;
+extern  unsigned   int DINFINITY[2];
+extern  unsigned   int SQNAN;
+extern  unsigned   int DQNAN[2];
+extern  unsigned   int SSNAN;
+extern  unsigned   int DSNAN[2];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/fp_class.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 230 "/usr/include/float.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 137 "/usr/include/sys/limits.h"
+			
+
+
+
+
+
+
+
+
+
+
+
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/machine/machtime.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 197 "/usr/include/sys/limits.h"
+
+
+
+
+
+
+
+
+                       
+
+
+
+
+
+# 1 "/usr/include/sys/rt_limits.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 212 "/usr/include/sys/limits.h"
+
+
+
+# 438 "/usr/include/stdio.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern void 	setbuffer();
+extern void 	setlinebuf();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 78 "./util.h"
+# 1 "/usr/include/ctype.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/standards.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+# 154 "/usr/include/standards.h"
+
+# 57 "/usr/include/ctype.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern int isalpha();
+extern int isalnum();
+extern int isdigit();
+extern int iscntrl();
+extern int ispunct();
+extern int isprint();
+extern int isspace();
+extern int isgraph();
+extern int isxdigit();
+extern int islower();
+extern int isupper();
+extern int toupper();
+extern int tolower();
+
+
+
+
+
+
+# 1 "/usr/include/NLctype.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/NLchar.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/sys/types.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 343 "/usr/include/sys/types.h"
+
+# 62 "/usr/include/NLchar.h"
+# 1 "/usr/include/sys/localedef.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef struct  coldesc  {                     
+	short     cd_stroff;                   
+	short	  cd_repoff;
+	short     cd_cval;
+	short	  cd_cuniq;
+} coldesc_t;
+
+
+
+
+typedef struct collation_table {                
+	short    lc_version;                    
+	short	 lc_length;			
+	char     *lc_locale_name;		
+	int      len_collate;
+	short    *lc_collate;                   
+	int      len_coluniq;
+	short    *lc_coluniq;                   
+	int      len_coldesc;
+	coldesc_t *lc_coldesc;                  
+	int	 len_strings;			
+	wchar_t  *lc_strings;			
+	int	 high_cvalue;			
+} col_t;
+
+
+
+
+
+
+
+typedef struct char_classification_table {      
+	short      lc_version; 		
+	short	   lc_length;  		
+	short      lc_code_type; 	
+	short      mb_cur_max;   	
+	short      mb_cur_min;   	
+	short      lc_dsp_width;                  
+	char       *lc_locale_name; 	
+	int        len_caseconv;   	
+	wchar_t    *lc_caseconv;   	
+	int	   len_ctype;
+	unsigned short *lc_ctype;		
+} ctype_t;
+
+
+
+
+
+typedef	struct lc_monetary_table {
+	short  	lc_version;
+	short 	lc_length;		
+	char   	*lc_locale_name;	
+	char 	*int_curr_symbol;	
+	char 	*currency_symbol;	
+	char 	*mon_decimal_point;	
+	char 	*mon_thousands_sep;	
+	char 	*mon_grouping;		
+	char 	*positive_sign;		
+	char 	*negative_sign;		
+	char 	int_frac_digits;	
+	char 	frac_digits;		
+	char 	p_cs_precedes;		
+	char 	p_sep_by_space;		
+	char 	n_cs_precedes;		
+	char 	n_sep_by_space;		
+	char 	p_sign_posn;		
+	char 	n_sign_posn;		
+} mon_t;
+
+
+
+
+
+typedef struct numeric_table {                  
+	short	lc_version;
+	short	lc_length;		
+	char    *lc_locale_name;	
+	char 	*decimal_point;
+	char 	*thousands_sep;
+	char	*grouping;
+} num_t;
+
+
+
+
+
+typedef struct lc_messages_table {
+	short	lc_version;
+	short	lc_length;		
+	char    *lc_locale_name;	
+	char 	*messages;		
+	char 	*yes_string;		
+	char 	*no_string;		
+} msg_t;
+
+
+
+
+
+typedef struct lc_time_table {
+	short   lc_version;
+	short	lc_length;	 
+	char    *lc_locale_name; 
+	char    *t_fmt;         
+	char    *d_fmt;         
+	char    *nlldate;       
+	char    *d_t_fmt;       
+	char    *abday;         
+	char    *day;           
+	char    *abmon;         
+	char    *mon;           
+
+
+
+
+	char    *misc;          
+	char    *tstrs;         
+	char    *tunits;        
+
+
+
+	char	*year;		
+	char    *am_pm;         
+} tim_t;
+
+
+
+
+
+
+typedef struct wchar_mapping_table {            
+	short    lc_version;
+	short	 lc_length;			
+	char     *lc_identifier;
+} map_t;
+
+
+
+
+
+
+
+
+typedef struct localeinfo_table {           
+	char     lc_mag0, lc_mag1;      
+	short    lc_version;            
+	short    lc_code_type;                 
+	short	 lc_length;		
+	col_t    *lc_coltbl;		
+	ctype_t  *lc_chrtbl;		
+	mon_t    *lc_montbl;		
+	num_t    *lc_numtbl;		
+	tim_t    *lc_timtbl;		
+	msg_t    *lc_msgtbl;		
+	map_t    *lc_maptbl;		
+} loc_t;
+
+# 63 "/usr/include/NLchar.h"
+
+extern loc_t *_locp;
+
+
+
+
+
+
+typedef unsigned short NLchar;
+
+
+
+extern char *NLstrcpy();
+
+
+
+
+
+
+extern unsigned char
+	*NLstrncpy(),
+	*NLstrcat(),
+	*NLstrncat(),
+	*NLstrchr(),
+	*NLstrrchr(),
+	*NLstrpbrk(),
+	*NLstrtok();
+
+extern NLchar
+	*NCstrcpy(),
+	*NCstrncpy(),
+	*NCstrcat(),
+	*NCstrncat(),
+	*NCstrchr(),
+	*NCstrrchr(),
+	*NCstrpbrk(),
+	*NCstrtok();
+
+# 136 "/usr/include/NLchar.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+ 
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+extern NLchar *_NCgetbuf();
+
+
+
+extern void free();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 64 "/usr/include/NLctype.h"
+# 1 "/usr/include/ctype.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 152 "/usr/include/ctype.h"
+
+# 65 "/usr/include/NLctype.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+						
+
+						
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern char _NLflattab[];
+extern unsigned _NLflattsize;
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern char _NLesctab[][2];
+extern unsigned _NLesctsize;
+extern unsigned _NLunesctsize;
+
+
+
+
+extern struct NLescdata {
+	unsigned char *key;
+	NLchar value;
+} _NLunesctab[];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 110 "/usr/include/ctype.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern int isascii();
+extern int toascii();
+
+
+
+
+
+
+
+
+
+ 
+
+# 79 "./util.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/sys/types.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 343 "/usr/include/sys/types.h"
+
+# 95 "./util.h"
+# 1 "/usr/include/signal.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+
+
+
+
+# 1 "/usr/include/standards.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+# 154 "/usr/include/standards.h"
+
+# 57 "/usr/include/signal.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern void (*signal())();
+
+
+
+
+
+
+
+
+
+
+
+extern int raise();
+
+
+
+
+
+
+
+
+
+
+typedef volatile int sig_atomic_t; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/sys/types.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 343 "/usr/include/sys/types.h"
+
+# 194 "/usr/include/signal.h"
+
+
+
+
+
+
+
+
+
+
+
+
+struct sigaction {
+
+	void	(*sa_handler)();	
+
+
+
+	sigset_t sa_mask;		
+	int	sa_flags;		
+};
+
+
+
+
+
+
+
+
+
+typedef union sigval {
+	int 	sival_int;
+	void	*sival_ptr;
+} sigval_t;
+
+
+
+
+
+
+
+typedef struct sigevent {
+	union sigval	sigev_value;	
+	int		sigev_signo;	
+} sigevent_t;
+
+
+
+
+
+
+
+
+
+
+
+
+extern int kill();
+extern int sigaction();
+extern int sigprocmask();
+extern int sigsuspend();
+extern int sigemptyset();
+extern int sigfillset();
+extern int sigaddset();
+extern int sigdelset();
+extern int sigismember();
+extern int sigpending();
+extern int sigwait(); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct	sigvec {
+
+	void	(*sv_handler)();	
+
+
+
+	int     sv_mask;        
+	int     sv_flags;    
+};                           
+
+
+
+
+
+
+
+
+extern int sigvec();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct  sigstack {
+        char    *ss_sp;                 
+        int     ss_onstack;             
+};
+
+
+
+
+
+
+
+
+struct  sigcontext {
+
+	
+
+
+
+	long    sc_onstack;		
+	long    sc_mask;		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	long	sc_pc;			
+	long	sc_ps;			
+	long	sc_regs[32];		
+	long	sc_ownedfp;		
+	long	sc_fpregs[32];		
+	unsigned long sc_fpcr;		
+	unsigned long sc_fp_control;	
+	
+
+
+	long sc_reserved1;		
+	long sc_reserved2;		
+	long sc_reserved3;		
+	long sc_reserved4;		
+	unsigned long sc_traparg_a0;	
+	unsigned long sc_traparg_a1;	
+	unsigned long sc_traparg_a2;	
+	unsigned long sc_fp_trap_pc;	
+	unsigned long sc_fp_trigger_sum; 
+	unsigned long sc_fp_trigger_inst; 
+
+
+
+
+
+
+
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern int sigblock();
+extern int sigpause();
+extern int sigreturn();
+extern int sigsetmask();
+extern int sigstack();
+extern int siginterrupt();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 96 "./util.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/stdlib.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+
+
+
+
+# 1 "/usr/include/standards.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+# 154 "/usr/include/standards.h"
+
+# 53 "/usr/include/stdlib.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef struct div_t  {			
+	int quot;			
+	int rem; } div_t;			
+
+typedef struct ldiv_t  {		
+	long int quot;			
+	long int rem; } ldiv_t;		
+
+
+
+
+
+
+
+
+
+
+extern int __getmbcurmax();
+
+
+
+extern double 	atof();
+extern int 	atoi();
+extern long int atol();
+extern double 	strtod();
+extern long int strtol();
+extern unsigned long int strtoul();
+extern int 	rand();
+extern void	srand();
+extern void 	*calloc();
+extern void	free();
+extern void	*malloc();
+extern void 	*realloc();
+extern void	abort();
+extern int	atexit();
+extern void	exit();
+extern char	*getenv();
+extern int 	system();
+extern void 	*bsearch();
+extern void 	qsort();
+extern int 	abs();
+extern struct div_t	div();
+extern long int	labs();
+extern struct ldiv_t 	ldiv();
+extern int 	mblen();
+extern int 	mbtowc();
+extern int 	wctomb();
+extern size_t 	mbstowcs();
+extern size_t 	wcstombs();
+# 171 "/usr/include/stdlib.h"
+
+
+
+
+
+
+
+
+
+
+extern double	drand48();
+extern double	erand48();
+extern long	jrand48();
+extern void	lcong48();
+extern long	lrand48();
+extern long	mrand48();
+extern long	nrand48();
+extern unsigned short *seed48();
+extern void	srand48();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern char	*optarg;
+extern int	optind, opterr;
+
+
+extern int 	clearenv();
+extern int	getopt();
+extern char 	*getpass();
+extern int 	putenv();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/sys/types.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 343 "/usr/include/sys/types.h"
+
+# 252 "/usr/include/stdlib.h"
+     float    atoff();
+     char     *ecvt();
+     char     *fcvt();
+     char     *gcvt();
+     float    strtof();
+     void     imul_dbl();
+     void     umul_dbl();
+
+
+
+# 112 "./util.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/string.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/standards.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+# 154 "/usr/include/standards.h"
+
+# 53 "/usr/include/string.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern char	*memchr();
+extern char	*memcpy();
+extern char	*memset();
+extern int	strcspn();
+extern int	strlen();
+extern int	strspn();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern void 	*memmove();
+extern char 	*strcpy();
+extern char 	*strncpy();
+extern char 	*strcat();
+extern char	*strncat();
+extern int 	memcmp();
+extern int	strcmp();
+extern int	strcoll();
+extern int	strncmp();
+extern size_t 	strxfrm();
+extern char	*strchr();
+extern char	*strpbrk();
+extern char	*strrchr();
+extern char	*strstr();
+extern char 	*strtok();
+extern char 	*strerror();
+
+
+
+
+
+# 162 "/usr/include/string.h"
+
+
+
+
+
+
+
+
+
+
+extern char	*memccpy();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern void	swab();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern char *strdup();
+extern int  strcasecmp();
+extern int  strncasecmp();
+extern char *index();
+extern char *rindex();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 155 "./util.h"
+# 1 "/usr/include/strings.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/string.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 234 "/usr/include/string.h"
+
+# 61 "/usr/include/strings.h"
+# 156 "./util.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern int srandom();
+extern long random();
+
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern void MMout_of_memory ();
+extern char *MMalloc ();
+extern char *MMrealloc ();
+extern void MMfree ();
+
+
+extern void util_print_cpu_stats ();
+extern long util_cpu_time ();
+extern void util_getopt_reset ();
+extern int util_getopt ();
+extern char *util_path_search ();
+extern char *util_file_search ();
+extern int util_pipefork ();
+extern char *util_print_time ();
+extern int util_save_image ();
+extern char *util_strsav ();
+extern int util_do_nothing ();
+extern char *util_tilde_expand ();
+extern FILE *util_tmpfile ();
+
+
+
+
+
+extern int util_optind;
+extern char *util_optarg;
+
+# 1 "/usr/include/math.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/standards.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+# 154 "/usr/include/standards.h"
+
+# 57 "/usr/include/math.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern  double acos();
+extern  double asin();
+extern  double atan();
+extern  double atan2();
+extern  double ceil();
+extern  double cos();
+extern  double cosh();
+extern  double exp();
+extern  double fabs();
+extern  double floor();
+extern  double fmod();
+extern  double frexp();
+extern  double ldexp();
+extern  double log();
+extern  double log10();
+extern  double modf();
+extern  double pow();
+extern  double sin();
+extern  double sinh();
+extern  double sqrt();
+extern  double tan();
+extern  double tanh();
+
+
+
+extern float acosf ();
+extern float asinf ();
+extern float atanf ();
+extern float atan2f ();
+extern float ceilf ();
+extern float cosf ();
+extern float coshf ();
+extern float expf ();
+extern float fabsf ();
+extern float floorf ();
+extern float fmodf ();
+extern float frexpf ();
+extern float ldexpf ();
+extern float logf ();
+extern float log10f ();
+extern float modff ();
+extern float powf ();
+extern float sinf ();
+extern float sinhf ();
+extern float sqrtf ();
+extern float tanf ();
+extern float tanhf ();
+
+# 183 "/usr/include/math.h"
+
+
+
+
+
+
+
+
+# 237 "/usr/include/math.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern int signgam;
+
+
+extern double   erf();
+extern double   erfc();
+extern double   gamma();
+extern double   hypot();
+extern int      isnan();
+extern double   j0();
+extern double   j1();
+extern double   jn();
+extern double   lgamma();
+extern double   y0();
+extern double   y1();
+extern double   yn();
+
+
+
+extern float erfcf ();
+extern float erff ();
+extern float gammaf ();
+extern float hypotf ();
+extern int   isnanf ();
+extern float j0f ();
+extern float j1f ();
+extern float jnf ();
+extern float lgammaf ();
+extern float y0f();
+extern float y1f();
+extern float ynf();
+
+# 320 "/usr/include/math.h"
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/stdlib.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+
+# 261 "/usr/include/stdlib.h"
+
+# 331 "/usr/include/math.h"
+
+
+
+
+
+
+
+extern double   acosh();
+extern double   asinh();
+extern double   atanh();
+extern double   cabs();
+extern double   cbrt();
+extern double   copysign ();
+extern double   drem();
+extern double   expm1();
+extern double   log1p();
+extern double   logb();
+extern double   nextafter();
+extern double   remainder();
+extern double   rint();
+
+extern double   scalb();
+
+extern int      finite();
+
+
+
+
+extern float acoshf ();
+extern float asinhf ();
+extern float atanhf ();
+extern float cabsf ();
+extern float cbrtf ();
+extern float copysignf ();
+extern float dremf ();
+extern float expm1f ();
+extern float log1pf ();
+extern float logbf ();
+extern float nextafterf ();
+extern float remainderf ();
+extern float rintf ();
+extern float scalbf ();
+extern int finitef ();
+
+
+
+
+extern double F_acos ();
+extern double F_asin ();
+extern double F_atan ();
+extern double F_atan2 ();
+extern double F_cos ();
+extern double F_exp ();
+extern double F_hypot ();
+extern double F_log ();
+extern double F_log10 ();
+extern double F_pow ();
+extern double F_sin ();
+extern double F_sqrt ();
+extern double F_tan ();
+
+
+
+
+extern float F_acosf ();
+extern float F_asinf ();
+extern float F_atan2f ();
+extern float F_atanf ();
+extern float F_cosf ();
+extern float F_expf ();
+extern float F_hypotf ();
+extern float F_log10f ();
+extern float F_logf ();
+extern float F_powf ();
+extern float F_sinf ();
+extern float F_sqrtf ();
+extern float F_tanf ();
+
+
+
+
+extern double acosd ();
+extern double asind ();
+extern double atand ();
+extern double atand2 ();
+extern double cosd ();
+extern double cot ();
+extern double cotd ();
+extern double log2 ();
+extern double nint ();
+extern double powi ();
+extern double sind ();
+extern double tand ();
+extern double trunc ();
+
+extern float acosdf ();
+extern float asindf ();
+extern float atand2f ();
+extern float atandf ();
+extern float cosdf ();
+extern float cotdf ();
+extern float cotf ();
+extern float log2f ();
+extern float nintf ();
+extern float powif ();
+extern float sindf ();
+extern float tandf ();
+extern float truncf ();
+
+extern int fp_class ();
+extern int fp_classf ();
+extern int powii ();
+extern int unordered ();
+extern int unorderedf ();
+
+
+# 566 "/usr/include/math.h"
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+struct exception {
+	int type;
+	char *name;
+	double arg1;
+	double arg2;
+	double retval;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 262 "./util.h"
+
+
+
+
+
+
+
+# 1 "/usr/include/varargs.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef struct {
+	char	*a0;		
+	int	offset;		
+} va_list;
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+
+
+# 270 "./util.h"
+
+# 13 "pipefork.c"
+# 1 "/usr/include/stdio.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+
+# 489 "/usr/include/stdio.h"
+
+
+
+# 14 "pipefork.c"
+# 1 "/usr/include/sys/wait.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/standards.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+# 154 "/usr/include/standards.h"
+
+# 56 "/usr/include/sys/wait.h"
+
+# 1 "/usr/include/sys/types.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 343 "/usr/include/sys/types.h"
+
+# 58 "/usr/include/sys/wait.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern pid_t wait();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern pid_t waitpid();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/sys/param.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/sys/types.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 343 "/usr/include/sys/types.h"
+
+# 83 "/usr/include/sys/param.h"
+# 1 "/usr/include/sys/limits.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+
+# 214 "/usr/include/sys/limits.h"
+
+# 84 "/usr/include/sys/param.h"
+# 1 "/usr/include/machine/machparam.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/machine/endian.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+unsigned short	ntohs(), htons();
+unsigned int	ntohl(), htonl();
+
+
+
+# 64 "/usr/include/machine/machparam.h"
+
+
+# 1 "/usr/include/machine/machlimits.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 110 "/usr/include/machine/machlimits.h"
+
+# 67 "/usr/include/machine/machparam.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+typedef long pt_entry_t;
+
+
+
+
+
+
+
+
+
+
+
+struct kernel_parameters {
+	struct vm_parameters {
+		long nbpg;
+		long pgofset;
+		long pgshift;
+		long address_mask;
+		pt_entry_t * selfmap;
+		pt_entry_t * othermap;
+		long unity_base;
+		long seg1_base;
+	} vm;
+};
+
+# 154 "/usr/include/machine/machparam.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 85 "/usr/include/sys/param.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 1 "/usr/include/sys/signal.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                   
+
+# 749 "/usr/include/sys/signal.h"
+
+
+
+
+
+
+
+# 140 "/usr/include/sys/param.h"
+
+
+# 188 "/usr/include/sys/param.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 178 "/usr/include/sys/wait.h"
+
+
+
+
+
+
+
+# 273 "/usr/include/sys/wait.h"
+
+
+
+
+
+
+# 15 "pipefork.c"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int
+util_pipefork(argv, toCommand, fromCommand, pid)
+char **argv;				
+FILE **toCommand;			
+FILE **fromCommand;			
+int *pid;
+{
+
+    int forkpid, waitpid;
+    int topipe[2], frompipe[2];
+    char buffer[1024];
+
+
+
+    union wait status;
+
+
+    
+
+
+
+    (void) pipe(topipe);
+    (void) pipe(frompipe);
+
+    if ((forkpid = vfork()) == 0) {
+	
+	(void) dup2(topipe[0], ((&_iob[0]))->_file);
+	(void) dup2(frompipe[1], ((&_iob[1]))->_file);
+
+	(void) close(topipe[0]);
+	(void) close(topipe[1]);
+	(void) close(frompipe[0]);
+	(void) close(frompipe[1]);
+
+	(void) execvp(argv[0], argv);
+	(void) sprintf(buffer, "util_pipefork: can not exec %s", argv[0]);
+	perror(buffer);
+	(void) _exit(1);
+    }
+
+    if (pid) {
+        *pid = forkpid;
+    }
+
+    waitpid = wait3(&status, 0x1	, 0);
+
+    
+    if (waitpid == forkpid && (((status) & 0177	) == 0)) {
+	return 0;
+    }
+    if ((*toCommand = fdopen(topipe[1], "w")) == 0L) {
+	return 0;
+    }
+    if ((*fromCommand = fdopen(frompipe[0], "r")) == 0L) {
+	return 0;
+    }
+    (void) close(topipe[0]);
+    (void) close(frompipe[1]);
+    return 1;
+
+
+
+
+
+}

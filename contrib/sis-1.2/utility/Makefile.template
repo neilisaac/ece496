@@ -1,0 +1,26 @@
+#/*
+# * Revision Control Information
+# *
+# * $Source: /vol/opua/opua2/sis/sis-1.2/common/src/utility/RCS/Makefile.template,v $
+# * $Author: sis $
+# * $Revision: 1.3 $
+# * $Date: 1994/07/15 22:55:23 $
+# *
+# */
+NAME: utility
+DESCRIPTION: Provides commonly used functions and macros
+TYPE: P
+PACKAGES: st mm port
+MISC: 
+SOURCES: cpu_time.c csystem.c pathsearch.c pipefork.c prtime.c strsav.c texpand.c tmpfile.c
+HEADERS: utility.h
+OBJECTS: cpu_time.o csystem.o pathsearch.o pipefork.o prtime.o strsav.o texpand.o tmpfile.o
+VERBATIMSTART
+test:: ${DRIVER}
+	@csh -c 'setenv OCTTOOLS-TRANSLATIONS "first-translation:/first,second-translation:/second,third-translation:/third"; ${DRIVER}'
+
+VERBATIMEND
+TESTNAME: $(NAME)-test
+TESTSOURCES: uttest.c
+TESTOBJECTS: uttest.o
+SYSLIBS: -lm
