@@ -1,7 +1,6 @@
-`include "parameters.v"
-
 module master (
 	input clock_pin,
+	input reset_pin,
 	input [4:0] button_pins,
 	input [7:0] switch_pins,
 	input uart_in_pin,
@@ -35,9 +34,10 @@ uart uart_inst (
 	.out_valid(uart_out_valid),
 	.in_data(uart_in_data),
 	.out_data(uart_out_data),
-	.active(uart_active),
+	.active(uart_active)
 );
 
+parameter LUT_INPUTS = 4;
 
 
 wire shift_head;
@@ -54,15 +54,16 @@ decoder decoder_inst (
 	.out_data(uart_in_data),
 	.shift_head(shift_head),
 	.shift_tail(shift_tail),
-	.shfit_enable(shift_enable)
+	.shift_enable(shift_enable)
 );
 
 
 
 overlay overlay_inst (
-	.clock(user_clock),
+	.shift_clock(programming_clock),
+	.user_clock(user_clock),
 	.reset(user_reset),
-	.io_in(switch_pins[lut_size-1:0]),
+	.io_in(switch_pins[LUT_INPUTS-1:0]),
 	.io_out(led_pins[0]),
 	.shift_in(shift_head),
 	.shift_out(shift_tail),

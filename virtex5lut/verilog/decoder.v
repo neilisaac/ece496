@@ -1,5 +1,3 @@
-`include "parameters.v"
-
 module decoder (
 	input			clock,			// main design clock
 	input			reset,			// main reset signal
@@ -10,65 +8,104 @@ module decoder (
 	output [7:0]	out_data,		// output data to uart
 	output			shift_head,		// beginning of the shift chain (comes from uart)
 	input			shift_tail,		// end of the shift chain (returns to the uart)
-	output			shift_enable	// signal to do a shift
+	output reg		shift_enable	// signal to do a shift
 );
 
+parameter BLE_SIZE = 65;
+parameter BLE_BYTES = 3;
 
-// coordinate test
 
-reg running, complete;
-reg [2:0] return_select;
 
-always @ (posedge clock) begin
+// every time a new byte arrives, we shift it into the padding_buffer
 
+reg read_shift;
+reg [4:0] shift_count;
+
+always @ (posedge clock or posedge reset) begin
 	if (reset) begin
-		running <= 0;
-		complete <= 0;
-		return_select <= 0;
+		read_shift <= 0;
+		shift_count <= 0;
 	end
 
-	else begin
-
-		// wait for start signal from host
-		if (~running & uart_read & uart_out == "S") begin
-			running <= 1;
-			complete <= 0;
-			test_start <= 1;
-		end
-		else test_start <= 0;
-
-		// wait for test-complete signal from tester
-		if (running & test_done) begin
-			running <= 0;
-			complete <= 1;
-			return_select <= 0;
-		end
-
-		// return one byte at a time
-		if (complete & uart_ready) begin
-			uart_write <= 1;
-			return_select <= return_select + 1;
-		end
-		else uart_write <= 0;
-
-		// done
-		if (return_select == 5) begin
-			complete <= 0;
-			return_select <= 0;
-		end
+	else if (in_valid && shift_count < 8) begin
+		read_shift <= 1;
+		shift_count <= 0;
 	end
+
+	else if (read_shift)
+		shift_count <= shift_count + 1;
 end
 
-// select output signal
-always @ (return_select, test_score)
-	case (return_select)
-		1: uart_in = "R";
-		2: uart_in = test_score[7:0];
-		3: uart_in = test_score[15:8];
-		4: uart_in = test_score[23:16];
-		5: uart_in = test_score[31:24];
-		default: uart_in = 0;
-	endcase
+
+
+// once all bytes have arrived for a BLE, we raise shift_enable to program it
+
+reg [8:0] byte_count; // must be large enough for max bytes plus one
+reg [BLE_SIZE:0] bit_count;
+
+always @ (posedge clock or posedge reset) begin
+	if (reset) begin
+		byte_count <= 0;
+		bit_count <= 0;
+	end
+
+	else if (byte_count == BLE_BYTES) begin
+		byte_count <= 0;
+		bit_count <= 1;
+		shift_enable <= 1;
+	end
+
+	else if (bit_count == BLE_SIZE)
+		shift_enable <= 0;
+
+	else if (shift_enable)
+		bit_count <= bit_count + 1;
+
+	else if (read_shift == 1 && shift_count == 0)
+		byte_count <= byte_count + 1;
+end
+
+
+// read_buffer holds 8 bits last read from uart
+
+reg [7:0] read_buffer;
+
+always @ (posedge clock or posedge reset)
+	if (reset)
+		read_buffer <= 0;
+	else if (in_valid)
+		read_buffer <= in_data;
+	else if (read_shift)
+		read_buffer <= read_buffer << 1;
+
+
+
+// padding_buffer holds previous bytes
+
+reg [BLE_SIZE-1:8] padding_buffer;
+
+always @ (posedge clock or posedge reset)
+	if (reset)
+		padding_buffer <= 0;
+	else if (read_shift || shift_enable)
+		padding_buffer <= padding_buffer << 1;
+
+
+
+// NOT YET IMPLEMENTED
+
+wire verify_shift = 0;
+assign out_data = 0;
+assign out_valid = 0;
+
+
+
+// shift_head is attached to either the end of the padding buffer or it
+// loops back from the shift_tail when we're verifying (so the data isn't lost)
+
+assign shift_head = verify_shift ? shift_tail : padding_buffer[BLE_SIZE-1];
+
+
 
 endmodule
 

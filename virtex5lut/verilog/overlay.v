@@ -1,19 +1,21 @@
-`include "parameters.v"
-
 module overlay (
-	clock,
+	shift_clock,
+	user_clock,
 	reset,
 	io_in,
 	io_out,
 	shift_in,
 	shift_out,
-	shift_enable,
+	shift_enable
 );
 
-input clock;
+parameter LUT_INPUTS = 4;
+
+input shift_clock;
+input user_clock;
 input reset;
 
-input [lut_size-1:0] io_in;
+input [LUT_INPUTS-1:0] io_in;
 output io_out;
 
 input shift_in;
@@ -21,7 +23,8 @@ input shift_enable;
 output shift_out;
 
 fpga_cell cell_inst (
-	.clock(clock),
+	.shift_clock(clock),
+	.user_clock(user_clock),
 	.reset(reset),
 	.inputs(io_in),
 	.value(io_out),

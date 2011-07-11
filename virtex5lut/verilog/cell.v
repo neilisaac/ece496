@@ -1,5 +1,3 @@
-`include "parameters.v"
-
 module fpga_cell (
 	shift_clock,
 	user_clock,
@@ -11,8 +9,10 @@ module fpga_cell (
 	shift_out
 );
 
+parameter LUT_INPUTS = 4;
+
 input user_clock, shift_clock, reset;
-input [lut_size-1:0] inputs;
+input [LUT_INPUTS-1:0] inputs;
 input shift_in, shift_enable;
 output value;
 output shift_out;
@@ -62,12 +62,12 @@ always @ (posedge shift_clock or posedge reset)
 
 reg output_select;
 
-always @ (posedge clock)
+always @ (posedge shift_clock)
 	if (shift_enable)
 		output_select <= lut_value;
 
 // output of BLE is MUXed between lut value and flop value
-assign value = output_select ? lut_value : flop_value;
+assign value = output_select ? flop_value : lut_value;
 
 //shift chain is: shift_in -> virtual lut -> output_select -> shift_out
 assign shift_out = output_select;
