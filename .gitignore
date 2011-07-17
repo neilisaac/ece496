@@ -21,3 +21,8 @@ junk
 test
 run
 
+ISE
+*.tar
+*.bat
+*.exe
+Familiarization
