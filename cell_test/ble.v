@@ -8,14 +8,14 @@ module ble (
 	output F
 	);
 
-wire q;
-wire scan_internal;
+wire q1;
+wire scan1;
 
 SRLC32E #(
 .INIT(32'h00000000)
 ) lut_inst (
-	.Q(q), // SRL data output
-	.Q31(scan_internal), // SRL cascade output pin
+	.Q(q1), // SRL data output
+	.Q31(scan1), // SRL cascade output pin
 	.A(A), // 5-bit shift depth select input
 	.CE(SE), // Clock enable input
 	.CLK(PCLK), // Clock input
@@ -23,18 +23,16 @@ SRLC32E #(
 );
 
 reg select;
+always @ (posedge PCLK)
+	if (SE)
+		select <= scan1;
 
-always@(posedge PCLK)
-	if(SE)
-		select<=scan_internal;
+assign SOUT = select;
 
-assign SOUT=select;
-
-reg flop_inst;
-
-always@(posedge UCLK)
-	flop_inst<=q;
+reg flop_value;
+always @ (posedge UCLK)
+	flop_value <= q1;
 	
-assign F=select?flop_inst:q;
+assign F = select ? flop_value : q1;
 
 endmodule
