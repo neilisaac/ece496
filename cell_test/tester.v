@@ -24,8 +24,10 @@ always @ (posedge SYSCLK)
 		user_clk <= 0;
 	end
 
-wire shift_head;
-reg [5:0] shift_select;
+reg [6:0] shift_select;
+wire shift_head1;
+wire shift_head2 = 0;
+wire shift_head = (shift_select == 0) ? shift_head2 : shift_head1;
 reg shift_enable;
 reg seen_edge;
 
@@ -38,7 +40,7 @@ always @ (posedge SYSCLK) begin
 		shift_enable <= 1;
 		seen_edge <= 1;
 	end
-	else if (shift_select == 32) begin
+	else if (shift_select == 64) begin
 		shift_select <= 0;
 		shift_enable <= 0;
 	end
@@ -46,21 +48,22 @@ always @ (posedge SYSCLK) begin
 		shift_select <= shift_select + 1;
 end
 
+wire [6:0] shift_addr = shift_select - 1;
+
 LUT6 # (
 	// reversed because we start from address 0
-	// programs a '1'b1' to the output-select flow (enables the flop)
-	// programs 32'h7FFF_FFFE to the virtual lut
-	// (true unless all switches are either on or all off)
-	.INIT(64'h0000_0000_FFFF_FFFD)
-) static_shift_rom (
-	.O(shift_head),
-	.I0(shift_select[0]),
-	.I1(shift_select[1]),
-	.I2(shift_select[2]),
-	.I3(shift_select[3]),
-	.I4(shift_select[4]),
-	.I5(shift_select[5])
+	// true unless all switches are either on or all off
+	.INIT(64'h7FFF_FFFF_FFFF_FFFE)
+) static_shift_rom1 (
+	.O(shift_head1),
+	.I0(shift_addr[0]),
+	.I1(shift_addr[1]),
+	.I2(shift_addr[2]),
+	.I3(shift_addr[3]),
+	.I4(shift_addr[4]),
+	.I5(shift_addr[5])
 );
+
 
 wire out, shift_out;
 
@@ -70,7 +73,7 @@ ble ble_inst1 (
 	.SE(shift_enable),
 	.SIN(shift_head),
 	.SOUT(shift_out),
-	.A(DIP[4:0]),
+	.A(DIP[5:0]),
 	.F(out)
 );
 
