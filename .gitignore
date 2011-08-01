@@ -8,6 +8,7 @@
 *.out
 *.log
 *.dat
+*.scr
 
 */db/*
 */incremental_db/*
@@ -27,6 +28,7 @@ ISE
 *.exe
 Familiarization
 
+*.srp
 *.map
 *.ncd
 *.ngm
