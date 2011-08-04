@@ -3,52 +3,64 @@ module master (
 	input SYSRST,
 	input PUSH_N, PUSH_S, PUSH_E, PUSH_W, PUSH_C,
 	input [7:0] DIP,
-	input RS232_IN,
-	output RS232_OUT,
+	input UART_RX,
+	output UART_TX,
 	output LED_N, LED_S, LED_E, LED_W, LED_C,
 	output [7:0] LEDS
 );
 
 
-wire uart_in_valid;
-wire uart_in_ready;
-wire uart_out_valid;
-wire [7:0] uart_in_data;
-wire [7:0] uart_out_data;
-wire uart_active;
+wire uart_read;
+wire [7:0] uart_data;
 
-uart uart_inst (
-	.main_clk(SYSCLK),
-	.reset(SYSRST),
-	.rx(RS232_IN),
-	.tx(RS232_OUT),
-	.in_ready(uart_in_ready),
-	.in_valid(uart_in_valid),
-	.out_valid(uart_out_valid),
-	.in_data(uart_in_data),
-	.out_data(uart_out_data),
-	.active(uart_active)
+UART_IN UART_IN_inst (
+	.SCLK(SYSCLK),
+	.RESET(~SYSRST),
+	.RX(UART_RX),
+	.VALID(uart_read),
+	.DATA(uart_data)
 );
 
-assign uart_in_data = DIP;
-assign uart_in_valid = PUSH_N;
 
-assign LED_N = uart_in_ready;
-assign LED_C = PUSH_C | uart_active;
+reg sent;
+wire uart_ready;
+wire send = uart_ready & uart_read & ~sent;
+
+always @ (posedge SYSCLK)
+	if (~SYSRST)
+		sent <= 0;
+	else if (send)
+		sent <= 1;
+	else if (~uart_read)
+		sent <= 0;
+
+UART_OUT UART_OUT_inst (
+	.SCLK(SYSCLK),
+	.RESET(~SYSRST),
+	.VALID(send),
+	.DATA(DIP),
+	.TX(UART_TX),
+	.READY(uart_ready)
+);
+
+
+reg [7:0] uart_byte;
+
+always @ (posedge SYSCLK)
+	if (~SYSRST)
+		uart_byte <= 0;
+	else if (uart_read)
+		uart_byte <= uart_data;
+
+assign LEDS = uart_byte;
+
+
+assign LED_N = PUSH_N;
+assign LED_C = PUSH_C;
 assign LED_S = PUSH_S;
 assign LED_E = PUSH_E;
 assign LED_W = PUSH_W;
 
-
-reg [7:0] last_uart_byte, uart_count;
-
-always @ (posedge SYSCLK)
-	if (uart_out_valid) begin
-		last_uart_byte <= uart_out_data;
-		uart_count <= uart_count + 1;
-	end
-
-assign LEDS = last_uart_byte | uart_count;
 
 endmodule
 

@@ -19,7 +19,18 @@ options, args = parser.parse_args(sys.argv)
 s = serial.Serial(options.device,baudrate=options.baud, timeout=options.timeout,
 		bytesize=8, parity=serial.PARITY_NONE)
 
-time.sleep(0.1)
-
 s.write(chr(0xAA))
+
+while True:
+	data = s.read()
+	if len(data) == 0:
+		break
+
+	num = ord(data)
+	bits = list()
+	for i in range(8):
+		value = (num >> (7 - i)) & 1
+		bits.append(str(value))
+
+	print "".join(bits)
 
