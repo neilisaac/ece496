@@ -16,17 +16,36 @@ parser.add_option("-t", "--timeout", dest="timeout", type="float",
 
 options, args = parser.parse_args(sys.argv)
 
-s = serial.Serial(options.device,baudrate=options.baud, timeout=options.timeout,
+s = serial.Serial(options.device, baudrate=options.baud, timeout=options.timeout,
 		bytesize=8, parity=serial.PARITY_NONE)
 
-time.sleep(0.001)
+data = (
+		# enable flop
+		0x01,
 
-# disable flop
-s.write(chr(0x00))
+		# 64-bit function
+		0x7F,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFE,
+	)
 
-# write 32-bit function
-s.write(chr(0xFF))
-s.write(chr(0xFF))
-s.write(chr(0xFF))
-s.write(chr(0xFF))
+for value in data:
+	s.write(chr(value))
+
+	time.sleep(0.001)
+
+	read = s.read()
+	if len(read) == 0:
+		break
+
+	read = ord(read)
+	print "{:08b}".format(read)
+
+	if read != value:
+		print "value read doesn't match value sent!"
 
