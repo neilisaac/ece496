@@ -59,7 +59,7 @@ generate
 		// create BLE instance
 		BLE ble_inst (
 			.PCLK(PCLK),
-			.PRST(~PRST),
+			.PRST(PRST),
 			.UCLK(UCLK),
 			.URST(URST),
 			.A(ble_in),
