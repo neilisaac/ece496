@@ -8,7 +8,7 @@ import optparse
 parser = optparse.OptionParser()
 
 parser.add_option("-d", "--device", dest="device", type="string",
-		default="/dev/ttyS0", help="serial port device")
+		default="/dev/ttyUSB0", help="serial port device")
 parser.add_option("-b", "--baud", dest="baud", type="int",
 		default=115200, help="device baud rate")
 parser.add_option("-t", "--timeout", dest="timeout", type="float",
@@ -29,14 +29,15 @@ def serialize(values):
 	return bytelist
 
 data = (
-		(8, 4), (7, 4), (6, 4), (6, 4), (5, 4), (4, 4),
-		(8, 4), (7, 4), (6, 4), (6, 4), (5, 4), (4, 4),
-		(8, 4), (7, 4), (6, 4), (6, 4), (5, 4), (4, 4),
-		(8, 4), (7, 4), (6, 4), (6, 4), (5, 4), (4, 4),
-		(0x08000000000000000, 65), # AND gate, flop disabled
-		(0x08000000000000000, 65), # AND gate, flop disabled
-		(0x08000000000000000, 65), # AND gate, flop disabled
-		(0x08000000000000000, 65), # AND gate, flop disabled
+		# connect inputs of all LUTs to DIP[5:0]
+		(9, 4), (8, 4), (7, 4), (6, 4), (5, 4), (4, 4),
+		(9, 4), (8, 4), (7, 4), (6, 4), (5, 4), (4, 4),
+		(9, 4), (8, 4), (7, 4), (6, 4), (5, 4), (4, 4),
+		(9, 4), (8, 4), (7, 4), (6, 4), (5, 4), (4, 4),
+		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
+		(0x08000000000000000, 65), # AND gate
+		(0x0FFFFFFFFFFFFFFFE, 65), # OR gate
+		(0x0AAAAAAAAAAAAAAAA, 65), # odd numbers
 	)
 
 for value in serialize(data):

@@ -20,28 +20,17 @@ output SOUT;
 
 parameter N_BLE_PINS = 6;
 parameter N_CONTROL_BITS = 4;
-parameter N_SELECT = N_BLE * N_BLE_PINS * N_CONTROL_BITS;
 
 
 wire [N_BLE+N_INPUT-1:0] inputs = { IN, OUT };
 wire [N_BLE:0] shift;
 
-
-reg [N_SELECT-1:0] select;
-
-always @ (posedge PCLK) begin
-	if (PRST)
-		select <= 0;
-	else if (SE) begin
-		select[N_SELECT-1:1] <= select[N_SELECT-2:0];
-		select[0] <= shift[N_BLE];
-	end
-end
-
+wire [N_BLE*N_BLE_PINS:0] xbar_shift;
+assign xbar_shift[0] = shift[N_BLE];
 
 // set shift in and shift out values
 assign shift[0] = SIN;
-assign SOUT = select[N_SELECT-1];
+assign SOUT = xbar_shift[N_BLE*N_BLE_PINS];
 
 
 // generate BLEs
@@ -52,8 +41,7 @@ generate
 
 		// create input crossbar mux
 		for (j = 0; j < N_BLE_PINS; j = j+1) begin : XBAR_MUX
-			//integer start = N_BLE_PINS * N_CONTROL_BITS * i + N_CONTROL_BITS * j;
-			assign ble_in[j] = inputs[select[N_BLE_PINS * N_CONTROL_BITS * i + N_CONTROL_BITS * j+N_CONTROL_BITS-1:N_BLE_PINS * N_CONTROL_BITS * i + N_CONTROL_BITS * j]];
+			XBAR2LAYER #(.N(16)) xbar_mux_inst(inputs, SE, PCLK, xbar_shift[i*N_BLE_PINS+j], ble_in[j], xbar_shift[i*N_BLE_PINS+j+1]);
 		end
 		
 		// create BLE instance
