@@ -4,7 +4,7 @@ import sys
 import time
 import serial
 
-s = serial.Serial("/dev/ttyUSB0", baudrate=115200, timeout=1,
+s = serial.Serial("/dev/ttyS0", baudrate=115200, timeout=1,
 		bytesize=8, parity=serial.PARITY_NONE)
 
 count = 0
@@ -14,6 +14,7 @@ for i in range(256):
 	time.sleep(0.01)
 	v = s.read()
 	if len(v) == 0:
+		print "failed to read"
 		break
 	if ord(v) == i + offset:
 		count += 1

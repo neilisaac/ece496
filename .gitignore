@@ -77,3 +77,9 @@ iseconfig
 usage_statistics_webtalk.html
 webtalk_pn.xml
 webtalk_impact.xml
+
+# latex files
+*.aux
+*.lof
+*.lot
+*.toc

@@ -35,6 +35,7 @@ always @ (posedge SYSCLK) begin
 	if (PUSH_C) begin
 		good <= 0;
 		total <= 0;
+		uart_tx_valid <= 0;
 	end
 	else begin
 		if (uart_rx_valid) begin

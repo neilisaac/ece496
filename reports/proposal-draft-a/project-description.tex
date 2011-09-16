@@ -1,0 +1,101 @@
+\section{Project Description}
+
+\subsection{Background and Motivation}
+
+% This section is aimed at demonstrating your team's understanding of the technical
+% problem and „the big picture‟. Provide a background, context [Design Notes, chapter 4]
+% and motivation for your project. A good project is not following a recipe; what makes
+% your project different than what is available? (Note that if the implementation of an
+% existing product is not obvious and is not available, or can be done in an alternate way,
+% then implementing would still make a reasonable project.)
+%
+% The work may just be an interesting exercise in technology, or may have direct or indirect
+% practical application. It could improve reliability, cost, or ease of use over available
+% technology. It may deal with some interesting challenges.
+%
+% Understanding the problem in the context of the bigger picture requires that you do a
+% literature search, and you should be prepared to put in enough time to build your case.
+% Provide relevant references to original sources of information. References to webpages
+% (like Wikipedia) are generally inadequate, unless they can be justified (e.g. datasheet for
+% components). Wherever possible, reference original sources such as journals, books, and
+% technical standards, and provide complete information in a standard format (Refer to
+% examples from IEEE on the course website.)
+%
+% Previous Background Work (if applicable)
+% Many uncertainties about risks are answered in the course of working on a problem. In
+% this respect, groups that have actively worked on their project over the summer have a
+% key advantage, and so should briefly highlight some of the key challenges they have
+% already overcome. Evidence here provides strong support of the feasibility of the
+% remainder of the project. These groups can include some of their previous work as an
+% attachment in the appendix.
+
+Field Programmable Gate Array (FPGA) chips are commercially available, however their design is largely proprietary.\citationneeded
+Academic researchers who study FPGA design commonly refer to variations of an FPGA design model\citationneeded which we refer to as the \emph{Academic FPGA Model}.
+There is no existing physical implementation of an Academic FPGA Model.\footnote{Alex Brant is also developing a comparable FPGA overlay platform with Prof. Guy Lemieux at University of British Columbia.}
+
+Computer Aided Design (CAD) researchers who work on placement and routing algorithms for FPGA designs are presently limited to using simulations to evaluate their work.
+They may be interested in testing circuit realizations on a physical medium.
+
+
+\subsection{Project Goal}
+
+% The project goal is a statement that summarizes what your design project is to achieve. It
+% can be general and non-technical but should give direction to the entire project. It is NOT
+% just the statement your supervisor used to describe the project. Refer to [Design, Section
+% 3.2] to find both good and bad examples of project goal statements. Two key points are to
+% focus on the desired result, not the solution or implementation, and to establish some
+% criteria for which the success of the project can be evaluated.
+% 
+% Design projects can take many forms. There are those that have hard functional goals but
+% the details of the methodology are left undefined. An example of this type is the building
+% of a microprocessor simulator. Another type, common to research-oriented projects, is a
+% feasibility study or experiment where the result of the study is not known; however the
+% setup of the study is a hard functional goal. Such projects may be somewhat harder to
+% define but must meet the same requirements for verifiable project goals. One aid in these
+% cases is to think of what has to be specified to guarantee that another team could exactly
+% duplicate the experiment.
+
+The goal of this project is to produce a circuit design based on the Academic FPGA model that researchers can use to evaluate FPGA architecture, placement, and routing.\note{is this too specific?}
+
+
+
+\subsection{Project Requirements}
+
+% Provide a list of target project requirements which will be used to evaluate the success of
+% your project. Project requirements can be divided into three categories [Design Notes,
+% Section 5.2]:
+% - Functional requirements
+% - Constraints
+% - Objectives
+%
+% Functional requirements and constraints should be clearly worded in pass/fail terms
+% and in a way that can be verified, which implies a corresponding set of verification tests
+% will be needed as discussed in the next section. Project objectives, unlike functional
+% requirements and constraints, are not intended to be pass/fail in nature, but are used to
+% indicate the desirable aspects of the final design. The number of requirements depends
+% largely on the project, but at this early stage, the list should not be very long, but enough
+% to capture the essence of your project. The point is to be complete, but not to constrain
+% your design unnecessarily. Use the Requirements Checklist in [Design Notes, Section
+% 5.4] to guide you.
+
+\subsubsection{Functional Requirements}
+
+Researchers will be able to:
+\begin{itemlist}
+\item Implement the circuit on commercially available FPGA chips
+\item Tune the size of the overlay FPGA
+\end{itemlist}
+
+
+\subsection{Validation and Acceptance Tests}
+
+% In this section, describe how you would validate your final design and prove that it
+% satisfies the project goal and requirements [Design Notes, Chapter 13]. Consider how you
+% would demonstrate your successful project at the final Design Fair. Alternatively, if you
+% were the paying client, describe the tests you would perform to qualify this product
+% before buying this product. Provide details where possible, including the test equipment,
+% diagnostic software, special arrangements, or test “jigs” that might be required. If you
+% will be doing statistical measures, indicate the number of samples you will test. The point
+% here is to keep your end goal in mind right from the start of the project.
+
+

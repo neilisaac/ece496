@@ -1,0 +1,92 @@
+\documentclass[12pt,letterpaper]{article}
+
+\usepackage[hmargin=1in,bottom=0.75in,top=1.5in]{geometry}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{url}
+%\usepackage[toc,page]{appendix}
+\usepackage{setspace}
+
+\usepackage{ulem}
+\normalem
+
+%\usepackage{titling}
+%\usepackage{listings}
+%\lstset{language=c}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage}
+\fancyhead[CF]{}
+\setlength{\headheight}{16pt}
+
+\setlength\parindent{0in}
+\setlength\parskip{1.0 \baselineskip}
+
+\bibliographystyle{IEEEtran}
+
+\usepackage{color}
+\newcommand{\note}[1]{}
+% comment out the next line to hide draft notes
+\renewcommand{\note}[1]{\textcolor{red}{[#1]} }
+\newcommand{\citationneeded}[0]{\note{citation needed}}
+
+\newenvironment{enumeration}{
+	\begin{enumerate}
+		\setlength{\topsep}{0pt}
+		\setlength{\parskip}{0pt}
+		\setlength{\partopsep}{0pt}
+		\setlength{\parsep}{0pt}
+		\setlength{\itemsep}{0pt}}
+	{\end{enumerate}}
+
+\newenvironment{itemlist}{
+	\begin{itemize}
+		\setlength{\topsep}{0.0pt}
+		\setlength{\parskip}{0.0 \baselineskip}
+		\setlength{\partopsep}{0.0 \baselineskip}
+		\setlength{\parsep}{0.0 \baselineskip}
+		\setlength{\itemsep}{0.0 \baselineskip}}
+	{\end{itemize}}
+
+\begin{document}
+
+%\include{title-page}
+
+\onehalfspace
+
+\include{executive-summary}
+
+\setcounter{tocdepth}{2}
+\tableofcontents
+%\listoffigures
+%\listoftables
+\pagebreak
+
+\input{project-description}
+\input{technical-design}
+\input{work-plan}
+
+\pagebreak
+\bibliography{ref}
+\addcontentsline{toc}{section}{References}
+
+%\pagebreak
+%\begin{appendices}
+%\input{file}
+%\include{file}
+%\end{appendices}
+
+%\pagebreak
+%\fancyhead[L]{Addenda}
+%\addcontentsline{toc}{section}{Title}
+%\section*{Title}
+%\input{file}
+%\pagebreak
+
+\end{document}
+

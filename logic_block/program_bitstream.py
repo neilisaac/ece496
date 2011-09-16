@@ -2,6 +2,7 @@
 
 import sys
 import time
+import math
 import serial
 import optparse
 
@@ -28,16 +29,55 @@ def serialize(values):
 		bytelist.append(int(combined[i:i+8], 2))
 	return bytelist
 
-data = (
-		(8, 4), (7, 4), (6, 4), (6, 4), (5, 4), (4, 4),
-		(8, 4), (7, 4), (6, 4), (6, 4), (5, 4), (4, 4),
-		(8, 4), (7, 4), (6, 4), (6, 4), (5, 4), (4, 4),
-		(8, 4), (7, 4), (6, 4), (6, 4), (5, 4), (4, 4),
-		(0x08000000000000000, 65), # AND gate, flop disabled
-		(0x08000000000000000, 65), # AND gate, flop disabled
-		(0x08000000000000000, 65), # AND gate, flop disabled
-		(0x08000000000000000, 65), # AND gate, flop disabled
-	)
+def xbarstream(selected, signals, size):
+	result = list()
+
+	# next level
+	muxes = math.ceil(float(signals) / size)
+	if muxes > 1:
+		if isinstance(selected, bool):
+			result.extend(xbarstream(selected, int(muxes), size))
+		else:
+			result.extend(xbarstream(selected // size, int(muxes), size))
+	
+	# muxes at this level
+	selected = selected % size
+	for i in range(int(muxes)):
+		if isinstance(selected, bool) and selected == False:
+			result.append((0x00000000, 32))
+		elif isinstance(selected, bool) and selected == True:
+			result.append((0xFFFFFFFF, 32))
+		elif selected == 0:
+			result.append((0xAAAAAAAA, 32))
+		elif selected == 1:
+			result.append((0xDDDDDDDD, 32))
+		elif selected == 2:
+			result.append((0xF0F0F0F0, 32))
+		elif selected == 3:
+			result.append((0xFF00FF00, 32))
+		elif selected == 4:
+			result.append((0xFFFF0000, 32))
+		else:
+			raise Exception, "unknown mux pattern"
+
+	return result
+
+data = list()
+# connect inputs of all LUTs to DIP[5:0]
+for value in [ 9, 8, 7, 6, 5, 4, 9, 8, 7, 6, 5, 4, 9, 8, 7, 6, 5, 4, 9, 8, 7, 6, 5, 4 ]:
+	data.extend(xbarstream(value, 16, 5))
+
+data.extend([
+		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
+		(0x08000000000000000, 65), # AND gate
+		(0x0FFFFFFFFFFFFFFFE, 65), # OR gate
+		(0x09669699696696996, 65), # XOR gate
+		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
+		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
+		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
+		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
+		(0x00000000000000000, 65), # always 0
+	])
 
 for value in serialize(data):
 	s.write(chr(value))

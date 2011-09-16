@@ -1,7 +1,7 @@
 # project specific options
 PROJ=logic_block
 TOP=MASTER
-VERILOG=master.v lb.v ble.v decoder.v delay.v transition.v uart.v
+VERILOG=master.v lb.v ble.v decoder.v delay.v transition.v uart.v xbar2layer.v
 UCF=pins.ucf
 PART=xc5vlx110t-ff1136-1
 
