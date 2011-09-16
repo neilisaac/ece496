@@ -47,10 +47,10 @@
 \newenvironment{itemlist}{
 	\begin{itemize}
 		\setlength{\topsep}{0.0pt}
-		\setlength{\parskip}{0.0 \baselineskip}
-		\setlength{\partopsep}{0.0 \baselineskip}
-		\setlength{\parsep}{0.0 \baselineskip}
-		\setlength{\itemsep}{0.0 \baselineskip}}
+		\setlength{\parskip}{0.0pt}
+		\setlength{\partopsep}{0.0pt}
+		\setlength{\parsep}{0.0pt}
+		\setlength{\itemsep}{0.0pt}}
 	{\end{itemize}}
 
 \begin{document}
@@ -67,9 +67,9 @@
 %\listoftables
 \pagebreak
 
-\input{project-description}
-\input{technical-design}
-\input{work-plan}
+\include{project-description}
+\include{technical-design}
+\include{work-plan}
 
 \pagebreak
 \bibliography{ref}

@@ -78,12 +78,31 @@ The goal of this project is to produce a circuit design based on the Academic FP
 % your design unnecessarily. Use the Requirements Checklist in [Design Notes, Section
 % 5.4] to guide you.
 
+
 \subsubsection{Functional Requirements}
 
-Researchers will be able to:
+Researchers\note{or "Users"?} must be able to:
 \begin{itemlist}
-\item Implement the circuit on commercially available FPGA chips
-\item Tune the size of the overlay FPGA
+\item implement the overlay FPGA circuit on commercially available FPGA chips,
+\item tune the number, arrangement, and connectivity of elements of the overlay FPGA,
+\item program the overlay FPGA using an output circuit from VPR,
+\item modify the inputs and outputs of the overlay FPGA.
+\end{itemlist}
+
+
+\subsubsection{Constraints}
+
+The overlay FPGA circuit must:
+\begin{itemlist}
+\item have enough logic elements to accommodate reasonable\note{quantify} test circuits,
+\item work and fit\note{words not suck} on a commercially available FPGA.
+\end{itemlist}
+
+
+\subsubsection{Objectives}
+
+\begin{itemlist}
+\item Take advantage of the underlying FPGA architectural features in the overlay FPGA design to reduce area and latency.
 \end{itemlist}
 
 
@@ -97,5 +116,16 @@ Researchers will be able to:
 % diagnostic software, special arrangements, or test “jigs” that might be required. If you
 % will be doing statistical measures, indicate the number of samples you will test. The point
 % here is to keep your end goal in mind right from the start of the project.
+
+We will use standard\citationneeded benchmark circuits placed and routed using VPR.
+Loading and verifying the functionality of these test circuits will validate that:
+\begin{itemlist}
+\item circuits can be implemented using VPR output,
+\item circuits can be transfered correctly to the overlay FPGA,
+\item the overlay FPGA can fit reasonable\note{ref} circuits
+\item inputs can be set and outputs can be read.
+\end{itemlist}
+
+\note{test objectives?}
 
 

@@ -23,7 +23,44 @@
 % You may find that this section and the next naturally collapse into a single section, or that
 % you wish to keep them separate.
 
-
+Implemenation medium:
+\begin{enumeration}
+\item Custom integrated circuit \
+	\begin{itemlist}
+		\item Faster, smaller and more power efficient.
+		\item High design and manufacturing costs.
+		\item Once built, the parameters can't be modified.
+		\item Inputs and outputs will require extra circuitry to interface with the circuit.
+	\end{itemlist}
+\item Overlay FPGA implemented on commercial FPGA \
+	\begin{itemlist}
+		\item Researchers may already own an FPGA so they won't need to purchase new hardware.
+		\item Need to pick an FPGA platform to target:
+		\begin{enumeration}
+			\item Basic FPGA without using architecture-specific features
+				\begin{itemlist}
+					\item Circuit will work on most FPGAs from most vendors, so it is accessible for the most people.
+					\item Can't use architecture-specific features to save area and gain performance.
+				\end{itemlist}
+			\item Xilinx Virtex 5+ \
+				\begin{itemlist}
+					\item Lookup tables can be programmed directly as 32-bit shift registers.
+					\item Large FPGA will fit more logic blocks.
+					\item Higher cost for researchers.
+				\end{itemlist}
+			\item Xilinx Spartan 6 \note{double check} \
+				\begin{itemlist}
+					\item Lower cost.
+					\item \note{check for SRL64}
+				\end{itemlist}
+			\item Altera Stratix 4 
+				\begin{itemlist}
+					\item Higher cost.
+					\item \note{check for something similar to SRL64}
+				\end{itemlist}
+		\end{enumeration}
+	\end{itemlist}
+\end{enumeration}
 
 %\subsection{Assessment of Proposed Design} % for Draft B
 
