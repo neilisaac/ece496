@@ -9,7 +9,7 @@ import optparse
 parser = optparse.OptionParser()
 
 parser.add_option("-d", "--device", dest="device", type="string",
-		default="/dev/ttyS0", help="serial port device")
+		default="/dev/ttyUSB0", help="serial port device")
 parser.add_option("-b", "--baud", dest="baud", type="int",
 		default=115200, help="device baud rate")
 parser.add_option("-t", "--timeout", dest="timeout", type="float",
@@ -72,11 +72,11 @@ data.extend([
 		(0x08000000000000000, 65), # AND gate
 		(0x0FFFFFFFFFFFFFFFE, 65), # OR gate
 		(0x09669699696696996, 65), # XOR gate
-		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
-		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
-		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
-		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
-		(0x00000000000000000, 65), # always 0
+#		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
+#		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
+#		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
+#		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
+#		(0x00000000000000000, 65), # always 0
 	])
 
 for value in serialize(data):
