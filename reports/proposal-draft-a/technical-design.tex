@@ -23,44 +23,84 @@
 % You may find that this section and the next naturally collapse into a single section, or that
 % you wish to keep them separate.
 
-Implemenation medium:
+\subsubsection{Implementation medium}
+
+The implementation medium for our circuit is a major decision impacting how accessible our circuit will be to researchers.
+The main criteria are the cost to the researcher, whether our FPGA circuit is large enough for the researcher's circuit, and how easily the researcher's inputs and outputs can be interfaced with our circuit.
+The alternatives are as follows:
+
 \begin{enumeration}
 \item Custom integrated circuit \
 	\begin{itemlist}
 		\item Faster, smaller and more power efficient.
 		\item High design and manufacturing costs.
-		\item Once built, the parameters can't be modified.
+		\item Lengthy design and manufacturing timeline.
+		\item Once built, the parameters can't be modified without manufacturing a new chip.
 		\item Inputs and outputs will require extra circuitry to interface with the circuit.
 	\end{itemlist}
 \item Overlay FPGA implemented on commercial FPGA \
 	\begin{itemlist}
-		\item Researchers may already own an FPGA so they won't need to purchase new hardware.
-		\item Need to pick an FPGA platform to target:
+		\item Researchers may already own a compatible FPGA so they won't need to purchase new hardware.
+		\item Using an FPGA allows the researcher to implement a virtual circuit to interface with the overlay FPGA.
+		\item Need to pick a FPGA platform to target:
 		\begin{enumeration}
 			\item Basic FPGA without using architecture-specific features
 				\begin{itemlist}
-					\item Circuit will work on most FPGAs from most vendors, so it is accessible for the most people.
+					\item Circuit will work on most FPGAs from most vendors, so it is the most widely accessible.
 					\item Can't use architecture-specific features to save area and gain performance.
 				\end{itemlist}
-			\item Xilinx Virtex 5+ \
+			\item Xilinx Virtex 5 or newer \
 				\begin{itemlist}
 					\item Lookup tables can be programmed directly as 32-bit shift registers.
-					\item Large FPGA will fit more logic blocks.
+					\item Large FPGAs with 330,000 logic cells for Virtex 5\cite{xilinx-virtex5} will fit a larger overlay circuit. Virtex 6 and 7 feature up to 760,000 and 2,000,000 logic cells respectively\cite{xilinx-models}.
 					\item Higher cost for researchers.
 				\end{itemlist}
-			\item Xilinx Spartan 6 \note{double check} \
+			\item Xilinx Spartan 6 \
 				\begin{itemlist}
-					\item Lower cost.
-					\item \note{check for SRL64}
+					\item Lookup tables can be programmed directly as 32-bit shift registers.
+					\item Smaller FPGA with 150,000 logic cells\cite{xilinx-models}, allowing smaller overlay circuit.
+					\item Lower cost than Virtex 5.
 				\end{itemlist}
-			\item Altera Stratix 4 
+			\item Altera Stratix IV or newer
 				\begin{itemlist}
-					\item Higher cost.
-					\item \note{check for something similar to SRL64}
+					\item Higher cost than Xilinx Spartan FPGAs.
+					\item Very large FPGAs with up to 820,000 logic cells for Stratix IV\cite{altera-stratix4} and up to 952,000 for Stratix V\cite{altera-stratix5}.
+					\item \note{check for something similar to SRL32}
 				\end{itemlist}
 		\end{enumeration}
 	\end{itemlist}
 \end{enumeration}
+
+Developing a custom integrated circuit is far too costly and time consuming for the scope of this project.
+It was explored as an alternative to illustrate by contrast the necessity of targeting an FPGA.
+We have tentatively selected the Virtex 5 FPGA because our supervisor has numerous development boards and software licenses available.
+We also intend to use the 32-bit shift register functionality that is available in logic blocks in Virtex 5 and newer FPGAs.
+This feature will allow us to reduce the overhead of the overlay FPGA circuit, by using the native FPGA's features more directly.
+
+
+
+\subsubsection{Configuration mechanism}
+
+Various parameters of our circuit, including the number, arrangement, and connectivity of the logic cells will be tunable.
+There are two alternatives for the implementation of the configuration mechanism:
+\begin{enumeration}
+	\item Verilog parameters \
+		\begin{itemlist}
+			\item Requires the user to modify values within the Verilog source.
+			\item Involves more complex Verilog code to accommodate flexible parameters.
+		\end{itemlist}
+	\item Software front end to generate Verilog code \
+		\begin{itemlist}
+			\item The front end interface could be easier to use than modifying Verilog code.
+			\item Front end code will be easier to write than parameterized Verilog.
+			\item User may need to install a compiler or interpreter to run the software.
+		\end{itemlist}
+\end{enumeration}
+
+We have tentatively decided to use parameterized Verilog because we deemed that the complexity of the configuration in our present design concept does not warrant a front end code generator.
+If added features or a reevaluation of the design add configuration complexity, we may reconsider this, as this decision could be changed without revising a great deal of work.
+
+
 
 %\subsection{Assessment of Proposed Design} % for Draft B
 

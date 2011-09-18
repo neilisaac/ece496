@@ -83,3 +83,5 @@ webtalk_impact.xml
 *.lof
 *.lot
 *.toc
+*.bbl
+*.blg

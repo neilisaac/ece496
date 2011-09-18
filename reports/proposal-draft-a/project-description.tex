@@ -30,11 +30,15 @@
 % attachment in the appendix.
 
 Field Programmable Gate Array (FPGA) chips are commercially available, however their design is largely proprietary.\citationneeded
-Academic researchers who study FPGA design commonly refer to variations of an FPGA design model\citationneeded which we refer to as the \emph{Academic FPGA Model}.
-There is no existing physical implementation of an Academic FPGA Model.\footnote{Alex Brant is also developing a comparable FPGA overlay platform with Prof. Guy Lemieux at University of British Columbia.}
+Academic researchers who study FPGA design commonly refer to variations of an FPGA design model, described by Kuon et al\cite{fpga}, which we will refer to as the \emph{Academic FPGA Model}.
+There is no existing physical implementation\footnote{Alex Brant is also developing a comparable FPGA overlay platform with Prof. Guy Lemieux at University of British Columbia.} of an Academic FPGA Model.
+
+VPR is a free, open-source placement and routing tool for FPGA architecture research.
+It is not currently possible to realize VPR output on a commercial FPGA.\footnote{A technology-mapped input netlist for VPR can be converted to an Altera Quartus VQM netlist file using \emph{nettovqm}\cite{nettovqm}, but the placement and routing can not be converted.}
 
 Computer Aided Design (CAD) researchers who work on placement and routing algorithms for FPGA designs are presently limited to using simulations to evaluate their work.
 They may be interested in testing circuit realizations on a physical medium.
+
 
 
 \subsection{Project Goal}
@@ -55,7 +59,7 @@ They may be interested in testing circuit realizations on a physical medium.
 % cases is to think of what has to be specified to guarantee that another team could exactly
 % duplicate the experiment.
 
-The goal of this project is to produce a circuit design based on the Academic FPGA model that researchers can use to evaluate FPGA architecture, placement, and routing.\note{is this too specific?}
+The goal of this project is to produce a circuit design based on the Academic FPGA model that researchers can use to evaluate FPGA architecture, placement, and routing using circuits produced by VPR.
 
 
 
@@ -81,12 +85,12 @@ The goal of this project is to produce a circuit design based on the Academic FP
 
 \subsubsection{Functional Requirements}
 
-Researchers\note{or "Users"?} must be able to:
+Researchers must be able to:
 \begin{itemlist}
-\item implement the overlay FPGA circuit on commercially available FPGA chips,
-\item tune the number, arrangement, and connectivity of elements of the overlay FPGA,
-\item program the overlay FPGA using an output circuit from VPR,
-\item modify the inputs and outputs of the overlay FPGA.
+	\item implement the overlay FPGA circuit on commercially available FPGA chips,
+	\item tune the number, arrangement, and connectivity of logic cells of the overlay FPGA,
+	\item program the overlay FPGA using an output circuit from VPR,
+	\item modify the inputs and outputs of the overlay FPGA.
 \end{itemlist}
 
 
@@ -94,15 +98,15 @@ Researchers\note{or "Users"?} must be able to:
 
 The overlay FPGA circuit must:
 \begin{itemlist}
-\item have enough logic elements to accommodate reasonable\note{quantify} test circuits,
-\item work and fit\note{words not suck} on a commercially available FPGA.
+	\item have enough \note{we will quantify this by checking size of VPR benchmark circuits} logic cells to accommodate reasonable test circuits,
+	\item be compatible with accessibly priced commercial FPGAs.
 \end{itemlist}
 
 
 \subsubsection{Objectives}
 
 \begin{itemlist}
-\item Take advantage of the underlying FPGA architectural features in the overlay FPGA design to reduce area and latency.
+	\item Take advantage of the underlying FPGA architectural features in the overlay FPGA design to reduce area and latency.
 \end{itemlist}
 
 
@@ -117,15 +121,25 @@ The overlay FPGA circuit must:
 % will be doing statistical measures, indicate the number of samples you will test. The point
 % here is to keep your end goal in mind right from the start of the project.
 
-We will use standard\citationneeded benchmark circuits placed and routed using VPR.
+% validation of functional requirements and constraints
+We will use selected benchmark circuits \note{we will choose benchmark circuits commonly used with VPR} that are representative of small useful circuits for research purposes.
+The benchmark circuits will be synthesized using ABC and placed and routed using VPR.
 Loading and verifying the functionality of these test circuits will validate that:
 \begin{itemlist}
-\item circuits can be implemented using VPR output,
-\item circuits can be transfered correctly to the overlay FPGA,
-\item the overlay FPGA can fit reasonable\note{ref} circuits
-\item inputs can be set and outputs can be read.
+	\item circuits can be implemented using VPR output,
+	\item circuits can be transferred correctly to the overlay FPGA,
+	\item the overlay FPGA can fit reasonable circuits, and
+	\item inputs can be set and outputs can be read.
 \end{itemlist}
 
-\note{test objectives?}
+Verification of the functionality of the benchmark circuit depends on that circuit's intended function.
+We will need to develop an appropriate testing mechanism for each benchmark circuit used.
+
+
+% validation of architectural features objective
+The benefit of direct use of architectural FPGA features can be evaluated by comparing the size and timing of a version of the circuit using the architectural features to an equivalent circuit that implements the same functionality using standard Verilog.
+For example, in the Xilinx Virtex 5 and above, and Spartan 6 architectures, a lookup table can be used as a 32-bit shift register; the same function could be implemented in Verilog using multiplexers and flip-flops, but is expected to be slower and consume more area.
+The two equivalent circuits can be compiled separately in order to compare the number of logic cells that each uses, and the limiting timing path, if affected by the change.
+Architectural features used in this project must be shown to enhance the circuit quality.
 
 
