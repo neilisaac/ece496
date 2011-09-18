@@ -29,11 +29,12 @@
 % remainder of the project. These groups can include some of their previous work as an
 % attachment in the appendix.
 
-Field Programmable Gate Array (FPGA) chips are commercially available, however their design is largely proprietary.\citationneeded
-Academic researchers who study FPGA design commonly refer to variations of an FPGA design model, described by Kuon et al\cite{fpga}, which we will refer to as the \emph{Academic FPGA Model}.
-There is no existing physical implementation\footnote{Alex Brant is also developing a comparable FPGA overlay platform with Prof. Guy Lemieux at University of British Columbia.} of an Academic FPGA Model.
+Academic researchers who study Field Programmable Gate Array (FPGA) design commonly refer to variations of an FPGA design model, described by Kuon et al\cite{fpga}, which we will refer to as the \emph{Academic FPGA Model}.
+FPGA chips are available from a variety of commercial vendors, however their design is largely proprietary, so their architectures are difficult to study.\citationneeded
+Furthermore, there is no existing physical implementation\footnote{Alex Brant is also developing a comparable FPGA overlay platform with Prof. Guy Lemieux at University of British Columbia.} of an Academic FPGA Model.
 
-VPR is a free, open-source placement and routing tool for FPGA architecture research.
+One of the tools used in FPGA architecture research is VPR.
+VPR is a free, open-source placement and routing tool that accepts a wide variety of architecture parameters. \citationneeded
 It is not currently possible to realize VPR output on a commercial FPGA.\footnote{A technology-mapped input netlist for VPR can be converted to an Altera Quartus VQM netlist file using \emph{nettovqm}\cite{nettovqm}, but the placement and routing can not be converted.}
 
 Computer Aided Design (CAD) researchers who work on placement and routing algorithms for FPGA designs are presently limited to using simulations to evaluate their work.

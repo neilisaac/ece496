@@ -64,7 +64,7 @@ The alternatives are as follows:
 			\item Altera Stratix IV or newer
 				\begin{itemlist}
 					\item Higher cost than Xilinx Spartan FPGAs.
-					\item Very large FPGAs with up to 820,000 logic cells for Stratix IV\cite{altera-stratix4} and up to 952,000 for Stratix V\cite{altera-stratix5}.
+					\item Large FPGAs with up to 820,000 logic cells for Stratix IV\cite{altera-stratix4} and up to 952,000 for Stratix V\cite{altera-stratix5}.
 					\item \note{check for something similar to SRL32}
 				\end{itemlist}
 		\end{enumeration}
@@ -75,7 +75,8 @@ Developing a custom integrated circuit is far too costly and time consuming for 
 It was explored as an alternative to illustrate by contrast the necessity of targeting an FPGA.
 We have tentatively selected the Virtex 5 FPGA because our supervisor has numerous development boards and software licenses available.
 We also intend to use the 32-bit shift register functionality that is available in logic blocks in Virtex 5 and newer FPGAs.
-This feature will allow us to reduce the overhead of the overlay FPGA circuit, by using the native FPGA's features more directly.
+This feature will allow us to reduce the overhead of the overlay FPGA circuit by using the native FPGA's features more directly.
+This selection limits the use of our circuit to modern Xilinx FPGAs including Spartan 6, Artix 7, Kintex 7, and Virtex 5, 6 and 7.
 
 
 
