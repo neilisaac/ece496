@@ -13,6 +13,22 @@
 \usepackage{ulem}
 \normalem
 
+\usepackage[pdftex]{hyperref}
+\hypersetup{
+	pdfauthor={Neil Isaac and Keyi Shi},
+	pdftitle={Implementation of a virtual FPGA architecture},
+	pdfsubject={Virtual FPGA fabrics},
+	colorlinks=true,
+	anchorcolor=black,
+	linkcolor=blue,
+	citecolor=blue,
+	filecolor=blue,
+	pagecolor=blue,
+	urlcolor=blue,
+	frenchlinks=false,
+	pagebackref=true,
+	bookmarks=true}
+
 %\usepackage{titling}
 %\usepackage{listings}
 %\lstset{language=c}
@@ -39,22 +55,24 @@
 \newcommand{\citationneeded}[0]{\note{citation needed}}
 
 \newenvironment{enumeration}{
+	\setlength{\topsep}{0.0pt}
+	\setlength{\partopsep}{0pt}
+	\setlength{\parskip}{0pt}
+	\setlength{\parsep}{0pt}
 	\begin{enumerate}
-		\setlength{\topsep}{0pt}
-		\setlength{\parskip}{0pt}
-		\setlength{\partopsep}{0pt}
-		\setlength{\parsep}{0pt}
 		\setlength{\itemsep}{0pt}}
 	{\end{enumerate}}
 
 \newenvironment{itemlist}{
+	\setlength{\topsep}{0pt}
+	\setlength{\partopsep}{0pt}
+	\setlength{\parskip}{0pt}
+	\setlength{\parsep}{0pt}
 	\begin{itemize}
-		\setlength{\topsep}{0.0pt}
-		\setlength{\parskip}{0.0pt}
-		\setlength{\partopsep}{0.0pt}
-		\setlength{\parsep}{0.0pt}
-		\setlength{\itemsep}{0.0pt}}
+		\setlength{\itemsep}{0pt}}
 	{\end{itemize}}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
 
 \begin{document}
 
