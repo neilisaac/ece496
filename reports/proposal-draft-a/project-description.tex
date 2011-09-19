@@ -122,25 +122,46 @@ The overlay FPGA circuit must:
 % will be doing statistical measures, indicate the number of samples you will test. The point
 % here is to keep your end goal in mind right from the start of the project.
 
-% validation of functional requirements and constraints
-To ensure that the design will be functional and useful its intended user base, we will test it using selected benchmark circuits commonly used for research purposes.
-The benchmark circuits will be synthesized using ABC and placed and routed using VPR.
-The circuits will then be loaded onto the design and tested for proper functionality.
-This test procedure is intended to ensure that:
+\subsubsection{Functional validation}
+
+To ensure that the overlay FPGA circuit design is functional, we will:
+\begin{enumeration}
+	\item select and use a benchmark circuit commonly used to test VPR,
+	\item configure VPR to match our architecture and dimensions,
+	\item place and route the benchmark circuit with VPR,
+	\item convert the VPR output into a bytestream for the overlay FPGA,
+	\item load the bytestream onto the overlay FPGA, then 
+	\item test the functionality of the benchmark circuit running on the overlay FPGA.
+\end{enumeration}
+This test procedure ensures that:
 \begin{itemlist}
 	\item circuits can be implemented using VPR output,
-	\item circuits can be transferred correctly to the overlay FPGA,
-	\item the overlay FPGA can fit reasonably sized circuits, and
+	\item circuits can be transferred correctly to the overlay FPGA, and
 	\item inputs can be set and outputs can be read.
 \end{itemlist}
-The exact verification process for the benchmark circuits will depend on that circuit's intended function.
-We will need to develop an appropriate testing mechanism for each benchmark circuit used.
+The exact verification process for inputs and outputs will depend on the benchmark circuit's intended function.
+We will need to develop an appropriate testing mechanism for the benchmark circuit.
 
 
-% validation of architectural features objective
+\subsubsection{Size and overhead validation}
+
+To ensure that the overhead is low enough that the overlay FPGA can fit useful circuits, we will test it with a variety of common benchmark circuits.
+\note{We will select these circuits and list them explicitly here.}
+For each circuit, we will:
+\begin{enumeration}
+	\item run synthesis and technology mapping using ABC,
+	\item run placement and routing using VPR configured, and
+	\item confirm that VPR can place and route the benchmark circuit using the number and arrangement of logic blocks that we can fit.
+\end{enumeration}
+We discuss risk mitigation for high overhead in \sectref{risk-size}.
+
+
+\subsubsection{Validation of improvements from architectural optimizations}
+
 To evaluate the benefits of utilizing architectural FPGA features of the host FPGA board, an alternate design can be created that implements the same functionality using only standard verilog.
 The size and timing of the two designs can then be compared to measure any efficiencies gained by the design that uses special FPGA features.
 
 For example, in select Xilinx boards, a lookup table can be used as a 32-bit shift register; the same function could be implemented in plain Verilog using multiplexers and flip-flops, but is expected to be slower and consume more area.
 The two equivalent circuits can be compiled separately in order to compare their resource use and limiting timing path.
 Because the utilization of architectural features limit the design to specific board families, they must be shown to enhance the circuit efficiency of this project in order to justify their use.
+
