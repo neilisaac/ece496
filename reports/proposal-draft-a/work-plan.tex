@@ -37,22 +37,21 @@
 \begin{itemlist}
 	\item Required Software \
 		\begin{itemlist}
-			\item ABC synthesis system - available online\footnote{ABC can be downloaded from: http://www.eecs.berkeley.edu/~alanmi/abc/}
-			\item VPR placement and routing - available online\footnote{VPR 5.0.2 can be downloaded from: http://www.eecg.utoronto.ca/vpr/}
-			\item Vendor FPGA tools: Xilinx ISE - licenses from supervisor
+			\item ABC synthesis system to product input for VPR - available online\footnote{ABC can be downloaded from: \url{http://www.eecs.berkeley.edu/~alanmi/abc/}}
+			\item VPR placement and routing to produce input our input data - available online\footnote{VPR 5.0.2 can be downloaded from: \url{http://www.eecg.utoronto.ca/vpr/}}
+			\item FPGA vendor tools to implement our circuit: Xilinx ISE - licenses through supervisor
 		\end{itemlist}
 	\item Required Hardware \
 		\begin{itemlist}
-			\item FPGA development board - currently using Xilinx Virtex 5 from supervisor.
-We can discuss with our supervisor the possibility of getting alternate boards should the need arise.
-			\item Host computer - personal laptops
-			\item Serial cable and USB adapter - widely available at electronics stores at low prices
+			\item FPGA development board - currently using Xilinx Virtex 5 from supervisor; Spartan 6 boards are also available from supervisor.
+			\item Host computer to program the physical and overlay FPGAs - personal laptops
+			\item Serial cable and USB adapter to interface with overlay FPGA - available at electronics stores
 		\end{itemlist}
 	\item Required Skills and Knowledge \
 		\begin{itemlist}
-			\item Verilog circuit design skilsl - gained from previous coursework and PEY experiences
+			\item Verilog circuit design skills - gained from previous coursework and projects
 			\item Knowledge of FPGA architecture - consulting with supervisor and studying recommended resources
-			\item VPR interfacing - consulting with graduate students
+			\item VPR interfacing - consulting with graduate students who are working on VPR
 		\end{itemlist}
 \end{itemlist}
 
@@ -105,17 +104,27 @@ We can discuss with our supervisor the possibility of getting alternate boards s
 
 \subsubsection{Risk Assessment}
 
+\paragraph{Overlay FPGA implementation overhead}
+
 \begin{itemlist}
-	\item FPGA Size \
+	\item Implementing the overlay's logic cells and interconnect on a physical FPGA will consume more area than the area consumed by an equivalent amount of logic cells and interconnect on the physical FPGA.
+	\item If the overhead is too high, then we may not be able to fit enough logic cells for our benchmark circuits.
+	\item For example, if a benchmark circuit consumes 5\% of a normal FPGA and the overlay has a 20x overhead, then the benchmark circuit may not fit on the overlay FPGA.
+	\item Risk Mitigation strategies: \
 		\begin{itemlist}
-			\item The circuit design may have too much overhead, making it impossible to fit on the selected FPGA board.
-			\item Risk Mitigation: calculate circuitry resources needed for the overall design, and compare to resources available.
-If it's insufficient, either a larger FPGA board must be chosen, or the circuit design needs to be re-done.
+			\item Use a larger, more costly FPGA.
+			\item Look for more architectural features in the physical FPGA that can be exploited to reduce the overhead of the overlay FPGA circuit.
+			\item Use a smaller benchmark circuit for the proof of concept.
 		\end{itemlist}
-	\item Timing \
-		\begin{itemlist}
-			\item Timing on signals travelling between logic blocks may be unbalanced, as in the overlay logically adjacent cells may not be physically adjacent.
-			\item Risk Mitigation: Design a rectangular "tile" containing only one logic block, and tesselate it to create the overall layout to keep timing consistent.
-		\end{itemlist}
+\end{itemlist}
+
+\paragraph{Unbalanced timing}
+
+\begin{itemlist}
+	\item Logic cells in the overlay FPGA would idealy be arranged in a perfect grid, but we expect that the placement algorithm will not produce this arrangement on the physical FPGA.
+	\item This means that the timing delay of two cells to their respective ``right'' neighbours may differ.
+	%\item This means that the timing delay from one cell to its logical ``right'' neighbour may not closely match the timing delay of another cell to its logical ``right'' neighbour.
+	\item If this imbalance is too big, then the performance of the benchmark circuits may not be satisfactory.
+	\item Risk Mitigation: Constrain a ``tile'' containing only one logic block to a rectangular shape, then tesselate it to form a grid, producing a more balanced design.
 \end{itemlist}
 
