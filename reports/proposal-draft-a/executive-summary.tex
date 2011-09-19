@@ -6,6 +6,15 @@
 % Readable as a stand-alone document, clearly differentiated from an introduction
 % Give the contest and MOST IMPORTANT information in the document in a unified fashion
 
-\note{This is an executive summary.  It's light and fluffy and has no page number!}
+Academic studies of Field Programmable Gate Array (FPGA) chip architecture have long relied on simulations, as commercial FPGA chips contain proprietary designs that make their underlying architecture inaccessible to academic researchers.
+The goal of this project is to provide a physical platform for researchers to carry out FPGA architecture studies.
+The finished design should be accessible, functional, and relatively easy to use.
 
+The current proposed design will use an overlay circuit to implement a virtual FPGA on an existing, commercially available FPGA chip.
+Using a commercial FPGA as the physical medium for this project makes the design cheaper and more accessible to the intended users, as they may have an appropriate FPGA chip already.
+The overlay design may include custom architectural elements that may be unique to the host FPGA.
+Although this will limit the type of FPGA chips the overlay can be implemented on, it should theoretically improve the design's area and timing efficiency.
 
+The overlay FPGA is intended to be used in conjunction with VPR, a free, open-source placement and routing tool that is used in FPGA architecture research.
+As such, the validation of the design will involve creating a set of benchmark circuits with VPR, then transferring them to the FPGA overlay.
+The circuits can then be tested for correct behaviour, confirming that the overlay design can be correctly programmed using VPR, and that the inputs and outputs to the design are functioning properly.
