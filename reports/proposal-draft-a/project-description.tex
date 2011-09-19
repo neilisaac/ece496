@@ -60,7 +60,7 @@ They may be interested in testing circuit realizations on a physical medium.
 % cases is to think of what has to be specified to guarantee that another team could exactly
 % duplicate the experiment.
 
-The goal of this project is to produce a circuit design based on the Academic FPGA model that researchers can use to evaluate FPGA architecture, placement, and routing using circuits produced by VPR.
+The goal of this project is to produce a circuit design based on the Academic FPGA model that researchers can use to study FPGA architecture, placement, and routing using circuits produced by VPR.
 
 
 
@@ -97,16 +97,15 @@ Researchers must be able to:
 
 \subsubsection{Constraints}
 
-The overlay FPGA circuit must:
 \begin{itemlist}
-	\item have enough \note{we will quantify this by checking size of VPR benchmark circuits} logic cells to accommodate reasonable test circuits,
-	\item be compatible with accessibly priced commercial FPGAs.
+	\item The overlay circuit must fit a matrix of at least MxN \note{we will quantify this by checking size of VPR benchmark circuits} logic cells to accommodate reasonable test circuits.
 \end{itemlist}
 
 
 \subsubsection{Objectives}
 
 \begin{itemlist}
+	\item Be compatible with accessibly priced commercial FPGAs.
 	\item Take advantage of the underlying FPGA architectural features in the overlay FPGA design to reduce area and latency.
 \end{itemlist}
 
