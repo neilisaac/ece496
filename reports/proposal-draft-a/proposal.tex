@@ -29,6 +29,9 @@
 	pagebackref=true,
 	bookmarks=true}
 
+% make links to figures jump to position above the figure
+%\usepackage[all]{hypercap}
+
 %\usepackage{titling}
 %\usepackage{listings}
 %\lstset{language=c}
@@ -72,7 +75,7 @@
 		\setlength{\itemsep}{0pt}}
 	{\end{itemize}}
 
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+%\renewcommand{\thefootnote}{\roman{footnote}}
 
 \begin{document}
 
@@ -82,7 +85,7 @@
 
 \include{executive-summary}
 
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{3}
 \tableofcontents
 %\listoffigures
 %\listoftables

@@ -12,5 +12,5 @@ cat:
 	pdftk A=cover.pdf B=proposal.pdf cat A B output combined.pdf keep_final_id
 
 clean:
-	rm -f *.aux *.pdf *.log *.bbl *.blg *.lot *.lof *.toc
+	rm -f *.aux *.log *.bbl *.blg *.lot *.lof *.toc *.synctex.gz
 
