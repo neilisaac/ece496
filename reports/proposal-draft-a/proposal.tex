@@ -13,6 +13,9 @@
 \usepackage{ulem}
 \normalem
 
+% push footnotes to the bottom of the page unconditionally
+\usepackage[bottom]{footmisc}
+
 \usepackage[pdftex]{hyperref}
 \hypersetup{
 	pdfauthor={Neil Isaac and Keyi Shi},
@@ -75,6 +78,8 @@
 		\setlength{\itemsep}{0pt}}
 	{\end{itemize}}
 
+\newcommand{\sectref}[1]{section \ref{#1}}
+
 %\renewcommand{\thefootnote}{\roman{footnote}}
 
 \begin{document}
@@ -85,15 +90,15 @@
 
 \include{executive-summary}
 
-\setcounter{tocdepth}{3}
+\setcounter{tocdepth}{2}
 \tableofcontents
 %\listoffigures
 %\listoftables
 \pagebreak
 
-\include{project-description}
-\include{technical-design}
-\include{work-plan}
+\input{project-description}
+\input{technical-design}
+\input{work-plan}
 
 \pagebreak
 %\nocite{*} % show uncited entries in the bibliography
