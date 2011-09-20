@@ -158,7 +158,7 @@ We discuss risk mitigation for high overhead in \sectref{risk-size}.
 \subsubsection{Validation of improvements from architectural optimizations}
 
 To evaluate the benefits of utilizing architectural FPGA features of the host FPGA board, an alternate design can be created that implements the same functionality using only standard verilog.
-The size and timing of the two designs can then be compared to measure any efficiencies gained by the design that uses special FPGA features.
+The size and timing of the two designs can then be compared to measure any efficiency gained by the design that uses special FPGA features.
 
 For example, in select Xilinx boards, a lookup table can be used as a 32-bit shift register; the same function could be implemented in plain Verilog using multiplexers and flip-flops, but is expected to be slower and consume more area.
 The two equivalent circuits can be compiled separately in order to compare their resource use and limiting timing path.
