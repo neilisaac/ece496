@@ -29,7 +29,7 @@
 % remainder of the project. These groups can include some of their previous work as an
 % attachment in the appendix.
 
-Academic researchers who study Field Programmable Gate Array (FPGA) design commonly use variations of an FPGA design model, described by Kuon et al\cite{fpga}, which we will refer to as the \emph{Academic FPGA Model}.
+Academic researchers who study Field Programmable Gate Array (FPGA) design commonly use variations of an FPGA design architecture, described by Kuon et al\cite{fpga}, which we will refer to as the \emph{Academic FPGA Model}.
 While FPGA chips are available from a variety of commercial vendors, their design is largely proprietary, making their architectures difficult to study.\citationneeded
 Furthermore, there is no existing physical implementation\footnote{Alex Brant is also developing a comparable FPGA overlay platform with Prof. Guy Lemieux at University of British Columbia.} of an Academic FPGA Model.
 
@@ -37,7 +37,7 @@ One of the tools used in FPGA architecture research is VPR\cite{vpr}.
 VPR is a free, open-source placement and routing tool that accepts a wide variety of architecture parameters. \citationneeded
 It is not currently possible to realize VPR output on a commercial FPGA.\footnote{A technology-mapped input netlist for VPR can be converted to an Altera Quartus VQM netlist file using \emph{nettovqm}\cite{nettovqm}, but the placement and routing can not be converted.}
 
-As such, Computer Aided Design (CAD) researchers who work on placement and routing algorithms for FPGA designs are presently limited to using simulations to evaluate their work.
+As such, Computer Aided Design (CAD) researchers who work on placement and routing algorithms for FPGA designs are presently limited to using simulations to evaluate or verify their work.
 They may be interested in testing circuit realizations on a physical medium.
 
 
@@ -60,7 +60,8 @@ They may be interested in testing circuit realizations on a physical medium.
 % cases is to think of what has to be specified to guarantee that another team could exactly
 % duplicate the experiment.
 
-The goal of this project is to produce a circuit design based on the Academic FPGA model that researchers can use to study FPGA architecture, placement, and routing using circuits produced by VPR.
+The goal of this project is to produce a circuit design based on the Academic FPGA model.
+Researchers will be able to use the circuit to study FPGA architecture and CAD algorithms with circuits produced by VPR.
 
 
 
@@ -98,7 +99,7 @@ Researchers must be able to:
 \subsubsection{Constraints}
 
 \begin{itemlist}
-	\item The overlay circuit must fit a matrix of at least MxN \note{we will quantify this by checking size of VPR benchmark circuits} logic cells to accommodate reasonable test circuits.
+	\item The overlay circuit must support at least 3000 logic cells\footnote{3000 logic cells was choosen as the minimum target because the largest of the ``Golden 20'' circuits, \emph{``s38417''} requires 2567 6-input logic cells\cite{synthesis-density}.} in order to accommodate the \emph{``Golden 20''} MCNC benchmark circuits\footnote{The ``Golden 20'' MCNC circuits are available in BLIF format at \url{http://www.ece.ubc.ca/~julienl/benchmarks.htm}.} commonly used in FPGA research.
 \end{itemlist}
 
 
@@ -144,8 +145,7 @@ We will need to develop an appropriate testing mechanism for the benchmark circu
 
 \subsubsection{Size and overhead validation}
 
-To ensure that the overhead is low enough that the overlay FPGA can fit useful circuits, we will test it with a variety of common benchmark circuits.
-\note{We will select these circuits and list them explicitly here.}
+To ensure that the overhead is low enough that the overlay FPGA can fit useful circuits, we will test it using the \emph{``Golden 20''} MCNC benchmark circuits.
 For each circuit, we will:
 \begin{enumeration}
 	\item run synthesis and technology mapping using ABC,
