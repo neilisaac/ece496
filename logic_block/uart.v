@@ -1,213 +1,95 @@
-// Documented Verilog UART
-// Copyright (C) 2010 Timothy Goddard (tim@goddard.net.nz)
-// Distributed under the MIT licence.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+module UART (
+	input SCLK,
+	input RESET,
+	input RX,
+	input TX_VALID,
+	input [7:0] TX_DATA,
+	output reg RX_VALID,
+	output reg [7:0] RX_DATA,
+	output reg TX,
+	output TX_READY
+);
 
-module UART(
-    input CLK, // The master clock for this module
-    input RST, // Synchronous reset.
-    input RX, // Incoming serial line
-    output TX, // Outgoing serial line
-    input TRANSMIT, // Signal to TRANSMIT
-    input [7:0] TX_BYTE, // Byte to TRANSMIT
-    output RECEIVED, // Indicated that a byte has been RECEIVED.
-    output [7:0] RX_BYTE, // Byte RECEIVED
-    output IS_RECEIVING, // Low when receive line is idle.
-    output IS_TRANSMITTING, // Low when TRANSMIT line is idle.
-    output RECV_ERR // Indicates error in receiving packet.
-    );
 
-parameter CLOCK_DIVIDE = 2604; // clock rate (100Mhz) / (baud rate (9600) * 4)
+reg sync;
+reg [13:0] clk_count;
 
-// States for the receiving state machine.
-// These are just constants, not parameters to override.
-parameter RX_IDLE = 0;
-parameter RX_CHECK_START = 1;
-parameter RX_READ_BITS = 2;
-parameter RX_CHECK_STOP = 3;
-parameter RX_DELAY_RESTART = 4;
-parameter RX_ERR = 5;
-parameter RX_RECEIVED = 6;
-
-// States for the TRANSMITting state machine.
-// Constants - do not override.
-parameter TX_IDLE = 0;
-parameter TX_SENDING = 1;
-parameter TX_DELAY_RESTART = 2;
-
-reg [11:0] rx_clk_divider = CLOCK_DIVIDE;
-reg [11:0] tx_clk_divider = CLOCK_DIVIDE;
-
-reg [2:0] recv_state = RX_IDLE;
-reg [5:0] rx_countdown;
-reg [3:0] rx_bits_remaining;
-reg [7:0] rx_data;
-
-reg tx_out = 1'b1;
-reg [1:0] tx_state = TX_IDLE;
-reg [5:0] tx_countdown;
-reg [3:0] tx_bits_remaining;
-reg [7:0] tx_data;
-
-assign RECEIVED = recv_state == RX_RECEIVED;
-assign RECV_ERR = recv_state == RX_ERR;
-assign IS_RECEIVING = recv_state != RX_IDLE;
-assign RX_BYTE = rx_data;
-
-assign TX = tx_out;
-assign IS_TRANSMITTING = tx_state != TX_IDLE;
-
-always @(posedge CLK) begin
-	if (RST) begin
-		recv_state = RX_IDLE;
-		tx_state = TX_IDLE;
-	end
-	
-	// The clk_divider counter counts down from
-	// the CLOCK_DIVIDE constant. Whenever it
-	// reaches 0, 1/16 of the bit period has elapsed.
-   // Countdown timers for the receiving and TRANSMITting
-	// state machines are decremented.
-	rx_clk_divider = rx_clk_divider - 1;
-	if (!rx_clk_divider) begin
-		rx_clk_divider = CLOCK_DIVIDE;
-		rx_countdown = rx_countdown - 1;
-	end
-	tx_clk_divider = tx_clk_divider - 1;
-	if (!tx_clk_divider) begin
-		tx_clk_divider = CLOCK_DIVIDE;
-		tx_countdown = tx_countdown - 1;
-	end
-	
-	// Receive state machine
-	case (recv_state)
-		RX_IDLE: begin
-			// A low pulse on the receive line indicates the
-			// start of data.
-			if (!RX) begin
-				// Wait half the period - should resume in the
-				// middle of this first pulse.
-				rx_clk_divider = CLOCK_DIVIDE;
-				rx_countdown = 2;
-				recv_state = RX_CHECK_START;
-			end
-		end
-		RX_CHECK_START: begin
-			if (!rx_countdown) begin
-				// Check the pulse is still there
-				if (!RX) begin
-					// Pulse still there - good
-					// Wait the bit period to resume half-way
-					// through the first bit.
-					rx_countdown = 4;
-					rx_bits_remaining = 8;
-					recv_state = RX_READ_BITS;
-				end else begin
-					// Pulse lasted less than half the period -
-					// not a valid transmission.
-					recv_state = RX_ERR;
-				end
-			end
-		end
-		RX_READ_BITS: begin
-			if (!rx_countdown) begin
-				// Should be half-way through a bit pulse here.
-				// Read this bit in, wait for the next if we
-				// have more to get.
-				rx_data = {RX, rx_data[7:1]};
-				rx_countdown = 4;
-				rx_bits_remaining = rx_bits_remaining - 1;
-				recv_state = rx_bits_remaining ? RX_READ_BITS : RX_CHECK_STOP;
-			end
-		end
-		RX_CHECK_STOP: begin
-			if (!rx_countdown) begin
-				// Should resume half-way through the stop bit
-				// This should be high - if not, reject the
-				// transmission and signal an error.
-				recv_state = RX ? RX_RECEIVED : RX_ERR;
-			end
-		end
-		RX_DELAY_RESTART: begin
-			// Waits a set number of cycles before accepting
-			// another transmission.
-			recv_state = rx_countdown ? RX_DELAY_RESTART : RX_IDLE;
-		end
-		RX_ERR: begin
-			// There was an error receiving.
-			// Raises the RECV_ERR flag for one clock
-			// cycle while in this state and then waits
-			// 2 bit periods before accepting another
-			// transmission.
-			rx_countdown = 8;
-			recv_state = RX_DELAY_RESTART;
-		end
-		RX_RECEIVED: begin
-			// Successfully RECEIVED a byte.
-			// Raises the RECEIVED flag for one clock
-			// cycle while in this state.
-			recv_state = RX_IDLE;
-		end
-	endcase
-	
-	// Transmit state machine
-	case (tx_state)
-		TX_IDLE: begin
-			if (TRANSMIT) begin
-				// If the transmit flag is raised in the idle
-				// state, start transmitting the current content
-				// of the TX_BYTE input.
-				tx_data = TX_BYTE;
-				// Send the initial, low pulse of 1 bit period
-				// to signal the start, followed by the data
-				tx_clk_divider = CLOCK_DIVIDE;
-				tx_countdown = 4;
-				tx_out = 0;
-				tx_bits_remaining = 8;
-				tx_state = TX_SENDING;
-			end
-		end
-		TX_SENDING: begin
-			if (!tx_countdown) begin
-				if (tx_bits_remaining) begin
-					tx_bits_remaining = tx_bits_remaining - 1;
-					tx_out = tx_data[0];
-					tx_data = {1'b0, tx_data[7:1]};
-					tx_countdown = 4;
-					tx_state = TX_SENDING;
-				end else begin
-					// Set delay to send out 2 stop bits.
-					tx_out = 1;
-					tx_countdown = 8;
-					tx_state = TX_DELAY_RESTART;
-				end
-			end
-		end
-		TX_DELAY_RESTART: begin
-			// Wait until tx_countdown reaches the end before
-			// we send another transmission. This covers the
-			// "stop bit" delay.
-			tx_state = tx_countdown ? TX_DELAY_RESTART : TX_IDLE;
-		end
-	endcase
+always @ (posedge SCLK) begin
+	if (clk_count == 10417 || sync)
+		clk_count <= 0;
+	else
+		clk_count <= clk_count + 1;
 end
+
+wire uart_clk = (clk_count == 5208);
+
+
+reg read;
+reg [3:0] read_count;
+
+always @ (posedge SCLK) begin
+	RX_VALID <= 0;
+	sync <= 0;
+
+	if (RESET) begin
+		read <= 0;
+		read_count <= 0;
+		RX_DATA <= 0;
+	end
+
+	else if (uart_clk & read) begin
+		if (read_count == 9) begin
+			RX_VALID <= 1;
+			read <= 0;
+		end else begin
+			RX_DATA <= { RX, RX_DATA[7:1] };
+			read_count <= read_count + 1;
+		end
+	end
+
+	else if (~read & ~RX) begin
+		sync <= 1;
+		read <= 1;
+		read_count <= 0;
+	end
+end
+
+
+reg write;
+reg [3:0] write_count;
+reg [7:0] write_buffer;
+
+always @ (posedge SCLK) begin
+
+	if (RESET) begin
+		write <= 0;
+		write_count <= 0;
+		write_buffer <= 0;
+		TX <= 1;
+	end
+
+	else if (uart_clk & write) begin
+		TX <= write_buffer[0];
+		write_buffer <= write_buffer >> 1;
+		write_count <= write_count + 1;
+
+		if (write_count >= 8)
+			TX <= 1;
+		
+		if (write_count == 9)
+			write <= 0;
+	end
+
+	else if (TX_READY & TX_VALID) begin
+		write <= 1;
+		write_count <= 0;
+		write_buffer <= TX_DATA;
+		TX <= 0;
+	end
+end
+
+assign TX_READY = ~write;
+
 
 endmodule
 

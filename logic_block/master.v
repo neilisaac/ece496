@@ -11,21 +11,21 @@ module MASTER (
 
 
 wire uart_rx_valid;
-wire uart_tx_busy;
+wire uart_tx_ready;
 wire uart_tx_valid;
 wire [7:0] uart_rx_data;
 wire [7:0] uart_tx_data;
 
 UART UART_inst (
-	.CLK(SYSCLK),
-	.RST(~SYSRST),
+	.SCLK(SYSCLK),
+	.RESET(~SYSRST),
 	.RX(UART_RX),
-	.RECEIVED(uart_rx_valid),
-	.RX_BYTE(uart_rx_data),
+	.RX_VALID(uart_rx_valid),
+	.RX_DATA(uart_rx_data),
 	.TX(UART_TX),
-	.IS_TRANSMITTING(uart_tx_busy),
-	.TRANSMIT(uart_tx_valid),
-	.TX_BYTE(uart_tx_data)
+	.TX_READY(uart_tx_ready),
+	.TX_VALID(uart_tx_valid),
+	.TX_DATA(uart_tx_data)
 );
 
 
@@ -36,7 +36,7 @@ wire shift_enable;
 DECODER decoder_inst (
 	.SCLK(SYSCLK),
 	.RESET(~SYSRST),
-	.UART_READY(~uart_tx_busy),
+	.UART_READY(uart_tx_ready),
 	.RX_VALID(uart_rx_valid),
 	.TX_VALID(uart_tx_valid),
 	.RX_DATA(uart_rx_data),
@@ -67,7 +67,11 @@ LOGIC_BLOCK lb_inst (
 	.OUT	(ble_out)
 );
 
-assign LEDS = { 4'b0, ble_out };
+reg [7:0] test;
+always @ (posedge SYSCLK) if (uart_rx_valid) test <= uart_rx_data;
+assign LEDS = PUSH_S ? ble_out : test;
+
+//assign LEDS = { 4'b0, ble_out };
 assign { LED_N, LED_W, LED_S, LED_E, LED_C } = { PUSH_N, PUSH_W, PUSH_S, PUSH_E, PUSH_C };
 
 
