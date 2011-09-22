@@ -12,16 +12,16 @@ module UART (
 
 
 reg sync;
-reg [13:0] clk_count;
+reg [9:0] clk_count;
 
 always @ (posedge SCLK) begin
-	if (clk_count == 10417 || sync)
+	if (clk_count == 868 || sync)
 		clk_count <= 0;
 	else
 		clk_count <= clk_count + 1;
 end
 
-wire uart_clk = (clk_count == 5208);
+wire uart_clk = (clk_count == 434);
 
 
 reg read;

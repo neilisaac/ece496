@@ -11,7 +11,7 @@ parser = optparse.OptionParser()
 parser.add_option("-d", "--device", dest="device", type="string",
 		default="/dev/ttyUSB0", help="serial port device")
 parser.add_option("-b", "--baud", dest="baud", type="int",
-		default=115200, help="device baud rate")
+		default=9600, help="device baud rate")
 parser.add_option("-t", "--timeout", dest="timeout", type="float",
 		default=0.1, help="device write timeout")
 

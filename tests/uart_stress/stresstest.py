@@ -4,7 +4,7 @@ import sys
 import time
 import serial
 
-s = serial.Serial("/dev/ttyS0", baudrate=115200, timeout=1,
+s = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1,
 		bytesize=8, parity=serial.PARITY_NONE)
 
 count = 0
