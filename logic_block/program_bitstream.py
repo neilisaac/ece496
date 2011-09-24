@@ -11,14 +11,14 @@ parser = optparse.OptionParser()
 parser.add_option("-d", "--device", dest="device", type="string",
 		default="/dev/ttyUSB0", help="serial port device")
 parser.add_option("-b", "--baud", dest="baud", type="int",
-		default=9600, help="device baud rate")
+		default=115200, help="device baud rate")
 parser.add_option("-t", "--timeout", dest="timeout", type="float",
 		default=0.1, help="device write timeout")
 
 options, args = parser.parse_args(sys.argv)
 
 s = serial.Serial(options.device, baudrate=options.baud, timeout=options.timeout,
-		bytesize=8, parity=serial.PARITY_NONE)
+		bytesize=8, parity=serial.PARITY_EVEN)
 
 def serialize(values):
 	bytelist = list()
@@ -66,6 +66,7 @@ data = list()
 # connect inputs of all LUTs to DIP[5:0]
 for value in [ 9, 8, 7, 6, 5, 4, 9, 8, 7, 6, 5, 4, 9, 8, 7, 6, 5, 4, 9, 8, 7, 6, 5, 4 ]:
 	data.extend(xbarstream(value, 16, 5))
+	#data.append((value, 4))
 
 data.extend([
 		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
@@ -80,17 +81,16 @@ data.extend([
 	])
 
 for value in serialize(data):
-	s.write(chr(value))
-
-	time.sleep(0.001)
-
-	read = s.read()
-	if len(read) == 0:
-		print "failed to read result!"
+	for i in range(5):
+		s.write(chr(value))
+		read = s.read()
+		if len(read) > 0:
+			break
+	else:
+		print "no response for {0:d} {:08:b}!".format(value)
 		break
 
 	read = ord(read)
-
 	if read != value:
 		print "value read doesn't match value sent!"
 		print "{:08b} -> {:08b}".format(value, read)

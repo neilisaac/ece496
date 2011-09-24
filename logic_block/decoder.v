@@ -26,6 +26,12 @@ always @ (posedge SCLK) begin
 		head_reg <= 0;
 	end
 
+	else if (RX_VALID) begin
+		shifting_head <= 1;
+		head_shift_count <= 0;
+		head_reg <= RX_DATA;
+	end
+
 	else if (head_shift_count == 7) begin
 		shifting_head <= 0;
 	end
@@ -33,12 +39,6 @@ always @ (posedge SCLK) begin
 	else if (shifting_head) begin
 		head_shift_count <= head_shift_count + 1;
 		head_reg <= head_reg << 1;
-	end
-
-	else if (RX_VALID) begin
-		shifting_head <= 1;
-		head_shift_count <= 0;
-		head_reg <= RX_DATA;
 	end
 end
 

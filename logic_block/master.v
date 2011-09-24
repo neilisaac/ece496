@@ -68,8 +68,8 @@ LOGIC_BLOCK lb_inst (
 );
 
 reg [7:0] test;
-always @ (posedge SYSCLK) if (uart_rx_valid) test <= uart_rx_data;
-assign LEDS = PUSH_S ? ble_out : test;
+always @ (posedge SYSCLK) if (shift_enable) test <= { shift_head, test[7:1] };
+assign LEDS = PUSH_S ? test : ble_out;
 
 //assign LEDS = { 4'b0, ble_out };
 assign { LED_N, LED_W, LED_S, LED_E, LED_C } = { PUSH_N, PUSH_W, PUSH_S, PUSH_E, PUSH_C };
