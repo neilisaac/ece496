@@ -21,54 +21,110 @@ assign scan_chain[0] = SIN;
 
 genvar i;
 generate //generate muxes into logic block 1
-	for (i=0; i<O; i=i+1) begin : LB1OUTMux
-		LayerMux2 # (.N(N*2)) LB1OUTMux_inst (
-		.A(cb_input),
-		.CE(CE),
-		.CLK(CLK),
-		.SIN(scan_chain[i]),
-		.Z(LB1_OUT[i]),
-		.SOUT(scan_chain[i+1])
-		);
+	if (N*2<26) begin: LB1OUTLay2
+		for (i=0; i<O; i=i+1) begin : LB1OUTMux
+			LayerMux2 # (.N(N*2)) LB1OUTMux_inst (
+			.A(cb_input),
+			.CE(CE),
+			.CLK(CLK),
+			.SIN(scan_chain[i]),
+			.Z(LB1_OUT[i]),
+			.SOUT(scan_chain[i+1])
+			);
+		end
+	end
+	else begin: LB1OUTLay3
+		for (i=0; i<O; i=i+1) begin : LB1OUTMux
+			LayerMux3 # (.N(N*2)) LB1OUTMux_inst (
+			.A(cb_input),
+			.CE(CE),
+			.CLK(CLK),
+			.SIN(scan_chain[i]),
+			.Z(LB1_OUT[i]),
+			.SOUT(scan_chain[i+1])
+			);
+		end
 	end
 endgenerate
 
 generate //generate muxes into logic block 2
-	for (i=0; i<O; i=i+1) begin : LB2OUTMux
-		LayerMux2 # (.N(N*2)) LB2OUTMux_inst (
-		.A(cb_input),
-		.CE(CE),
-		.CLK(CLK),
-		.SIN(scan_chain[O+i]),
-		.Z(LB2_OUT[i]),
-		.SOUT(scan_chain[O+i+1])
-		);
+	if (N*2<26) begin: LB2OUTLay2
+		for (i=0; i<O; i=i+1) begin : LB2OUTMux
+			LayerMux2 # (.N(N*2)) LB2OUTMux_inst (
+			.A(cb_input),
+			.CE(CE),
+			.CLK(CLK),
+			.SIN(scan_chain[O+i]),
+			.Z(LB2_OUT[i]),
+			.SOUT(scan_chain[O+i+1])
+			);
+		end
+	end
+	else begin: LB2OUTLay3
+		for (i=0; i<O; i=i+1) begin : LB2OUTMux
+			LayerMux3 # (.N(N*2)) LB2OUTMux_inst (
+			.A(cb_input),
+			.CE(CE),
+			.CLK(CLK),
+			.SIN(scan_chain[O+i]),
+			.Z(LB2_OUT[i]),
+			.SOUT(scan_chain[O+i+1])
+			);
+		end
 	end
 endgenerate
 
 generate //generate muxes for CB output in direction 1
-	for (i=0; i<N; i=i+1) begin : CB1OUTMux
-		LayerMux2 # (.N(P*2+1)) CB1OUTMux_inst (
-		.A({CB2_IN[i],lb_input}),
-		.CE(CE),
-		.CLK(CLK),
-		.SIN(scan_chain[2*O+i]),
-		.Z(CB1_OUT[i]),
-		.SOUT(scan_chain[2*O+i+1])
-		);
+	if (P*2+1<26) begin: CB1OUTLay2
+		for (i=0; i<N; i=i+1) begin : CB1OUTMux
+			LayerMux2 # (.N(P*2+1)) CB1OUTMux_inst (
+			.A({CB2_IN[i],lb_input}),
+			.CE(CE),
+			.CLK(CLK),
+			.SIN(scan_chain[2*O+i]),
+			.Z(CB1_OUT[i]),
+			.SOUT(scan_chain[2*O+i+1])
+			);
+		end
+	end
+	else begin: CB1OUTLay3
+		for (i=0; i<N; i=i+1) begin : CB1OUTMux
+			LayerMux3 # (.N(P*2+1)) CB1OUTMux_inst (
+			.A({CB2_IN[i],lb_input}),
+			.CE(CE),
+			.CLK(CLK),
+			.SIN(scan_chain[2*O+i]),
+			.Z(CB1_OUT[i]),
+			.SOUT(scan_chain[2*O+i+1])
+			);
+		end
 	end
 endgenerate
 
 generate //generate muxes for CB output in direction 2
-	for (i=0; i<N; i=i+1) begin : CB2OUTMux
-		LayerMux2 # (.N(P*2+1)) CB2OUTMux_inst (
-		.A({CB1_IN[i],lb_input}),
-		.CE(CE),
-		.CLK(CLK),
-		.SIN(scan_chain[2*O+N+i]),
-		.Z(CB2_OUT[i]),
-		.SOUT(scan_chain[2*O+N+i+1])
-		);
+	if (P*2+1<26) begin: CB2OUTLay2
+		for (i=0; i<N; i=i+1) begin : CB2OUTMux
+			LayerMux2 # (.N(P*2+1)) CB2OUTMux_inst (
+			.A({CB1_IN[i],lb_input}),
+			.CE(CE),
+			.CLK(CLK),
+			.SIN(scan_chain[2*O+N+i]),
+			.Z(CB2_OUT[i]),
+			.SOUT(scan_chain[2*O+N+i+1])
+			);
+		end
+	end
+	else begin: CB2OUTLay3
+		for (i=0; i<N; i=i+1) begin : CB2OUTMux
+			LayerMux3 # (.N(P*2+1)) CB2OUTMux_inst (
+			.A({CB1_IN[i],lb_input}),
+			.CE(CE),
+			.CLK(CLK),
+			.SIN(scan_chain[2*O+N+i]),
+			.Z(CB2_OUT[i]),
+			.SOUT(scan_chain[2*O+N+i+1])
+			);
+		end
 	end
 endgenerate
 
