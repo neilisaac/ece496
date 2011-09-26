@@ -113,6 +113,14 @@ If added features or a reevaluation of the design add configuration complexity, 
 % section does not need to be long, but ensures that you can provide some justification for
 % your design decisions to date.
 
+The decision to take advantage of the custom 32-bit shift registers in implementing our design entails the following trade-offs versus using only basic verilog logic:
+\begin{itemlist}
+	\item The design is more efficient area and timing-wise
+	\item The bitstream needed to program the design will be larger
+	\item The maximum size of the design will be limited by the amount of 32-bit shift registers available on the FPGA board, as opposed to the amount of flops.
+	\item The design will be incompatible with boards that do not have custom 32-bit shift registers, although adaptations to the design can be made in the future to support alternative FPGA boards.
+\end{itemlist}
+
 
 
 
