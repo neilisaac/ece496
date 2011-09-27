@@ -100,7 +100,7 @@ Researchers must be able to:
 \subsubsection{Constraints}
 
 \begin{itemlist}
-	\item The overlay circuit must support at least 3000 logic cells\footnote{3000 logic cells was choosen as the minimum target because the largest of the ``Golden 20'' circuits, \emph{``s38417''} requires 2567 6-input logic cells\cite{synthesis-density}.} in order to accommodate the \emph{``Golden 20''} MCNC benchmark circuits\footnote{The ``Golden 20'' MCNC circuits are available in BLIF format at \url{http://www.ece.ubc.ca/~julienl/benchmarks.htm}.} commonly used in FPGA research.
+	\item The overlay circuit must support at least 3000 logic cells\footnote{3000 logic cells was chosen as the minimum target because the largest of the ``Golden 20'' circuits, \emph{``s38417''} requires 2567 6-input logic cells\cite{synthesis-density}.} in order to accommodate the \emph{``Golden 20''} MCNC benchmark circuits\footnote{The ``Golden 20'' MCNC circuits are available in BLIF format at \url{http://www.ece.ubc.ca/~julienl/benchmarks.htm}.} commonly used in FPGA research.
 \end{itemlist}
 
 
@@ -158,11 +158,11 @@ We discuss risk mitigation for high overhead in \sectref{risk-size}.
 
 \subsubsection{Validation of improvements from architectural optimizations}
 
-To evaluate the benefits of utilizing architectural FPGA features of the host FPGA board, an alternate design can be created that implements the same functionality using only standard verilog.
+To evaluate the benefits of utilizing architectural FPGA features of the host FPGA board, an alternate design can be created that implements the same functionality using only standard Verilog.
 The size and timing of the two designs can then be compared to measure any efficiency gained by the design that uses special FPGA features.
 
 For example, in select Xilinx boards, a lookup table can be used as a 32-bit shift register; the same function could be implemented in plain Verilog using multiplexers and flip-flops, but is expected to be slower and consume more area.
 The two equivalent circuits can be compiled separately in order to compare their resource use and limiting timing path.
 
-Because the utilization of architectural features limit the design to specific board families, we will demonstrate that they enhace the circuit efficiency for the project in order to justify their use.
+Because the utilization of architectural features limit the design to specific board families, we will demonstrate that they enhance the circuit efficiency for the project in order to justify their use.
 
