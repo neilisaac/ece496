@@ -118,10 +118,11 @@ The decision to take advantage of the custom 32-bit shift registers in implement
 	\item The design is more efficient area and timing-wise
 	\item The bitstream needed to program the design will be larger
 	\item The maximum size of the design will be limited by the amount of 32-bit shift registers available on the FPGA board, as opposed to the amount of flops.
-	\item The design will be incompatible with boards that do not have custom 32-bit shift registers, although adaptations to the design can be made in the future to support alternative FPGA boards.
+	\item The design will be incompatible with boards that do not have custom 32-bit shift registers
 \end{itemlist}
 
-
+We decided that the performance efficiency outweighed the negative aspects of the larger bitstream and limitation of implementation platforms.
+If the design is successful, adaptations can be made in the future to support the implementation of the design on more FPGA boards.
 
 
 
