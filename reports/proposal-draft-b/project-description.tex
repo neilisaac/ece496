@@ -30,15 +30,16 @@
 % attachment in the appendix.
 
 Academic researchers who study Field Programmable Gate Array (FPGA) design commonly use variations of an FPGA design architecture, described by Kuon et al\cite{fpga}, which we will refer to as the \emph{Academic FPGA Model}.
-While FPGA chips are available from a variety of commercial vendors, their design is largely proprietary, making their architectures difficult to study.\citationneeded
+While FPGA chips are available from a variety of commercial vendors, their inner design is proprietary, making their architectures difficult to study.
 Furthermore, there is no existing physical implementation\footnote{Alex Brant is also developing a comparable FPGA overlay platform with Prof. Guy Lemieux at University of British Columbia.} of an Academic FPGA Model.
 
 One of the tools used in FPGA architecture research is VPR\cite{vpr}.
-VPR is a free, open-source placement and routing tool that accepts a wide variety of architecture parameters. \citationneeded
-It is not currently possible to realize VPR output on a commercial FPGA.\footnote{A technology-mapped input netlist for VPR can be converted to an Altera Quartus VQM netlist file using \emph{nettovqm}\cite{nettovqm}, but the placement and routing can not be converted.}
+VPR is an open-source placement and routing tool that accepts a wide variety of architecture parameters.
+It can handle many variations of the Academic FPGA Model.
+It is not currently possible to realize circuits produced by VPR on a commercial FPGA.\footnote{A technology-mapped input netlist for VPR can be converted to an Altera Quartus VQM netlist file using \emph{nettovqm}\cite{nettovqm}, but the placement and routing can not be converted.}
 
 As such, Computer Aided Design (CAD) researchers who work on placement and routing algorithms for FPGA designs are presently limited to using simulations to evaluate or verify their work.
-They may be interested in testing circuit realizations on a physical medium.
+They may be interested in testing circuits on a physical medium because it would be much faster than simulating the circuits.
 
 
 
@@ -60,7 +61,7 @@ They may be interested in testing circuit realizations on a physical medium.
 % cases is to think of what has to be specified to guarantee that another team could exactly
 % duplicate the experiment.
 
-The goal of this project is to produce a circuit design based on the Academic FPGA model.
+The goal of this project is to produce a circuit design based on the Academic FPGA Model.
 Researchers will be able to use the circuit to study FPGA architecture and CAD algorithms with circuits produced by VPR.
 
 
@@ -91,7 +92,7 @@ Researchers must be able to:
 \begin{itemlist}
 	\item implement the overlay FPGA circuit on commercially available FPGA chips,
 	\item tune the number, arrangement, and logic cell connectivity of the overlay FPGA,
-	\item program the overlay FPGA using an output circuit from VPR,
+	\item program the overlay FPGA using a circuit produced by VPR,
 	\item modify the inputs and outputs of the overlay FPGA.
 \end{itemlist}
 
@@ -106,7 +107,7 @@ Researchers must be able to:
 \subsubsection{Objectives}
 
 \begin{itemlist}
-	\item Be compatible with accessibly priced commercial FPGAs.
+	\item Be compatible with commercial FPGAs that are available to researchers.
 	\item Take advantage of the underlying FPGA architectural features in the overlay FPGA design to reduce area and latency.
 \end{itemlist}
 
@@ -162,5 +163,6 @@ The size and timing of the two designs can then be compared to measure any effic
 
 For example, in select Xilinx boards, a lookup table can be used as a 32-bit shift register; the same function could be implemented in plain Verilog using multiplexers and flip-flops, but is expected to be slower and consume more area.
 The two equivalent circuits can be compiled separately in order to compare their resource use and limiting timing path.
-Because the utilization of architectural features limit the design to specific board families, they must be shown to enhance the circuit efficiency of this project in order to justify their use.
+
+Because the utilization of architectural features limit the design to specific board families, we will demonstrate that they enhace the circuit efficiency for the project in order to justify their use.
 

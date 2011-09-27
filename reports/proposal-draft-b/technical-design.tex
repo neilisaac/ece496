@@ -68,7 +68,7 @@ The alternatives are as follows:
 				\begin{itemlist}
 					\item Higher cost than Xilinx Spartan FPGAs.
 					\item Large FPGAs with up to 820,000 logic cells for Stratix IV\cite{altera-stratix4} and up to 952,000 for Stratix V\cite{altera-stratix5}.
-					\item \note{check for something similar to SRL32}
+					\item Features a similar 32-bit shift register, but it isn't directly compatible with the Xilinx boards.
 				\end{itemlist}
 		\end{enumeration}
 	\end{itemlist}
@@ -95,7 +95,7 @@ There are two alternatives for the implementation of the configuration mechanism
 		\end{itemlist}
 	\item Software front end to generate Verilog code \
 		\begin{itemlist}
-			\item The front end interface could be easier to use than modifying Verilog code.
+			\item The generation software would be easier to use than modifying Verilog code.
 			\item Front end code will be easier to write than parameterized Verilog.
 			\item User may need to install a compiler or interpreter to run the software.
 		\end{itemlist}
@@ -115,8 +115,8 @@ If added features or a reevaluation of the design add configuration complexity, 
 
 The decision to take advantage of the custom 32-bit shift registers in implementing our design entails the following trade-offs versus using only basic verilog logic:
 \begin{itemlist}
-	\item The design is more efficient area and timing-wise
-	\item The bitstream needed to program the design will be larger
+	\item The design is more efficient area and timing-wise.
+	\item The data describing the circuit (known as the \emph{bitstream}) which is needed to program the design will be larger.
 	\item The maximum size of the design will be limited by the amount of 32-bit shift registers available on the FPGA board, as opposed to the amount of flops.
 	\item The design will be incompatible with boards that do not have custom 32-bit shift registers, although adaptations to the design can be made in the future to support alternative FPGA boards.
 \end{itemlist}

@@ -112,8 +112,8 @@ No additional financing is requested.
 \begin{itemlist}
 	\item Required Software \
 		\begin{itemlist}
-			\item ABC synthesis system to product input for VPR - available online\footnote{ABC can be downloaded from: \url{http://www.eecs.berkeley.edu/~alanmi/abc/}}
-			\item VPR placement and routing to produce input our input data - available online\footnote{VPR 5.0.2 can be downloaded from: \url{http://www.eecg.utoronto.ca/vpr/}}
+			\item ABC synthesis system to produce input for VPR - available online\footnote{ABC can be downloaded from: \url{http://www.eecs.berkeley.edu/~alanmi/abc/}}
+			\item VPR placement and routing to produce our input data - available online\footnote{VPR 5.0.2 can be downloaded from: \url{http://www.eecg.utoronto.ca/vpr/}}
 			\item FPGA vendor tools to implement our circuit: Xilinx ISE - licenses through supervisor
 		\end{itemlist}
 	\item Required Hardware \
@@ -197,9 +197,8 @@ No additional financing is requested.
 \paragraph{Unbalanced timing}
 
 \begin{itemlist}
-	\item Logic cells in the overlay FPGA would ideally be arranged in a perfect grid, but we expect that the placement algorithm will not produce this arrangement on the physical FPGA.
-	\item This means that the timing delay of two cells to their respective ``right'' neighbours may differ.
-	%\item This means that the timing delay from one cell to its logical ``right'' neighbour may not closely match the timing delay of another cell to its logical ``right'' neighbour.
+	\item Logic cells in the overlay FPGA would ideally be arranged in a perfect grid, but we expect that the placement algorithm in ISE will not produce this arrangement on the physical FPGA.
+	\item This means that the timing delay of two different cells to their respective ``right'' neighbours may differ.
 	\item If this imbalance is too big, then the performance of the benchmark circuits may not be satisfactory.
 	\item Risk Mitigation: Constrain a ``tile'' containing only one logic block to a rectangular shape, then tessellate it to form a grid, producing a more balanced design.
 \end{itemlist}
