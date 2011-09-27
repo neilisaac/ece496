@@ -5,38 +5,46 @@
 
 The work breakdown structure is show in \tableref{work-breakdown}.
 
-Note that for each day allocated to a task (denoted ``1d,'') we allocated one hour of labour.
-This is based on 7 hours of work per week for each group member.
+For each day allocated to a task (denoted ``1d,'') we allocated one hour of labour.
+This is based on seven hours of work per week devoted to the project for each group member.
 
-\begin{table}[h!]
+\begin{table}[!h]
 	\centering
-	\includegraphics[scale=0.6]{wbs.png}
+	\includegraphics[scale=1.0]{wbs.png}
 	\caption{Work breakdown structure}
 	\label{work-breakdown}
 \end{table}
 
-Task Descriptions:
-\begin{itemlist}
-	\item Basic logic element: complete verilog module of basic LUT element
-	\item UART interface: complete verilog modules and python program for bitstream input via serial cable
-	\item Logic block: complete verilog module of bundled LUTs with full input crossbars
-	\item Shift multiplexing: complete verilog modules of 2-layer and 3-layer multiplexers constructed from 32-bit shift registers
-	\item Connection block: complete verilog module of 4-way connection block using shift multiplexing
-	\item Switch block: complete verilog module of 4-way switch block using 32-bit shift registers
-	\item Logic tile: complete verilog module of assembled logic block, connection blocks, and switch block in a tile ready for tesselation
-	\item Logic tile grid and boundary: design and verilog modules of connections at boundaries of the tesselated logic tile grid
-	\item Serial programming: python program for bitstream programming of logic grid
-	\item VPR backend software: python program for translating VPR output into a compatible bitstream
-	\item Complete virtual FPGA: completely functional virtual FPGA overlay complete with bitstream programming via VPR
+Note that this work breakdown structure projects completion mid-February rather than mid-March to allow extra time for unforeseen engineering challenges.
+
+\subsubsection*{Task Descriptions:}
+\begin{enumeration}
+	\item Virtual FPGA circuit: the hardware component of the project \
+	\begin{itemlist}
+		\item[1.1] Basic logic element: write verilog subcircuit of basic LUT element.
+		\item[1.2] UART interface: write verilog subcircuit and a python program for bitstream programming via a serial cable.
+		\item[1.3] Logic block: write verilog subcircuit of bundled logic cells with full input crossbars.
+		\item[1.4] Shift multiplexing: write verilog subcircuits for efficient 2-layer and 3-layer multiplexers constructed from 32-bit shift registers.
+		\item[1.5] Connection block: write verilog for the connection block module.
+		\item[1.6] Switch block: write verilog for the switch block module.
+		\item[1.7] Logic tile: write verilog module of assembling the logic block, connection blocks, and switch block in a tile ready for tesselation.
+		\item[1.8] Logic tile grid: assemble logic tiles into a grid to build the virtual FPGA.
+		\item[1.9] Logic tile boundary: handle input and output to and from the virtual FPGA.
+		\item[1.10] Basic tile optimization: tune the logic cell and routing for performance and area.
+	\end{itemlist}
+	\item Software support: write software to convert a VPR circuit to a bitstream for our circuit.
+	\item Test vector injection: create a mechanism for test inputs to be transferred alongside and executed on the circuit, and for the results to be retrieved.
+	\item Gathering results: Study and document the area overhead and performance of the circuits using different configurations.
+\end{enumeration}
 
 
 \subsection{Gantt chart} % for Draft B
 
 \figref{gantt-chart} shows the proposed project plan corresponding to the work breakdown structure outlined in \sectref{wbs}.
 
-\begin{figure}[h!]
+\begin{figure}[!h]
 	\centering
-	\includegraphics[scale=0.43]{gantt.png}
+	\includegraphics[scale=0.8]{gantt.png}
 	\caption{Gantt chart showing project plan}
 	\label{gantt-chart}
 \end{figure}
@@ -53,7 +61,7 @@ Task Descriptions:
 The expenses of our project are documented in Table \ref{expenses-table}.
 No additional financing is requested.
 
-\begin{table}[h!]
+\begin{table}[!h]
 	\centering
 	\begin{tabular}{ | l | l | l | l | l | }
 		\hline
