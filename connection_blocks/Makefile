@@ -1,7 +1,7 @@
 # project specific options
 PROJ=connection_block
 TOP=MASTER
-VERILOG=master_c.v ConnectionBlock.v decoder.v delay.v transition.v uart.v LayerMux2.v LayerMux3.v
+VERILOG=master_c.v ConnectionBlock.v decoder.v delay.v transition.v uart.v LayerMux.v LayerMux2.v LayerMux3.v
 UCF=pins.ucf
 PART=xc5vlx110t-ff1136-1
 
