@@ -49,8 +49,6 @@ DECODER decoder_inst (
 );
 
 
-wire user_clock;
-wire user_reset;
 wire [W-1:0] sbin_n;
 wire [W-1:0] sbin_e;
 wire [W-1:0] sbin_s;
@@ -64,9 +62,6 @@ assign sbin_n = DIP[1:0];
 assign sbin_e = DIP[3:2] ;
 assign sbin_s = DIP[5:4];
 assign sbin_w = DIP[7:6];
-
-TRANSITION user_clock_tran_inst(SYSCLK, ~SYSRST, PUSH_E, user_clock);
-TRANSITION user_reset_tran_inst(SYSCLK, ~SYSRST, PUSH_N, user_reset);
 
 SwitchBlock #(.W(W)) sb_inst (
 	.IN_N	(sbin_n),
@@ -83,8 +78,6 @@ SwitchBlock #(.W(W)) sb_inst (
 	.SOUT	(shift_tail)
 );
 
-reg [7:0] test;
-always @ (posedge SYSCLK) if (shift_enable) test <= { shift_head, test[7:1] };
 assign LEDS[1:0] = sbout_n;
 assign LEDS[3:2] = sbout_e;
 assign LEDS[5:4] = sbout_s;

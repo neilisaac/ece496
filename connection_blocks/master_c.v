@@ -51,8 +51,6 @@ DECODER decoder_inst (
 );
 
 
-wire user_clock;
-wire user_reset;
 wire [P-1:0] lb1in;
 wire [P-1:0] lb2in;
 wire [W-1:0] cb1in;
@@ -66,9 +64,6 @@ assign lb1in = DIP[4];
 assign lb2in = DIP[5];
 assign cb1in = DIP[1:0];
 assign cb2in = DIP[3:2];
-
-TRANSITION user_clock_tran_inst(SYSCLK, ~SYSRST, PUSH_E, user_clock);
-TRANSITION user_reset_tran_inst(SYSCLK, ~SYSRST, PUSH_N, user_reset);
 
 ConnectionBlock #(.W(W), .O(O), .P(P)) cb_inst (
 	.LB1_IN	(lb1in),
@@ -85,8 +80,6 @@ ConnectionBlock #(.W(W), .O(O), .P(P)) cb_inst (
 	.SOUT	(shift_tail)
 );
 
-reg [7:0] test;
-always @ (posedge SYSCLK) if (shift_enable) test <= { shift_head, test[7:1] };
 assign LEDS[1:0] = cb1out;
 assign LEDS[3:2] = cb2out;
 assign LEDS[7:4] = lb1out;

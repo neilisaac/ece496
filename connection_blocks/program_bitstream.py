@@ -63,22 +63,8 @@ def xbarstream(selected, signals, size):
 	return result
 
 data = list()
-# connect inputs of all LUTs to DIP[5:0]
 for value in [ 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 0, 1]:
 	data.extend(xbarstream(value, 3, 5))
-	#data.append((value, 4))
-
-#data.extend([
-#		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
-#		(0x08000000000000000, 65), # AND gate
-#		(0x0FFFFFFFFFFFFFFFE, 65), # OR gate
-#		(0x09669699696696996, 65), # XOR gate
-#		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
-#		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
-#		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
-#		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
-#		(0x00000000000000000, 65), # always 0
-#	])
 
 for value in serialize(data):
 	for i in range(5):
