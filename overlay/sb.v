@@ -1,34 +1,78 @@
-module # (
-		parameter W2 = 5,
-	) SWITCH_BLOCK (
-		input PCLK, PRST, SE, SIN,
-		input [W2-1:0] IN_N, IN_E, IN_S, IN_W,
-		output [W2-1:0] OUT_N, OUT_E, OUT_S, OUT_W,
-		output SOUT
-	);
+module SWITCH_BLOCK(IN_N, IN_E, IN_S, IN_W, OUT_N, OUT_E, OUT_S, OUT_W, CLK, SE, SIN, SOUT);
 
-wire [4*W2:0] scan;
-assign scan[0] = SIN;
-assign SOUT = scan[4*W2];
+parameter W = 5; //size of interconnecting bus (one way)
+
+input [W-1:0] IN_N;
+input [W-1:0] IN_E;
+input [W-1:0] IN_S;
+input [W-1:0] IN_W;
+input CLK;
+input SE;
+input SIN;
+output [W-1:0] OUT_N;
+output [W-1:0] OUT_E;
+output [W-1:0] OUT_S;
+output [W-1:0] OUT_W;
+output SOUT;
+
+wire [4*W:0] scan_chain;
+
+assign scan_chain[0] = SIN;
 
 genvar i;
-generate
-	for (i = 0; i < W2; i = i+1) begin : SWITCH
-		wire [2:0] SET_N, SET_S, SET_E, SET_W;
-
-		assign SET_N = { IN_E[i], IN_S[i], IN_W[i] };
-		XBAR1LAYER mux_n(SET_N, SE, PCLK, scan[4*i+0], OUT_N[i], scan[4*i+1]);
-		
-		assign SET_E = { IN_S[i], IN_W[i], IN_N[i] };
-		XBAR1LAYER mux_e(SET_E, SE, PCLK, scan[4*i+1], OUT_E[i], scan[4*i+2]);
-
-		assign SET_S = { IN_W[i], IN_N[i], IN_E[i] };
-		XBAR1LAYER mux_s(SET_S, SE, PCLK, scan[4*i+2], OUT_S[i], scan[4*i+3]);
-
-		assign SET_W = { IN_N[i], IN_E[i], IN_S[i] };
-		XBAR1LAYER mux_w(SET_W, SE, PCLK, scan[4*i+3], OUT_W[i], scan[5*i+0]);
+generate //generate muxes to exit to the north
+	for (i=0; i<W; i=i+1) begin : OUTNMux
+		SRLC32E #( .INIT(32'h00000000) ) OUTNMux_inst (
+			.Q(OUT_N[i]),
+			.Q31(scan_chain[i+1]),
+			.A({0, 0, IN_W[i], IN_S[i], IN_E[i]}),
+			.CE(SE),
+			.CLK(CLK),
+			.D(scan_chain[i])
+		);
 	end
 endgenerate
+
+generate //generate muxes to exit to the east
+	for (i=0; i<W; i=i+1) begin : OUTEMux
+		SRLC32E #( .INIT(32'h00000000) ) OUTEMux_inst (
+			.Q(OUT_E[i]),
+			.Q31(scan_chain[W+i+1]),
+			.A({0, 0, IN_N[i], IN_W[i], IN_S[i]}),
+			.CE(SE),
+			.CLK(CLK),
+			.D(scan_chain[W+i])
+		);
+	end
+endgenerate
+
+generate //generate muxes to exit to the south
+	for (i=0; i<W; i=i+1) begin : OUTSMux
+		SRLC32E #( .INIT(32'h00000000) ) OUTSMux_inst (
+			.Q(OUT_S[i]),
+			.Q31(scan_chain[2*W+i+1]),
+			.A({0, 0, IN_E[i], IN_N[i], IN_W[i]}),
+			.CE(SE),
+			.CLK(CLK),
+			.D(scan_chain[2*W+i])
+		);
+	end
+endgenerate
+
+generate //generate muxes to exit to the west
+	for (i=0; i<W; i=i+1) begin : OUTWMux
+		SRLC32E #( .INIT(32'h00000000) ) OUTWMux_inst (
+			.Q(OUT_W[i]),
+			.Q31(scan_chain[3*W+i+1]),
+			.A({0, 0, IN_S[i], IN_E[i], IN_N[i]}),
+			.CE(SE),
+			.CLK(CLK),
+			.D(scan_chain[3*W+i])
+		);
+	end
+endgenerate
+
+assign SOUT = scan_chain[4*W];
 
 endmodule
 

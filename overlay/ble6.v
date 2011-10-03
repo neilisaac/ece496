@@ -1,4 +1,4 @@
-module BLE (
+module BLE6 (
 	input [5:0]A,
 	input PCLK,
 	input PRST,

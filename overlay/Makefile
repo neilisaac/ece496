@@ -1,7 +1,7 @@
 # project specific options
 PROJ=overlay
 TOP=MASTER
-VERILOG=master.v lb.v sb.v cb.v ble.v decoder.v delay.v transition.v uart.v xbar1layer.v xbar2layer.v
+VERILOG=master.v lb.v sb.v cb.v ble6.v decoder.v delay.v transition.v uart.v xbar.v xbar2layer.v xbar3layer.v
 UCF=pins.ucf
 PART=xc5vlx110t-ff1136-1
 
