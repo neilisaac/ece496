@@ -20,6 +20,22 @@ options, args = parser.parse_args(sys.argv)
 s = serial.Serial(options.device, baudrate=options.baud, timeout=options.timeout,
 		bytesize=8, parity=serial.PARITY_EVEN)
 
+def write(value):
+	for i in range(5):
+		s.write(chr(value))
+		read = s.read()
+		if len(read) > 0:
+			break
+	else:
+		print "no response for {0:d} {:08:b}!".format(value)
+		return False
+	read = ord(read)
+	if read != value:
+		print "value read doesn't match value sent!"
+		print "{:08b} -> {:08b}".format(value, read)
+		return False
+	return True
+
 def serialize(values):
 	bytelist = list()
 	combined = "".join(["{0:0{1}b}".format(val, l) for val, l in values])
@@ -67,17 +83,9 @@ for value in [ 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 0, 1]:
 	data.extend(xbarstream(value, 3, 5))
 
 for value in serialize(data):
-	for i in range(5):
-		s.write(chr(value))
-		read = s.read()
-		if len(read) > 0:
-			break
-	else:
-		print "no response for {0:d} {:08:b}!".format(value)
-		break
+	if not write(value):
+		print "failed to write complete bitstream"
+		sys.exit(1)
 
-	read = ord(read)
-	if read != value:
-		print "value read doesn't match value sent!"
-		print "{:08b} -> {:08b}".format(value, read)
+sys.exit(0)
 
