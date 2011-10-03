@@ -45,16 +45,16 @@ def serialize(values):
 		bytelist.append(int(combined[i:i+8], 2))
 	return bytelist
 
-def xbarstream(selected, signals, size):
+def xbar_stream(selected, signals, size=5):
 	result = list()
 
 	# next level
 	muxes = math.ceil(float(signals) / size)
 	if muxes > 1:
 		if isinstance(selected, bool):
-			result.extend(xbarstream(selected, int(muxes), size))
+			result.extend(xbar_stream(selected, int(muxes), size))
 		else:
-			result.extend(xbarstream(selected // size, int(muxes), size))
+			result.extend(xbar_stream(selected // size, int(muxes), size))
 	
 	if not isinstance(selected, bool):
 		selected = selected % size
@@ -80,9 +80,30 @@ def xbarstream(selected, signals, size):
 
 	return result
 
-data = list()
-for value in [ 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 0, 1]:
-	data.extend(xbarstream(value, 3, 5))
+SB_NORTH = 0
+SB_EAST  = 1
+SB_SOUTH = 2
+SB_WEST  = 3
+
+def sb_stream(north, east, south, west):
+	result = list()
+	north = [(x - 1) % 4 for x in north]
+	east  = [(x - 2) % 4 for x in east]
+	south = [(x - 3) % 4 for x in south]
+	west  = [(x - 0) % 4 for x in west]
+	for pin in west + south + east + north:
+		result.extend(xbar_stream(pin, 3))
+	return result
+
+def cb_stream(lb1, lb2, sb1, sb2, size):
+	result = list()
+	for pin in sb2 + sb1 + lb2 + lb1:
+		result.extend(xbar_stream(pin, size))
+	return result
+
+# connect switch block in straight-throuh configuration
+data = sb_stream([SB_SOUTH, SB_SOUTH], [SB_WEST, SB_WEST], \
+		[SB_NORTH, SB_NORTH], [SB_EAST, SB_EAST])
 
 for value in serialize(data):
 	if not write(value):
