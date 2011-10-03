@@ -87,18 +87,19 @@ SB_WEST  = 3
 
 def sb_stream(north, east, south, west):
 	result = list()
-	north = [(x - 1) % 4 for x in north]
-	east  = [(x - 2) % 4 for x in east]
-	south = [(x - 3) % 4 for x in south]
-	west  = [(x - 0) % 4 for x in west]
+	north = [(x - 1) % 4 for x in north]; north.reverse()
+	east  = [(x - 2) % 4 for x in east];  east.reverse()
+	south = [(x - 3) % 4 for x in south]; south.reverse()
+	west  = [(x - 0) % 4 for x in west];  west.reverse()
 	for pin in west + south + east + north:
 		result.extend(xbar_stream(pin, 3))
 	return result
 
 def cb_stream(lb1, lb2, sb1, sb2, size):
 	result = list()
-	for pin in sb2 + sb1 + lb2 + lb1:
-		result.extend(xbar_stream(pin, size))
+	for dest in [sb2, sb1, lb2, lb1]:
+		for pin in reversed([xbar_stream(pin, size) for pin in dest]):
+			result.extend(pin)
 	return result
 
 # connect switch block in straight-throuh configuration
