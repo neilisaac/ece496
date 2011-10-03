@@ -50,7 +50,7 @@ def xbarstream(selected, signals, size):
 		elif selected == 0:
 			result.append((0xAAAAAAAA, 32))
 		elif selected == 1:
-			result.append((0xDDDDDDDD, 32))
+			result.append((0xCCCCCCCC, 32))
 		elif selected == 2:
 			result.append((0xF0F0F0F0, 32))
 		elif selected == 3:

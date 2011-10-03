@@ -82,7 +82,7 @@ ConnectionBlock #(.W(W), .O(O), .P(P)) cb_inst (
 
 assign LEDS[1:0] = cb1out;
 assign LEDS[3:2] = cb2out;
-assign LEDS[7:4] = lb1out;
+assign LEDS[7:4] = PUSH_S ? lb2out : lb1out;
 
 assign { LED_N, LED_W, LED_S, LED_E, LED_C } = { PUSH_N, PUSH_W, PUSH_S, PUSH_E, PUSH_C };
 
