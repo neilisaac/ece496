@@ -95,16 +95,22 @@ def sb_stream(north, east, south, west):
 		result.extend(xbar_stream(pin, 3))
 	return result
 
-def cb_stream(lb1, lb2, sb1, sb2, size):
+def cb_stream(lb1, lb2, lb_size, sb1, sb2, sb_size):
 	result = list()
-	for dest in [sb2, sb1, lb2, lb1]:
-		for pin in reversed([xbar_stream(pin, size) for pin in dest]):
+	for dest in [sb2, sb1]:
+		for pin in reversed([xbar_stream(pin, sb_size) for pin in dest]):
+			result.extend(pin)
+	for dest in [lb2, lb1]:
+		for pin in reversed([xbar_stream(pin, lb_size) for pin in dest]):
 			result.extend(pin)
 	return result
 
+# connect logic blocks and switch blocks straight through connection block
+data = cb_stream([0, 0, 0, 0], [0, 0, 0, 0], 5, [0, 0], [0, 0], 3)
+
 # connect switch block in straight-throuh configuration
-data = sb_stream([SB_SOUTH, SB_SOUTH], [SB_WEST, SB_WEST], \
-		[SB_NORTH, SB_NORTH], [SB_EAST, SB_EAST])
+#data = sb_stream([SB_SOUTH, SB_SOUTH], [SB_WEST, SB_WEST], \
+#		[SB_NORTH, SB_NORTH], [SB_EAST, SB_EAST])
 
 for value in serialize(data):
 	if not write(value):
