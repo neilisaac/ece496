@@ -56,12 +56,14 @@ def xbarstream(selected, signals, size):
 		else:
 			result.extend(xbarstream(selected // size, int(muxes), size))
 	
+	if not isinstance(selected, bool):
+		selected = selected % size
+
 	# muxes at this level
-	selected = selected % size
 	for i in range(int(muxes)):
-		if isinstance(selected, bool) and selected == False:
+		if isinstance(selected, bool) and selected is False:
 			result.append((0x00000000, 32))
-		elif isinstance(selected, bool) and selected == True:
+		elif isinstance(selected, bool) and selected is True:
 			result.append((0xFFFFFFFF, 32))
 		elif selected == 0:
 			result.append((0xAAAAAAAA, 32))
