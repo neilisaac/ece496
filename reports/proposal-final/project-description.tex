@@ -1,0 +1,168 @@
+\section{Project Description}
+
+\subsection{Background and Motivation}
+
+% This section is aimed at demonstrating your team's understanding of the technical
+% problem and „the big picture‟. Provide a background, context [Design Notes, chapter 4]
+% and motivation for your project. A good project is not following a recipe; what makes
+% your project different than what is available? (Note that if the implementation of an
+% existing product is not obvious and is not available, or can be done in an alternate way,
+% then implementing would still make a reasonable project.)
+%
+% The work may just be an interesting exercise in technology, or may have direct or indirect
+% practical application. It could improve reliability, cost, or ease of use over available
+% technology. It may deal with some interesting challenges.
+%
+% Understanding the problem in the context of the bigger picture requires that you do a
+% literature search, and you should be prepared to put in enough time to build your case.
+% Provide relevant references to original sources of information. References to webpages
+% (like Wikipedia) are generally inadequate, unless they can be justified (e.g. datasheet for
+% components). Wherever possible, reference original sources such as journals, books, and
+% technical standards, and provide complete information in a standard format (Refer to
+% examples from IEEE on the course website.)
+%
+% Previous Background Work (if applicable)
+% Many uncertainties about risks are answered in the course of working on a problem. In
+% this respect, groups that have actively worked on their project over the summer have a
+% key advantage, and so should briefly highlight some of the key challenges they have
+% already overcome. Evidence here provides strong support of the feasibility of the
+% remainder of the project. These groups can include some of their previous work as an
+% attachment in the appendix.
+
+Academic researchers who study Field Programmable Gate Array (FPGA) design commonly use variations of an FPGA design architecture, described by Kuon et al\cite{fpga}, which we will refer to as the \emph{Academic FPGA Model}.
+While FPGA chips are available from a variety of commercial vendors, their inner design is proprietary, making their architectures difficult to study.
+Furthermore, there is no existing physical implementation\footnote{Alex Brant is also developing a comparable FPGA overlay platform with Prof. Guy Lemieux at University of British Columbia.} of an Academic FPGA Model.
+
+One of the tools used in FPGA architecture research is VPR\cite{vpr}.
+VPR is an open-source placement and routing tool that accepts a wide variety of architecture parameters.
+It can handle many variations of the Academic FPGA Model.
+It is not currently possible to realize circuits produced by VPR on a commercial FPGA.\footnote{A technology-mapped input netlist for VPR can be converted to an Altera Quartus VQM netlist file using \emph{nettovqm}\cite{nettovqm}, but the placement and routing can not be converted.}
+
+As such, Computer Aided Design (CAD) researchers who work on placement and routing algorithms for FPGA designs are presently limited to using simulations to evaluate or verify their work.
+They may be interested in testing circuits on a physical medium because it would be much faster than simulating the circuits.
+
+
+
+\subsection{Project Goal}
+
+% The project goal is a statement that summarizes what your design project is to achieve. It
+% can be general and non-technical but should give direction to the entire project. It is NOT
+% just the statement your supervisor used to describe the project. Refer to [Design, Section
+% 3.2] to find both good and bad examples of project goal statements. Two key points are to
+% focus on the desired result, not the solution or implementation, and to establish some
+% criteria for which the success of the project can be evaluated.
+% 
+% Design projects can take many forms. There are those that have hard functional goals but
+% the details of the methodology are left undefined. An example of this type is the building
+% of a microprocessor simulator. Another type, common to research-oriented projects, is a
+% feasibility study or experiment where the result of the study is not known; however the
+% setup of the study is a hard functional goal. Such projects may be somewhat harder to
+% define but must meet the same requirements for verifiable project goals. One aid in these
+% cases is to think of what has to be specified to guarantee that another team could exactly
+% duplicate the experiment.
+
+The goal of this project is to produce a circuit design based on the Academic FPGA Model.
+Researchers will be able to use the circuit to study FPGA architecture and CAD algorithms with circuits produced by VPR.
+
+
+
+\subsection{Project Requirements}
+
+% Provide a list of target project requirements which will be used to evaluate the success of
+% your project. Project requirements can be divided into three categories [Design Notes,
+% Section 5.2]:
+% - Functional requirements
+% - Constraints
+% - Objectives
+%
+% Functional requirements and constraints should be clearly worded in pass/fail terms
+% and in a way that can be verified, which implies a corresponding set of verification tests
+% will be needed as discussed in the next section. Project objectives, unlike functional
+% requirements and constraints, are not intended to be pass/fail in nature, but are used to
+% indicate the desirable aspects of the final design. The number of requirements depends
+% largely on the project, but at this early stage, the list should not be very long, but enough
+% to capture the essence of your project. The point is to be complete, but not to constrain
+% your design unnecessarily. Use the Requirements Checklist in [Design Notes, Section
+% 5.4] to guide you.
+
+
+\subsubsection{Functional Requirements}
+
+Researchers must be able to:
+\begin{itemlist}
+	\item implement the overlay FPGA circuit on commercially available FPGA chips,
+	\item tune the number, arrangement, and logic cell connectivity of the overlay FPGA,
+	\item program the overlay FPGA using a circuit produced by VPR,
+	\item modify the inputs and outputs of the overlay FPGA.
+\end{itemlist}
+
+
+\subsubsection{Constraints}
+
+\begin{itemlist}
+	\item The overlay circuit must support at least 3000 logic cells\footnote{3000 logic cells was chosen as the minimum target because the largest of the ``Golden 20'' circuits, \emph{``s38417''} requires 2567 6-input logic cells\cite{synthesis-density}.} in order to accommodate the \emph{``Golden 20''} MCNC benchmark circuits\footnote{The ``Golden 20'' MCNC circuits are available in BLIF format at \url{http://www.ece.ubc.ca/~julienl/benchmarks.htm}.} commonly used in FPGA research.
+\end{itemlist}
+
+
+\subsubsection{Objectives}
+
+\begin{itemlist}
+	\item Be compatible with commercial FPGAs that are available to researchers.
+	\item Take advantage of the underlying FPGA architectural features in the overlay FPGA design to reduce area and latency.
+\end{itemlist}
+
+
+\subsection{Validation and Acceptance Tests}
+
+% In this section, describe how you would validate your final design and prove that it
+% satisfies the project goal and requirements [Design Notes, Chapter 13]. Consider how you
+% would demonstrate your successful project at the final Design Fair. Alternatively, if you
+% were the paying client, describe the tests you would perform to qualify this product
+% before buying this product. Provide details where possible, including the test equipment,
+% diagnostic software, special arrangements, or test “jigs” that might be required. If you
+% will be doing statistical measures, indicate the number of samples you will test. The point
+% here is to keep your end goal in mind right from the start of the project.
+
+\subsubsection{Functional validation}
+
+To ensure that the overlay FPGA circuit design is functional, we will:
+\begin{enumeration}
+	\item select and use a benchmark circuit commonly used to test VPR,
+	\item configure VPR to match our architecture and dimensions,
+	\item place and route the benchmark circuit with VPR,
+	\item convert the VPR output into a bitstream for the overlay FPGA,
+	\item load the bitstream onto the overlay FPGA, then 
+	\item test the functionality of the benchmark circuit running on the overlay FPGA.
+\end{enumeration}
+This test procedure ensures that:
+\begin{itemlist}
+	\item circuits can be implemented using VPR output,
+	\item circuits can be transferred correctly to the overlay FPGA, and
+	\item inputs can be set and outputs can be read.
+\end{itemlist}
+The exact verification process for inputs and outputs will depend on the benchmark circuit's intended function.
+We will need to develop an appropriate testing mechanism for the benchmark circuit.
+
+
+\subsubsection{Size and overhead validation}
+
+To ensure that the overhead is low enough that the overlay FPGA can fit useful circuits, we will test it using the \emph{``Golden 20''} MCNC benchmark circuits.
+For each circuit, we will:
+\begin{enumeration}
+	\item run synthesis and technology mapping using ABC,
+	\item run placement and routing using VPR configured, and
+	\item confirm that VPR can place and route the benchmark circuit using the number and arrangement of logic blocks that we can fit.
+\end{enumeration}
+We discuss risk mitigation for high overhead in \sectref{risk-size}.
+
+
+\subsubsection{Validation of improvements from architectural optimizations}
+
+To evaluate the benefits of utilizing architectural FPGA features of the host FPGA board, an alternate design can be created that implements the same functionality using only standard Verilog.
+The size and timing of the two designs can then be compared to measure any efficiency gained by the design that uses special FPGA features.
+
+For example, in select Xilinx boards, a lookup table can be used as a 32-bit shift register; the same function could be implemented in plain Verilog using multiplexers and flip-flops, but is expected to be slower and consume more area.
+The two equivalent circuits can be compiled separately in order to compare their resource use and limiting timing path.
+
+Because the utilization of architectural features limit the design to specific board families, we will demonstrate that they enhance the circuit efficiency for the project in order to justify their use.
+
