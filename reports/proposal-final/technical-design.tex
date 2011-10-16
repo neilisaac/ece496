@@ -129,15 +129,15 @@ If the design is successful, adaptations can be made in the future to support th
 \subsection{System-level overview} % for final proposal
 \label{system-overview}
 
-\figref{system-diagram} shows the high-level interactions of the components used in our project.
+\figref{modules-diagram} shows the high-level interactions of the components used in our project.
 The rectangles show software components, the circles show intermediate products or interfaces, and the parallelograms show primary inputs and outputs.
 The components we are producing directly are indicated in bold.
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[scale=0.5]{system.png}
-	\caption{System diagram}
-	\label{system-diagram}
+	\includegraphics[scale=0.6]{modules.png}
+	\caption{Module interaction}
+	\label{module-diagram}
 \end{figure}
 
 The \emph{Overlay FPGA configuration} refers to the arrangement, size and connectivity of the logic blocks in the overlay FPGA circuit we are creating.
@@ -157,17 +157,17 @@ The test circuit will be tested by using switches on the Xilinx FPGA development
 
 \subsection{Module-level descriptions} % for final proposal
 
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.6]{tile.png}
+	\caption{Logic connections within a tile}
+	\label{tile-diagram}
+\end{figure}
+
 \figref{module-diagram} shows the interactions between the modules we are designing.
 The design consists of a software component that communicates with a hardware component through a serial interface.
 The software components and implementation of the hardware component are described in \sectref{system-overview}.
 This section focuses on the interactions between the hardware modules.
-
-\begin{figure}[!h]
-	\centering
-	\includegraphics[scale=0.5]{modules.png}
-	\caption{Module interaction}
-	\label{module-diagram}
-\end{figure}
 
 The hardware components are all implemented on a Xilinx FPGA.
 The hardware connects inputs and outputs to the \emph{Overlay FPGA}.
