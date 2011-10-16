@@ -8,20 +8,22 @@
 
 Academic studies of Field Programmable Gate Array (FPGA) chip architecture rely on simulations, as commercial FPGA chips contain proprietary designs that make their underlying architecture inaccessible to academic researchers.
 The goal of this project is to provide a physical platform for researchers to carry out FPGA architecture studies.
-The finished design should be financially accessible and capable of running common benchmark circuits.
+The finished design should capable of running common benchmark circuits.
 
-The proposed design will use an overlay circuit to implement a virtual FPGA on an existing, commercially available FPGA chip.
+The proposed design is to implement a virtual FPGA on an existing, commercially available FPGA chip.
 Using a commercial FPGA as the physical medium for this project makes the design cheaper and more accessible to researchers, as they may have an appropriate FPGA chip already.
 
-The overlay design may use architectural features that may specific to a particular FPGA family.
-Although this will limit the models FPGA chips the overlay circuit can be implemented on, it should reduce the design's area overhead and improve its timing characteristics.
 
-We have selected the Xilinx Virtex 5 FPGA as our development platform.
-Any architectural features we use on the Virtex 5 will be forward-compatible with all current-generation Xilinx FPGA products, allowing the researcher to use a variety of FPGAs.
+We have selected the Xilinx Virtex 5 FPGA as our development platform because we can use its native logic units directly.
+This will limit the models of FPGA chips that the overlay circuit can be implemented on, but it should reduce the design's area overhead and improve its timing characteristics.
+The features we will use on the Virtex 5 are forward-compatible with all current-generation Xilinx FPGA products, allowing the researcher to use a variety of FPGAs.
 
-The overlay FPGA is intended to be used in conjunction with VPR, an open-source placement and routing tool that is used in FPGA architecture research.
-As such, the validation of the design will involve testing a set of benchmark circuits by placing and routing them with VPR, then transferring them to the FPGA overlay.
+The validation of the design will involve testing a set of benchmark circuits by placing and routing them with VPR, then transferring them to the FPGA overlay.
 The circuits can then be tested for correct behavior, confirming that the overlay design can be correctly programmed using VPR output, and that the inputs and outputs to the design are functioning properly.
 
 The current budget for the proposed design is \$14.00 and will be covered by the students.
 The required FPGA development boards and software licenses have been provided by the supervisor.
+
+We have designed and tested the modules required to build one tile of the virtual FPGA.
+By December, we expect to have assembled a grid of tiles and have software support for programming the logic cells.
+

@@ -33,12 +33,11 @@ Academic researchers who study Field Programmable Gate Array (FPGA) design commo
 While FPGA chips are available from a variety of commercial vendors, their inner design is proprietary, making their architectures difficult to study.
 Furthermore, there is no existing physical implementation\footnote{Alex Brant is also developing a comparable FPGA overlay platform with Prof. Guy Lemieux at University of British Columbia.} of an Academic FPGA Model.
 
-One of the tools used in FPGA architecture research is VPR\cite{vpr}.
-VPR is an open-source placement and routing tool that accepts a wide variety of architecture parameters.
+VPR\cite{vpr} is an open-source placement and routing tool used in FPGA architecture research.
 It can handle many variations of the Academic FPGA Model.
-It is not currently possible to realize circuits produced by VPR on a commercial FPGA.\footnote{A technology-mapped input netlist for VPR can be converted to an Altera Quartus VQM netlist file using \emph{nettovqm}\cite{nettovqm}, but the placement and routing can not be converted.}
+It is not currently possible to implement circuits produced by VPR on a commercial FPGA.\footnote{A technology-mapped input netlist for VPR can be converted to an Altera Quartus VQM netlist file using \emph{nettovqm}\cite{nettovqm}, but the placement and routing can not be converted.}
 
-As such, Computer Aided Design (CAD) researchers who work on placement and routing algorithms for FPGA designs are presently limited to using simulations to evaluate or verify their work.
+Computer Aided Design (CAD) researchers who work on placement and routing algorithms for FPGA designs are presently limited to using simulations to evaluate or verify their work.
 They may be interested in testing circuits on a physical medium because it would be much faster than simulating the circuits.
 
 
@@ -61,7 +60,7 @@ They may be interested in testing circuits on a physical medium because it would
 % cases is to think of what has to be specified to guarantee that another team could exactly
 % duplicate the experiment.
 
-The goal of this project is to produce a circuit design based on the Academic FPGA Model.
+The goal of this project is to design a circuit design based on the Academic FPGA Model.
 Researchers will be able to use the circuit to study FPGA architecture and CAD algorithms with circuits produced by VPR.
 
 
@@ -88,14 +87,20 @@ Researchers will be able to use the circuit to study FPGA architecture and CAD a
 
 \subsubsection{Functional Requirements}
 
-Researchers must be able to:
+A Virtual FPGA circuit that will:
+
 \begin{itemlist}
-	\item implement the overlay FPGA circuit on commercially available FPGA chips,
-	\item tune the number, arrangement, and logic cell connectivity of the overlay FPGA,
-	\item program the overlay FPGA using a circuit produced by VPR,
-	\item modify the inputs and outputs of the overlay FPGA.
+	\item Work on a commercially available FPGA chip.
+	\item Be re-programmable over a serial interface after being flashed to the FPGA.
+	\item Have a tunable number and arrangement of logic cells, and have tunable connectivity parameters. 
+	\item Support inputs to and outputs from test circuits programmed onto the virtual FPGA.
 \end{itemlist}
 
+A software program that can:
+\begin{itemlist}
+	\item Translate VPR placement and routing data for a test circuit into a bitstream for the Virtual FPGA.
+	\item Program the bitstream onto the virtual FPGA to implement the circuit.
+\end{itemlist}
 
 \subsubsection{Constraints}
 
@@ -107,8 +112,9 @@ Researchers must be able to:
 \subsubsection{Objectives}
 
 \begin{itemlist}
-	\item Be compatible with commercial FPGAs that are available to researchers.
-	\item Take advantage of the underlying FPGA architectural features in the overlay FPGA design to reduce area and latency.
+	\item Be compatible with a family of commercial FPGAs that are available to researchers.
+	\item Use the native logic cells in the physical FPGA directly in the overlay FPGA design to reduce area and latency.
+	\item 
 \end{itemlist}
 
 
@@ -125,8 +131,9 @@ Researchers must be able to:
 
 \subsubsection{Functional validation}
 
-To ensure that the overlay FPGA circuit design is functional, we will:
+To validate the functional requirements, we will:
 \begin{enumeration}
+	\item configure the Virtual FPGA and program it onto the physical FPGA,
 	\item select and use a benchmark circuit commonly used to test VPR,
 	\item configure VPR to match our architecture and dimensions,
 	\item place and route the benchmark circuit with VPR,
@@ -134,14 +141,13 @@ To ensure that the overlay FPGA circuit design is functional, we will:
 	\item load the bitstream onto the overlay FPGA, then 
 	\item test the functionality of the benchmark circuit running on the overlay FPGA.
 \end{enumeration}
-This test procedure ensures that:
-\begin{itemlist}
-	\item circuits can be implemented using VPR output,
-	\item circuits can be transferred correctly to the overlay FPGA, and
-	\item inputs can be set and outputs can be read.
-\end{itemlist}
+
 The exact verification process for inputs and outputs will depend on the benchmark circuit's intended function.
-We will need to develop an appropriate testing mechanism for the benchmark circuit.
+For the simple test circuits we will test initially, we will set inputs using hardware switches, and observe outputs on LEDs.
+
+Intermediate outputs can also be verified throughout the development process.
+We can dump out the bitstream to a text file to verify that it matches the placement and routing in VPR.
+We can test the hardware component independently by writing a bitstream by hand as well.
 
 
 \subsubsection{Size and overhead validation}
@@ -154,15 +160,4 @@ For each circuit, we will:
 	\item confirm that VPR can place and route the benchmark circuit using the number and arrangement of logic blocks that we can fit.
 \end{enumeration}
 We discuss risk mitigation for high overhead in \sectref{risk-size}.
-
-
-\subsubsection{Validation of improvements from architectural optimizations}
-
-To evaluate the benefits of utilizing architectural FPGA features of the host FPGA board, an alternate design can be created that implements the same functionality using only standard Verilog.
-The size and timing of the two designs can then be compared to measure any efficiency gained by the design that uses special FPGA features.
-
-For example, in select Xilinx boards, a lookup table can be used as a 32-bit shift register; the same function could be implemented in plain Verilog using multiplexers and flip-flops, but is expected to be slower and consume more area.
-The two equivalent circuits can be compiled separately in order to compare their resource use and limiting timing path.
-
-Because the utilization of architectural features limit the design to specific board families, we will demonstrate that they enhance the circuit efficiency for the project in order to justify their use.
 

@@ -29,7 +29,7 @@ The implementation medium for our circuit is a major decision impacting how acce
 The main criteria are cost, size, and ease of use.
 The lower the cost of the finished design to the researcher, the better.
 We must also ensure that the design is large enough to handle circuits the researchers wish to test.
-Finally, we want to make interfacing with the design's inputs and outputs as hassle-free as possible.
+Finally, we want to make interfacing with the design's inputs and outputs as simple as possible.
 The alternatives are as follows:
 
 \begin{enumeration}
@@ -75,7 +75,7 @@ The alternatives are as follows:
 \end{enumeration}
 
 Developing a custom integrated circuit is far too costly and time consuming for the scope of this project.
-It was explored as an alternative to illustrate by contrast the necessity of targeting an existing FPGA.
+It was explored as an alternative to illustrate the necessity of targeting an existing FPGA.
 We have tentatively selected the Virtex 5 FPGA because our supervisor has numerous development boards and software licenses readily available.
 We also intend to use the 32-bit shift register functionality that is available in logic blocks in Virtex 5 and newer FPGAs.
 This feature will allow us to reduce the overhead of the overlay FPGA circuit by directly using the native FPGA's features.
@@ -121,7 +121,7 @@ The decision to take advantage of the custom 32-bit shift registers in implement
 	\item The design will be incompatible with boards that do not have custom 32-bit shift registers
 \end{itemlist}
 
-We decided that the performance efficiency outweighed the negative aspects of the larger bitstream and limitation of implementation platforms.
+We have decided that performance efficiency outweighs the negative aspects of the larger bitstream and limitation of implementation platforms.
 If the design is successful, adaptations can be made in the future to support the implementation of the design on more FPGA boards.
 
 
