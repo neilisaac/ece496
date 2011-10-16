@@ -147,7 +147,7 @@ The arrangement, size and connectivity of the overlay circuit will be controllab
 The overlay FPGA will consist of organized tiles of \emph{logic block}, \emph{connection block}, and \emph{switch block} modules.
 Together, these modules will allow the overlay FPGA to implement different logic circuits.
 
-Once built, the overlay FPGA can be configured to implement user-specified test circuits that have been placed and routed by VPR.
+Once built, the overlay FPGA can be configured to implement user-specified \emph{test circuits} that have been placed and routed by VPR.
 This will be achieved by creating \emph{bitstream generation and programming software} that will translate the VPR output circuit into a bitstream that the overlay FPGA will understand.
 The bitstream will then be injected into the overlay FPGA via a \emph{serial interface}.
 The FPGA will receive and decode the bitstream into the appropriate test circuits on the overlay.
