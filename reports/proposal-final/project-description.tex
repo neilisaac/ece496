@@ -87,19 +87,19 @@ Researchers will be able to use the circuit to study FPGA architecture and CAD a
 
 \subsubsection{Functional Requirements}
 
-A Virtual FPGA circuit that will:
+An Overlay FGPA circuit that will:
 
 \begin{itemlist}
 	\item Work on a commercially available FPGA chip.
 	\item Be re-programmable over a serial interface after being flashed to the FPGA.
 	\item Have a tunable number and arrangement of logic cells, and have tunable connectivity parameters. 
-	\item Support inputs to and outputs from test circuits programmed onto the virtual FPGA.
+	\item Support inputs to and outputs from test circuits programmed onto the Overlay FGPA.
 \end{itemlist}
 
 A software program that can:
 \begin{itemlist}
-	\item Translate VPR placement and routing data for a test circuit into a bitstream for the Virtual FPGA.
-	\item Program the bitstream onto the virtual FPGA to implement the circuit.
+	\item Translate VPR placement and routing data for a test circuit into a bitstream for the Overlay FGPA.
+	\item Program the bitstream onto the Overlay FGPA to implement the circuit.
 \end{itemlist}
 
 \subsubsection{Constraints}
@@ -133,7 +133,7 @@ A software program that can:
 
 To validate the functional requirements, we will:
 \begin{enumeration}
-	\item configure the Virtual FPGA and program it onto the physical FPGA,
+	\item configure the Overlay FGPA and program it onto the physical FPGA,
 	\item select and use a benchmark circuit commonly used to test VPR,
 	\item configure VPR to match our architecture and dimensions,
 	\item place and route the benchmark circuit with VPR,
