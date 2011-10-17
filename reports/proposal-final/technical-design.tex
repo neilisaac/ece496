@@ -132,19 +132,19 @@ If the design is successful, adaptations can be made in the future to support th
 \figref{module-diagram} shows the high-level interactions of the components used in our project.
 The components we are building are contained within the large dotted rectangles.
 
-\begin{figure}[!h]
-	\centering
-	\includegraphics[scale=0.6]{modules.png}
-	\caption{Module interaction}
-	\label{module-diagram}
-\end{figure}
-
 The finished project will consist of three main parts: The overlay FPGA, bitstream generation software, and interfacing of inputs/outputs of the overlay FPGA.
 
 The \emph{Overlay FPGA} is a Verilog HDL circuit implementation of the Academic FPGA model which will be constructed as an overlay on a Xilinx FPGA board.
 The arrangement, size and connectivity of the overlay circuit will be controllable via parameters in the source Verilog.
 The overlay FPGA will consist of organized tiles of \emph{logic block}, \emph{connection block}, and \emph{switch block} modules.
 Together, these modules will allow the overlay FPGA to implement different logic circuits.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.6]{modules.png}
+	\caption{Module interaction}
+	\label{module-diagram}
+\end{figure}
 
 Once built, the overlay FPGA can be configured to implement user-specified \emph{test circuits} that have been placed and routed by VPR.
 This will be achieved by creating \emph{bitstream generation and programming software} that will translate the VPR output circuit into a bitstream that the overlay FPGA will understand.
