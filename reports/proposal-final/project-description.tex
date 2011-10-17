@@ -114,7 +114,7 @@ A software program that can:
 \begin{itemlist}
 	\item Be compatible with a family of commercial FPGAs that are available to researchers.
 	\item Use the native logic cells in the physical FPGA directly in the overlay FPGA design to reduce area and latency.
-	\item 
+	\item Be fast enough that it outperforms software emulation of most test circuits.
 \end{itemlist}
 
 
@@ -155,7 +155,7 @@ We can test the hardware component independently by writing a bitstream by hand 
 To ensure that the overhead is low enough that the overlay FPGA can fit useful circuits, we will test it using the \emph{``Golden 20''} MCNC benchmark circuits.
 For each circuit, we will:
 \begin{enumeration}
-	\item run synthesis and technology mapping using ABC,
+	\item run synthesis and technology mapping using the ABC synthesis tool,
 	\item run placement and routing using VPR configured, and
 	\item confirm that VPR can place and route the benchmark circuit using the number and arrangement of logic blocks that we can fit.
 \end{enumeration}

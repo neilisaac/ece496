@@ -130,8 +130,7 @@ If the design is successful, adaptations can be made in the future to support th
 \label{system-overview}
 
 \figref{module-diagram} shows the high-level interactions of the components used in our project.
-The rectangles show software components, the circles show intermediate products or interfaces, and the parallelograms show primary inputs and outputs.
-The components we are producing directly are contained within the dotted lines.
+The components we are building are contained within the large dotted rectangles.
 
 \begin{figure}[!h]
 	\centering
@@ -142,7 +141,7 @@ The components we are producing directly are contained within the dotted lines.
 
 The finished project will consist of three main parts: The overlay FPGA, bitstream generation software, and interfacing of inputs/outputs of the overlay FPGA.
 
-The \emph{Overlay FPGA} is a Verilog HDL circuit implementation of the academic FPGA model which will be constructed as an overlay on a Xilinx FPGA board.
+The \emph{Overlay FPGA} is a Verilog HDL circuit implementation of the Academic FPGA model which will be constructed as an overlay on a Xilinx FPGA board.
 The arrangement, size and connectivity of the overlay circuit will be controllable via parameters in the source Verilog.
 The overlay FPGA will consist of organized tiles of \emph{logic block}, \emph{connection block}, and \emph{switch block} modules.
 Together, these modules will allow the overlay FPGA to implement different logic circuits.
@@ -153,11 +152,12 @@ The bitstream will then be injected into the overlay FPGA via a \emph{serial int
 The FPGA will receive and decode the bitstream into the appropriate test circuits on the overlay.
 
 Finally, the circuits on the overlay FPGA can be tested for functionality by connecting devices (e.g. Switches and LEDs) to the \emph{Test circuit inputs} and \emph{Test circuit outputs} of the Overlay FPGA.
+More elaborate input and output mechanisms will be explored once the Overlay FPGA is complete.
 
 
 \subsection{Module-level descriptions} % for final proposal
 
-The \emph{Overlay FPGA} will be composed of \emph{Logic tiles}.
+The \emph{Overlay FPGA} will be composed of a two-dimensional array of \emph{Logic tiles}.
 The logic tiles make it easier to build a large overlay, and help keep the internal 
 logic modules organized.
 Each logic tile will consist of one \emph{logic block module}, two \emph{connection block modules}, 
