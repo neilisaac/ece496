@@ -94,7 +94,7 @@ TILE # (
 	.SB_SOUT		(shift_chain[1]),
 	.CB1_SIN		(shift_chain[1]),
 	.CB1_SOUT		(shift_chain[2]),
-	.CB2_SIN		(shift_chain[3]),
+	.CB2_SIN		(shift_chain[2]),
 	.CB2_SOUT		(shift_chain[3]),
 	.LB_SIN			(shift_chain[3]),
 	.LB_SOUT		(shift_chain[4])
