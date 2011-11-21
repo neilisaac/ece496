@@ -89,6 +89,7 @@ SB_WEST  = 3
 
 def sb_stream(north, east, south, west):
 	result = list()
+	# lowest-bit first ordering in params
 	north = [(x - 1) % 4 for x in north]; north.reverse()
 	east  = [(x - 2) % 4 for x in east];  east.reverse()
 	south = [(x - 3) % 4 for x in south]; south.reverse()
@@ -110,25 +111,28 @@ def cb_stream(lb1, lb2, lb_size, sb1, sb2, sb_size):
 
 data = list()
 
-for value in [4, 5, 6, 7, 8, 9] + [4, 5, 6, 7, 8, 9] + [4, 5, 6, 7, 8, 9] + [4, 5, 6, 7, 8, 9]:
+for value in [12, 13, 14, 15, False, False] + [16, 17, 18, 19, False, False] + \
+             [12, 13, 14, 15, False, False] + [16, 17, 18, 19, False, False]:
 	data.extend(xbar_stream(value, 20))
 
 data.extend([
-		(0x0FFFFFFFFFFFFFFFF, 65), # always 1
-		(0x08000000000000000, 65), # AND gate
-		(0x0FFFFFFFFFFFFFFFE, 65), # OR gate
-		(0x09669699696696996, 65), # XOR gate
+		#(0x0FFFFFFFFFFFFFFFF, 65), # W always 1
+		#(0x08000000000008000, 65), # S AND gate
+		(0x0FFFFFFFFFFFFFFFE, 65), # E OR gate
+		(0x0FFFFFFFFFFFFFFFE, 65), # E OR gate
+		(0x0FFFFFFFFFFFFFFFE, 65), # E OR gate
+		(0x0FFFFFFFFFFFFFFFE, 65), # E OR gate
+		#(0x09669699696696996, 65), # N XOR gate
 	])
 
 # south-east
-data.extend(cb_stream([1, 2, 3, 4], [0, 0, 0, 0], 5, [0, 0], [0, 0], 3))
+data.extend(cb_stream([1, 2, 3, 4], [0, 0, 0, 0], 5, [1, 1], [1, 1], 3))
 
 # north-east
-data.extend(cb_stream([0, 0, 0, 0], [1, 2, 3, 4], 5, [0, 0], [0, 0], 3))
+data.extend(cb_stream([0, 0, 0, 0], [1, 2, 3, 4], 5, [2, 2], [2, 2], 3))
 
-# connect switch block in straight-throuh configuration
-data.extend(sb_stream([SB_SOUTH, SB_SOUTH], [SB_WEST, SB_WEST],
-		[SB_NORTH, SB_NORTH], [SB_EAST, SB_EAST]))
+# connect switch block such that north outputs come from the west and east outputs come from the south
+data.extend(sb_stream([SB_WEST, SB_WEST], [SB_SOUTH, SB_SOUTH], [SB_EAST, SB_EAST], [SB_NORTH, SB_NORTH]))
 
 # print binary format dump of the bitstream
 if options.dump:
