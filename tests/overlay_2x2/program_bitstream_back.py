@@ -107,67 +107,16 @@ def cb_stream(lb1, lb2, lb_size, sb1, sb2, sb_size):
 	
 data = list()
 
-# connect inputs of all LUTs in lb 3 so that bits 5 and 6 from the input are the lowest bits to the BLE
-for value in [ 10, 9, 8, 7, 6, 5, 10, 9, 8, 7, 6, 5, 10, 9, 8, 7, 6, 5, 10, 9, 8, 7, 6, 5 ]:
-	data.extend(xbar_stream(value, 28, 5))
-	#data.append((value, 4))
-
-data.extend([
-		(0x00000000000000000, 65), # always 0
-		(0x00000000000000000, 65), # always 0
-		(0x00000000000000000, 65), # always 0
-		(0x00000000000000000, 65), # always 0
-	])
-	
-# connection block s (straight through for direction 2)
-data.extend(cb_stream([False, False, False, False, False, False], [False, False, False, False, False, False], 11, [False, False, False, False, False], [0, 1, 2, 1, 2], 3))
-	
-# connect inputs of all LUTs in lb 4 so that bits 5 and 6 from the input are the lowest bits to the BLE
-for value in [ 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3 ]:
-	data.extend(xbar_stream(value, 28, 5))
-	#data.append((value, 4))
-
-data.extend([
-		(0x00000000000000000, 65), # always 0
-		(0x00000000000000000, 65), # always 0
-		(0x00000000000000000, 65), # always 0
-		(0x00000000000000000, 65), # always 0
-	])
-
-# connection block w (connect all inputs from logic block 1 into side 2)
-data.extend(cb_stream([False, False, False, False, False, False], [False, False, False, False, False, False], 11, [False, False, False, False, False], [1, 1, 1, 1, 1], 3))
-
-#connect switch block from west to south, rest do not matter
-data.extend(sb_stream([SB_WEST, SB_WEST, SB_WEST, SB_WEST, SB_WEST], [SB_WEST, SB_WEST, SB_WEST, SB_WEST, SB_WEST], [SB_WEST, SB_WEST, SB_WEST, SB_WEST, SB_WEST], [SB_SOUTH, SB_SOUTH, SB_SOUTH, SB_SOUTH, SB_SOUTH]))
-
-# connection block e (blank)
-data.extend(cb_stream([False, False, False, False, False, False], [False, False, False, False, False, False], 11, [False, False, False, False, False], [False, False, False, False, False], 3))
-	
-# connect inputs of all LUTs in lb 2 so that bits 5 and 6 from the input are the lowest bits to the BLE
-for value in [ 10, 9, 8, 7, 6, 5, 10, 9, 8, 7, 6, 5, 10, 9, 8, 7, 6, 5, 10, 9, 8, 7, 6, 5 ]:
-	data.extend(xbar_stream(value, 28, 5))
-	#data.append((value, 4))
-
-data.extend([
-		(0x00000000000000000, 65), # always 1
-		(0x00000000000000000, 65), # always 1
-		(0x00000000000000000, 65), # always 1
-		(0x00000000000000000, 65), # always 1
-	])
-	
-# connection block n (connect all inputs from side 1 into logic block 2)
-data.extend(cb_stream([1, 2, 3, 4, 5, True], [False, False, False, False, False, False], 11, [0, 2, 1, 2, 0], [False, False, False, False, False], 3))
-
 # connect inputs of all LUTs in lb 1 so that bits 5 and 6 from the input are the lowest bits to the BLE
-for value in [ 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 1, 10, 12, 12, 12, 12, 11, 10, 12, 12, 12, 12, 12, 12 ]:
-	data.extend(xbar_stream(value, 28, 5))
+for value in [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 ]:
+	data.extend(xbar_stream(value, 20, 5))
 	#data.append((value, 4))
 
 data.extend([
-		(0x00000000000000000, 65), # always 1
-		(0x08888888888888888, 65), # always 1
-		(0x08888888888888888, 65), # always 1
-		(0x00000000000000000, 65), # always 1
+		(0xFFFFFFFFFFFFFFFFF, 65), # always 1
+		(0xFFFFFFFFFFFFFFFFF, 65), # always 1
+		(0xFFFFFFFFFFFFFFFFF, 65), # always 1
+		(0xFFFFFFFFFFFFFFFFF, 65), # always 1
 	])
 
 for value in serialize(data):

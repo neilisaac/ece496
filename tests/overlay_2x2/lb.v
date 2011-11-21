@@ -9,7 +9,8 @@ module LOGIC_BLOCK (
 
 
 parameter N_BLE = 4;
-parameter N_INPUT = 12;
+parameter N_BLE_PINS = 6;
+parameter N_INPUT = 24;
 
 input PCLK, PRST;
 input UCLK, URST;
@@ -17,10 +18,6 @@ input [N_INPUT-1:0] IN;
 input SIN, SE;
 output [N_BLE-1:0] OUT;
 output SOUT;
-
-parameter N_BLE_PINS = 6;
-parameter N_CONTROL_BITS = 4;
-
 
 wire [N_BLE+N_INPUT-1:0] inputs = { IN, OUT };
 wire [N_BLE:0] shift;
@@ -41,7 +38,7 @@ generate
 
 		// create input crossbar mux
 		for (j = 0; j < N_BLE_PINS; j = j+1) begin : XBAR_MUX
-			XBAR2LAYER #(.N(16)) xbar_mux_inst(inputs, SE, PCLK, xbar_shift[i*N_BLE_PINS+j], ble_in[j], xbar_shift[i*N_BLE_PINS+j+1]);
+			LayerMux #(.N(N_BLE+N_INPUT)) xbar_mux_inst(inputs, SE, PCLK, xbar_shift[i*N_BLE_PINS+j], ble_in[j], xbar_shift[i*N_BLE_PINS+j+1]);
 		end
 		
 		// create BLE instance

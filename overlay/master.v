@@ -64,40 +64,20 @@ parameter NUM_LB_IN = 16;
 parameter NUM_LB_OUT = 4;
 parameter BUS_WIDTH = 2;
 
-TILE # (
+OVERLAY # (
 	.NUM_LB_IN		(NUM_LB_IN),
 	.NUM_LB_OUT		(NUM_LB_OUT),
 	.BUS_WIDTH		(BUS_WIDTH)
-) tile_inst (
+) overlay_inst (
 	.PCLK			(SYSCLK),
 	.PRST			(~SYSRST),
 	.UCLK			(user_clock),
 	.URST			(user_reset),
 	.SE				(shift_enable),
-	.NORTH_LB_IN	(),
-	.EAST_LB_IN		(),
-	.SOUTH_LB_IN	(),
-	.WEST_LB_IN		(),
-	.NORTH_LB_OUT	(alt[3:0]),
-	.EAST_LB_OUT	(alt[7:4]),
-	.SOUTH_LB_OUT	(),
-	.WEST_LB_OUT	(),
-	.NORTH_BUS_IN	(DIP[1:0]),
-	.EAST_BUS_IN	(DIP[3:2]),
-	.SOUTH_BUS_IN	(DIP[5:4]),
-	.WEST_BUS_IN	(DIP[7:6]),
-	.NORTH_BUS_OUT	(out[1:0]),
-	.EAST_BUS_OUT	(out[3:2]),
-	.SOUTH_BUS_OUT	(out[5:4]),
-	.WEST_BUS_OUT	(out[7:6]),
-	.SB_SIN			(shift_chain[0]),
-	.SB_SOUT		(shift_chain[1]),
-	.CB1_SIN		(shift_chain[1]),
-	.CB1_SOUT		(shift_chain[2]),
-	.CB2_SIN		(shift_chain[2]),
-	.CB2_SOUT		(shift_chain[3]),
-	.LB_SIN			(shift_chain[3]),
-	.LB_SOUT		(shift_chain[4])
+	.SIN			(),
+	.SOUT			(),
+	.INPUTS			(),
+	.OUTPUTS		()
 );
 
 

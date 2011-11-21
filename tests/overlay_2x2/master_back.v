@@ -10,7 +10,7 @@ module MASTER (
 );
 
 parameter W = 5; //width of interconnecting bus (one way)
-parameter O = 6; //width of input into logic blocks (per side)
+parameter O = 4; //width of input into logic blocks (per side)
 parameter P = 1; //width of output from logic blocks (per side)
 
 wire uart_rx_valid;
@@ -83,12 +83,12 @@ wire [W-1:0] w_out;
 
 assign n_in = DIP[4:0];
 assign LEDS[4:0] = n_out;
-assign LEDS[7:5] = ble1_out;
+assign LEDS[7:5] = 0;
 
 TRANSITION user_clock_tran_inst(SYSCLK, ~SYSRST, PUSH_E, user_clock);
 TRANSITION user_reset_tran_inst(SYSCLK, ~SYSRST, PUSH_N, user_reset);	
 
-LOGIC_BLOCK #(.N_INPUT(O*4)) lb_inst1 (
+LOGIC_BLOCK lb_inst1 (
 	.PCLK	(SYSCLK),
 	.PRST	(~SYSRST),
 	.UCLK	(user_clock),
@@ -100,7 +100,7 @@ LOGIC_BLOCK #(.N_INPUT(O*4)) lb_inst1 (
 	.OUT	(ble1_out)
 );
 
-LOGIC_BLOCK #(.N_INPUT(O*4)) lb_inst2 (
+LOGIC_BLOCK lb_inst2 (
 	.PCLK	(SYSCLK),
 	.PRST	(~SYSRST),
 	.UCLK	(user_clock),
@@ -112,7 +112,7 @@ LOGIC_BLOCK #(.N_INPUT(O*4)) lb_inst2 (
 	.OUT	(ble2_out)
 );
 
-LOGIC_BLOCK #(.N_INPUT(O*4)) lb_inst3 (
+LOGIC_BLOCK lb_inst3 (
 	.PCLK	(SYSCLK),
 	.PRST	(~SYSRST),
 	.UCLK	(user_clock),
@@ -124,7 +124,7 @@ LOGIC_BLOCK #(.N_INPUT(O*4)) lb_inst3 (
 	.OUT	(ble3_out)
 );
 
-LOGIC_BLOCK #(.N_INPUT(O*4)) lb_inst4 (
+LOGIC_BLOCK lb_inst4 (
 	.PCLK	(SYSCLK),
 	.PRST	(~SYSRST),
 	.UCLK	(user_clock),
@@ -141,8 +141,8 @@ ConnectionBlock #(.W(W), .O(O), .P(P)) cb_inst_n (
 	.LB2_IN	(ble2_out[3]),
 	.CB1_IN	(n_in),
 	.CB2_IN	(bus_n_in),
-	.LB1_OUT	(ble1_in[11:6]),
-	.LB2_OUT	(ble2_in[23:18]),
+	.LB1_OUT	(ble1_in[7:4]),
+	.LB2_OUT	(ble2_in[15:12]),
 	.CB1_OUT	(n_out),
 	.CB2_OUT	(bus_n_out),
 	.CLK	(SYSCLK),
@@ -156,8 +156,8 @@ ConnectionBlock #(.W(W), .O(O), .P(P)) cb_inst_e (
 	.LB2_IN	(ble3_out[0]),
 	.CB1_IN	(bus_e_in),
 	.CB2_IN	(e_in),
-	.LB1_OUT	(ble2_in[17:12]),
-	.LB2_OUT	(ble3_in[5:0]),
+	.LB1_OUT	(ble2_in[11:8]),
+	.LB2_OUT	(ble3_in[3:0]),
 	.CB1_OUT	(bus_e_out),
 	.CB2_OUT	(e_out),
 	.CLK	(SYSCLK),
@@ -171,8 +171,8 @@ ConnectionBlock #(.W(W), .O(O), .P(P)) cb_inst_s (
 	.LB2_IN	(ble3_out[3]),
 	.CB1_IN	(bus_s_in),
 	.CB2_IN	(s_in),
-	.LB1_OUT	(ble4_in[11:6]),
-	.LB2_OUT	(ble3_in[23:18]),
+	.LB1_OUT	(ble4_in[7:4]),
+	.LB2_OUT	(ble3_in[15:12]),
 	.CB1_OUT	(bus_s_out),
 	.CB2_OUT	(s_out),
 	.CLK	(SYSCLK),
@@ -186,8 +186,8 @@ ConnectionBlock #(.W(W), .O(O), .P(P)) cb_inst_w (
 	.LB2_IN	(ble4_out[0]),
 	.CB1_IN	(w_in),
 	.CB2_IN	(bus_w_in),
-	.LB1_OUT	(ble1_in[17:12]),
-	.LB2_OUT	(ble4_in[5:0]),
+	.LB1_OUT	(ble1_in[11:8]),
+	.LB2_OUT	(ble4_in[3:0]),
 	.CB1_OUT	(w_out),
 	.CB2_OUT	(bus_w_out),
 	.CLK	(SYSCLK),
