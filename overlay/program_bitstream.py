@@ -14,6 +14,8 @@ parser.add_option("-b", "--baud", dest="baud", type="int",
 		default=115200, help="device baud rate")
 parser.add_option("-t", "--timeout", dest="timeout", type="float",
 		default=0.1, help="device write timeout")
+parser.add_option("--dump", dest="dump", action="store_true",
+		default=False, help="print binary bitstream")
 
 options, args = parser.parse_args(sys.argv)
 
@@ -128,8 +130,10 @@ data.extend(cb_stream([0, 0, 0, 0], [1, 2, 3, 4], 5, [0, 0], [0, 0], 3))
 data.extend(sb_stream([SB_SOUTH, SB_SOUTH], [SB_WEST, SB_WEST],
 		[SB_NORTH, SB_NORTH], [SB_EAST, SB_EAST]))
 
-for x in data:
-	print "{:b}".format(x[0])
+# print binary format dump of the bitstream
+if options.dump:
+	for x in data:
+		print "{0:0{1}b}".format(x[0], x[1])
 
 for value in serialize(data):
 	if not write(value):
