@@ -86,3 +86,5 @@ webtalk_impact.xml
 *.bbl
 *.blg
 *.synctex.gz
+*~
+*.bak
