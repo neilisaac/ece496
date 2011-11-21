@@ -135,10 +135,14 @@ if options.dump:
 	for x in data:
 		print "{0:0{1}b}".format(x[0], x[1])
 
+bytes = 0
 for value in serialize(data):
+	bytes += 1
 	if not write(value):
 		print "failed to write complete bitstream"
 		sys.exit(1)
+
+print "wrote", bytes, "bytes to serial device"
 
 sys.exit(0)
 
