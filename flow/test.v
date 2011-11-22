@@ -1,6 +1,6 @@
 module test(
 	a, b, c,
-	z, y, z,
+	x, y, z,
 	clk
 );
 

@@ -1,5 +1,4 @@
 read test.odin.blif
-balance
 if -K 6
-eliminate
-write_blif test.abc.blif
+sweep
+write_hie test.odin.blif test.abc.blif
