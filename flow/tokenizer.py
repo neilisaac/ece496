@@ -5,10 +5,11 @@ from collections import deque
 def tokenize(filename):
 	lines = deque()
 	stream = open(filename)
-	data = stream.readlines()
 	
 	concat = False
-	for line in data:
+	for line in stream.readlines():
+		if '#' in line:
+			line = line.split('#')[0]
 		concatnext = False
 		tokens = line.split()
 		if len(tokens) > 0 and tokens[-1] == "\\":
