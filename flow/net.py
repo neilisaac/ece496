@@ -11,19 +11,19 @@ class CLB:
 class NET:
 
 	def __init__(self, filename):
-		self.tokens = tokenizer.tokenize(filename)
+		tokens = tokenizer.tokenize(filename)
 		self.globalnets = list()
 		self.inputs = list()
 		self.outputs = list()
 		self.clbs = list()
-		self.process()
+		self.process(tokens)
 	
 	
-	def process(self):
+	def process(self, tokens):
 		context = None
 		subcontext = None
 
-		for line in self.tokens:
+		for line in tokens:
 			if len(line) == 0:
 				continue
 

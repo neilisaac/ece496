@@ -67,16 +67,16 @@ class Logic:
 class BLIF:
 
 	def __init__(self, filename):
-		self.tokens = tokenizer.tokenize(filename)
+		tokens = tokenizer.tokenize(filename)
 		self.models = list()
-		self.process()
+		self.process(tokens)
 	
 	
-	def process(self):
+	def process(self, tokens):
 		context = None
 		current = list()
 
-		for line in self.tokens:
+		for line in tokens:
 			if len(line) == 0:
 				continue
 
