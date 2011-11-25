@@ -14,6 +14,55 @@ class Logic:
 	def __init__(self):
 		self.nets = None 
 		self.table = list()
+		self.func = None
+	
+	@staticmethod
+	def permute(string):
+		patterns = list()
+		for c in string:
+			if len(patterns) == 0:
+				patterns.append(list())
+			if c == '0' or c == '1':
+				for p in patterns:
+					p.append(int(c))
+			elif c == '-':
+				newpatterns = list()
+				for p in patterns:
+					newpatterns.append(p + list([1]))
+					p.append(0)
+				patterns.extend(newpatterns)
+			else:
+				raise Exception, "unknown digit in function: " + c
+
+		values = list()
+		for p in patterns:
+			order = 1
+			value = 0
+			for c in p:
+				if c == 1:
+					value |= order
+				order = order << 1
+			values.append(value)
+
+		value = 0
+		for v in values:
+			value |= 1 << v
+
+		return value
+
+	
+	def compute(self):
+		for line in self.table:
+			result = line[1]
+			value = Logic.permute(line[0])
+			if self.func is None:
+				self.func = 0
+				if result == '0':
+					self.func = -1
+			if result == '1':
+				self.func |= value
+			else:
+				self.func &= ~value
 
 class BLIF:
 
@@ -88,7 +137,7 @@ class BLIF:
 
 				# reset the current list
 				current = list()
-	
+
 	
 	def dump(self):
 		for model in self.models:
@@ -100,9 +149,11 @@ class BLIF:
 				print "\t", repr(latch)
 			print "tables:"
 			for table in model.logic:
+				table.compute()
 				print "\tlogic", table.nets
 				for line in table.table:
 					print "\t\t", line
+				print "\t\tfunction:", table.func
 			print ""
 
 
