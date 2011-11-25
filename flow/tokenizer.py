@@ -2,14 +2,21 @@
 
 from collections import deque
 
-def tokenize(filename):
+def tokenize(filename, startcomments=True, midcomments=True):
 	lines = deque()
 	stream = open(filename)
 	
 	concat = False
 	for line in stream.readlines():
-		if '#' in line:
+		if len(line) == 0:
+			continue
+
+		# remove comments if desired
+		if startcomments and line[0] == '#':
+			continue
+		elif midcomments and '#' in line:
 			line = line.split('#')[0]
+
 		concatnext = False
 		tokens = line.split()
 		if len(tokens) > 0 and tokens[-1] == "\\":
