@@ -39,8 +39,8 @@ class Routing:
 				continue
 
 			if line[0] == "Array":
-				self.width = tokens[0][2]
-				self.height = tokens[0][4]
+				self.width = int(tokens[0][2])
+				self.height = int(tokens[0][4])
 
 			elif line[0] == "Net":
 				num = int(line[1])

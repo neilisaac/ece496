@@ -27,8 +27,8 @@ class Placement:
 		if tokens[1][0] != "Array":
 			raise Exception, "placement file format doesn't match my expectations"
 		
-		self.width = tokens[1][2]
-		self.height = tokens[1][4]
+		self.width = int(tokens[1][2])
+		self.height = int(tokens[1][4])
 
 		for line in tokens:
 			if len(line) != 5:
