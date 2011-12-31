@@ -16,28 +16,28 @@ class Block:
 
 class Placement:
 	def __init__(self, filename):
-		tokens = tokenizer.tokenize(filename, midcomments=False)
+		tokens = tokenizer.tokenize(filename)
 		self.blocks = dict()
 		self.width = 0
 		self.height = 0
-		self.process(tokens)
-	
 
-	def process(self, tokens):
 		if tokens[1][0] != "Array":
 			raise Exception, "placement file format doesn't match my expectations"
 		
 		self.width = int(tokens[1][2])
 		self.height = int(tokens[1][4])
 
+		num = 0
 		for line in tokens:
-			if len(line) != 5:
+			if len(line) != 4:
 				continue
 
 			if line[0] in self.blocks:
 				raise Exception, "block with same name appears twice in placement file"
 
-			self.blocks[line[0]] = Block(line[0], int(line[1]), int(line[2]), int(line[3]), int(line[4][1:]))
+			# columns: name, x, y, subblk, block number in a comment
+			self.blocks[line[0]] = Block(line[0], int(line[1]), int(line[2]), int(line[3]), num)
+			num += 1
 	
 
 	def dump(self):
