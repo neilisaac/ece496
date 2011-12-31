@@ -10,8 +10,11 @@ class Block:
 		self.subblock = subblock
 		self.number = number
 	
+	def __repr__(self):
+		return "block #{:d} {:s} ({:d}, {:d}) subblock {:d}".format(self.number, self.name, self.x, self.y, self.subblock)
+
 	def dump(self):
-		print "block #{:d} {:s} ({:d}, {:d}) subblock {:d}".format(self.number, self.name, self.x, self.y, self.subblock)
+		print repr(self)
 
 
 class Placement:
