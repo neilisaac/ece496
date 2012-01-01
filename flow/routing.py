@@ -51,7 +51,7 @@ class Routing:
 				self.nets.append(Net(num, name))
 
 			elif line[0] == "Block":
-				print "ignoring:", " ".join(line)
+				print "# ignoring routing line:", " ".join(line)
 
 			else:
 				if len(self.nets) == 0:
