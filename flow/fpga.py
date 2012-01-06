@@ -1,5 +1,7 @@
 #!/usr/bin/env python2.7
 
+import sys
+
 from placement import Placement, Block
 from routing import Routing
 from net import NET
@@ -25,7 +27,7 @@ class FPGA:
 			if 0 < block.x < self.cols and 0 < block.y < self.rows:
 				self.lb[block.x][block.y][block.subblock] = block
 			else:
-				print "# ignoring block:", block
+				sys.stderr.write("WARNING: ignoring placement block: {:s}\n".format(block))
 
 
 	def generate(self):	
@@ -207,7 +209,7 @@ if __name__ == '__main__':
 	import sys
 
 	if len(sys.argv) != 5:
-		print "usage:", sys.argv[0], "<placement.out> <routing.out> <netlist.net> <logic.blif>"
+		sys.stderr.write("usage: {:s} <placement.out> <routing.out> <netlist.net> <logic.blif>\n".format(sys.argv[0]))
 		sys.exit(1)
 	
 	placement = Placement(sys.argv[1])

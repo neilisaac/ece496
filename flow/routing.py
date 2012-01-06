@@ -1,5 +1,6 @@
 #!/usr/bin/env python2.7
 
+import sys
 import re
 import tokenizer
 
@@ -51,7 +52,7 @@ class Routing:
 				self.nets.append(Net(num, name))
 
 			elif line[0] == "Block":
-				print "# ignoring routing line:", " ".join(line)
+				sys.stderr.write("WARNING: ignoring routing line: " + " ".join(line) + "\n")
 
 			else:
 				if len(self.nets) == 0:
@@ -145,8 +146,6 @@ class Routing:
 
 
 if __name__ == '__main__':
-	import sys
-	
 	if len(sys.argv) != 2:
 		print "usage:", sys.argv[0], "<routing file>"
 		sys.exit(1)
