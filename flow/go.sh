@@ -10,3 +10,7 @@ cat test.abc.blif | awk '{ if ($1 == ".latch"){ print $1, $2, $3, "re", "top^clk
 
 ./vpr test.net k6-n4.xml place.out route.out  -route_chan_width 4 || exit 1
 
+./fpga.py place.out route.out test.net test.abc.blif > test.bit || exit 1
+
+./program_bitstream.py --file test.bit --dry || exit 1
+
