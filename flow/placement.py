@@ -9,6 +9,7 @@ class Block:
 		self.y = y
 		self.subblock = subblock
 		self.number = number
+		self.clb = None
 	
 	def __repr__(self):
 		return "block #{:d} {:s} ({:d}, {:d}) subblock {:d}".format(self.number, self.name, self.x, self.y, self.subblock)

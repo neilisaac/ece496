@@ -22,10 +22,33 @@ class FPGA:
 
 		self.cby, self.cbx, self.sb = routing.infer()
 
+		# make a dictionary of CLBs, hashed by name
+		clbs = dict()
+		for clb in netlist.clbs:
+			clbs[clb.name] = clb
+
+		# make a dictionary of logic functions and flops, by output net name
+		self.functions = dict()
+		self.flops = dict()
+		for model in blif.models:
+			for logic in model.logic:
+				if logic.nets[-1] in self.functions:
+					raise Exception, "sink node {:s} appears more than once in blif".format(logic.nets[-1])
+				self.functions[logic.nets[-1]] = logic
+
+			for latch in model.latches:
+				if latch[1] in self.flops:
+					raise Exception, "latched sink node {:s} appears more than once in blif".format(latch[1])
+				self.flops[latch[1]] = latch
+
 		self.lb = [[dict() for row in range(self.rows)] for col in range(self.cols)]
 		for block in placement.blocks.values():
 			if 0 < block.x < self.cols and 0 < block.y < self.rows:
 				self.lb[block.x][block.y][block.subblock] = block
+				if block.name in clbs:
+					block.clb = clbs[block.name]
+				else:
+					raise Exception, "couldn't find CLB for " + block.name + " in the netlist"
 			else:
 				sys.stderr.write("WARNING: ignoring placement block: {:s}\n".format(block))
 
@@ -195,11 +218,48 @@ class FPGA:
 
 	def gen_lb(self, lb, x, y):
 		print "# lb", x, y
-		inputs    = [False for f in range(self.bitgen.cluster * self.bitgen.lbpins)]
+
+		inputs    = [False for f in range(self.bitgen.cluster * self.bitgen.inputs)]
 		functions = [False for f in range(self.bitgen.cluster)]
 		flops     = [False for f in range(self.bitgen.cluster)]
 
-		print "#", lb
+		for sub in lb:
+			if sub != 0:
+				raise Exception, "I'm not sure what a non-zero subblock for a CLB means"
+
+			# process subblocks, ordered by output pin number
+			for subblock in sorted(lb[sub].clb.subblocks, key=lambda b: b[-2]):
+				outpin = int(subblock[-2])
+				index = outpin - 4 * self.bitgen.lbpins
+				key = subblock[0]
+
+				# is the sink latched?
+				if key in self.flops:
+					flops[index] = True
+					key = self.flops[key][0]
+
+				# get the logic function
+				try:
+					func = self.functions[key].func
+					if func is None:
+						sys.stderr.write("WARNING: no logic function computed for sink node {:s}\n".format(key))
+						func = 0
+					functions[index] = func
+				except KeyError:
+					raise Exception, "can't find logic function for sink node {:s} in blif".format(key)
+
+				# determine the input routing for each BLE pin
+				for pin in range(1, self.bitgen.lbpins + 1):
+					selection = False
+					try:
+						selection = int(subblock[pin])
+					except ValueError:
+						if subblock[pin][:4] == "ble_":
+							selection = 4 * self.bitgen.lbpins + int(subblock[pin][4:])
+						elif subblock[pin] != "open":
+							raise Exception, "unknown BLE pin assignment {:s}".format(subblock[pin]) 
+					inputs[index * self.bitgen.inputs + pin - 1] = selection
+
 
 		self.bitgen.gen_lb(inputs, functions, flops)
 
