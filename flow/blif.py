@@ -61,7 +61,7 @@ class Logic:
 			if self.func is None:
 				self.func = 0
 				if result == '0':
-					self.func = -1
+					self.func = 2 ** 2 ** len(line[0]) - 1
 			if result == '1':
 				self.func |= value
 			else:
