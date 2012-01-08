@@ -15,6 +15,9 @@ class Logic:
 		self.nets = None 
 		self.table = list()
 		self.func = None
+
+	def __repr__(self):
+		return "logic nets: {:s} table: {:s} function: {:d}".format(self.nets, self.table, self.func)
 	
 	@staticmethod
 	def permute(string):
