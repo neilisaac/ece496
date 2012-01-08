@@ -41,11 +41,11 @@ class Bitgen:
 
 
 	def gen_lb(self, inputs, functions, flops):
-		for value in inputs:
+		for value in reversed(inputs):
 			for pattern, length in xbar_stream(value, 4 * self.lbpins, self.muxsize):
 				print "{:d}:{:X}".format(length, pattern)
 
-		for function, flop in zip(functions, flops):
+		for function, flop in reversed(zip(functions, flops)):
 			print "1:{:X}".format(flop)
 			print "{:d}:{:X}".format(2 ** self.inputs, function)
 
