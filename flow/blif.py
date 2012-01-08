@@ -138,6 +138,10 @@ class BLIF:
 				# reset the current list
 				current = list()
 
+		for model in self.models:
+			for table in model.logic:
+				table.compute()
+
 	
 	def dump(self):
 		for model in self.models:
@@ -149,7 +153,6 @@ class BLIF:
 				print "\t", repr(latch)
 			print "tables:"
 			for table in model.logic:
-				table.compute()
 				print "\tlogic", table.nets
 				for line in table.table:
 					print "\t\t", line
