@@ -1,0 +1,41 @@
+\section{Project Goals and Requirements}
+
+% Insert a copy of the „Project Goal‟ and „Project Requirements‟ sections from the Project
+% Proposal. If there are any changes, briefly justify the changes and provide an updated version of
+% the current Project Goals and Requirements.
+
+% I just copied this from the final proposal.  We may want to simplify it for the presentation.
+
+
+\subsection{Functional Requirements}
+
+An Overlay FGPA circuit that will:
+
+\begin{itemlist}
+	\item Work on a commercially available FPGA chip.
+	\item Be re-programmable over a serial interface after being flashed to the FPGA.
+	\item Have a tunable number and arrangement of logic cells, and have tunable connectivity parameters. 
+	\item Support inputs to and outputs from test circuits programmed onto the Overlay FGPA.
+\end{itemlist}
+
+A software program that can:
+\begin{itemlist}
+	\item Translate VPR placement and routing data for a test circuit into a bitstream for the Overlay FGPA.
+	\item Program the bitstream onto the Overlay FGPA to implement the circuit.
+\end{itemlist}
+
+\subsection{Constraints}
+
+\begin{itemlist}
+	\item The overlay circuit must support at least 3000 logic cells\footnote{3000 logic cells was chosen as the minimum target because the largest of the ``Golden 20'' circuits, \emph{``s38417''} requires 2567 6-input logic cells\cite{synthesis-density}.} in order to accommodate the \emph{``Golden 20''} MCNC benchmark circuits\footnote{The ``Golden 20'' MCNC circuits are available in BLIF format at \url{http://www.ece.ubc.ca/~julienl/benchmarks.htm}.} commonly used in FPGA research.
+\end{itemlist}
+
+
+\subsection{Objectives}
+
+\begin{itemlist}
+	\item Be compatible with a family of commercial FPGAs that are available to researchers.
+	\item Use the native logic cells in the physical FPGA directly in the overlay FPGA design to reduce area and latency.
+	\item Be fast enough that it outperforms software emulation of most test circuits.
+\end{itemlist}
+
