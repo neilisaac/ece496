@@ -20,7 +20,7 @@
     </calendar>
   </calendars>
   <tasks>
-    <task id="1" name="Virtual FPGA circuit" note="" work="10310400" start="20110721T000000Z" end="20120215T170000Z" work-start="20110721T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+    <task id="1" name="Virtual FPGA circuit" note="" work="11578500" start="20110721T000000Z" end="20120430T081500Z" work-start="20110721T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
       <task id="2" name="Basic logic element" note="" work="460800" start="20110721T000000Z" end="20110805T170000Z" work-start="20110721T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work"/>
       <task id="3" name="UART interface" note="" work="2102400" start="20110721T000000Z" end="20111001T170000Z" work-start="20110721T080000Z" percent-complete="95" priority="0" type="normal" scheduling="fixed-work"/>
       <task id="4" name="Logic block" note="" work="2304000" start="20110721T000000Z" end="20110829T170000Z" work-start="20110721T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work"/>
@@ -45,35 +45,43 @@
           <predecessor id="1" predecessor-id="7" type="FS"/>
         </predecessors>
       </task>
-      <task id="9" name="Logic tile grid" note="" work="460800" start="20111015T170000Z" end="20111031T170000Z" work-start="20111016T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="9" name="Logic tile grid" note="" work="460800" start="20111015T170000Z" end="20111031T170000Z" work-start="20111016T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
         <predecessors>
           <predecessor id="1" predecessor-id="8" type="FS"/>
         </predecessors>
       </task>
-      <task id="10" name="Logic tile boundary" note="" work="1324800" start="20111015T170000Z" end="20111130T170000Z" work-start="20111016T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="10" name="Logic tile boundary" note="" work="2218500" start="20111015T170000Z" end="20120101T081500Z" work-start="20111016T080000Z" percent-complete="90" priority="0" type="normal" scheduling="fixed-work">
         <predecessors>
           <predecessor id="1" predecessor-id="8" type="FS"/>
         </predecessors>
       </task>
-      <task id="11" name="Basic tile optimization" note="" work="1785600" start="20111215T170000Z" end="20120215T170000Z" work-start="20111216T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="11" name="Basic tile optimization" note="" work="2160000" start="20120215T081500Z" end="20120430T081500Z" work-start="20120215T081500Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
         <predecessors>
-          <predecessor id="1" predecessor-id="12" type="FS"/>
+          <predecessor id="1" predecessor-id="14" type="FS"/>
         </predecessors>
       </task>
     </task>
-    <task id="12" name="Software support" note="" work="432000" start="20111130T170000Z" end="20111215T170000Z" work-start="20111201T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+    <task id="12" name="Software support" note="" work="3052800" start="20111031T170000Z" end="20120215T081500Z" work-start="20111101T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="13" name="External tool flow" note="" work="1756800" start="20111031T170000Z" end="20111231T170000Z" work-start="20111101T080000Z" percent-complete="100" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="9" type="FS"/>
+        </predecessors>
+      </task>
+      <task id="14" name="Bitstream generation" note="" work="1296000" start="20120101T081500Z" end="20120215T081500Z" work-start="20120101T081500Z" percent-complete="80" priority="0" type="normal" scheduling="fixed-work">
+        <predecessors>
+          <predecessor id="1" predecessor-id="13" type="FS"/>
+          <predecessor id="1" predecessor-id="10" type="FS"/>
+        </predecessors>
+      </task>
+    </task>
+    <task id="15" name="Test vector injection" note="" work="2187900" start="20120101T081500Z" end="20120316T170000Z" work-start="20120101T081500Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
       <predecessors>
         <predecessor id="1" predecessor-id="10" type="FS"/>
       </predecessors>
     </task>
-    <task id="13" name="Test vector injection" note="" work="892800" start="20111130T170000Z" end="20111231T170000Z" work-start="20111201T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+    <task id="16" name="Gathering results" note="" work="2160000" start="20120215T081500Z" end="20120430T081500Z" work-start="20120215T081500Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
       <predecessors>
-        <predecessor id="1" predecessor-id="10" type="FS"/>
-      </predecessors>
-    </task>
-    <task id="14" name="Gathering results" note="" work="1785600" start="20111215T170000Z" end="20120215T170000Z" work-start="20111216T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
-      <predecessors>
-        <predecessor id="1" predecessor-id="12" type="FS"/>
+        <predecessor id="1" predecessor-id="14" type="FS"/>
       </predecessors>
     </task>
   </tasks>
@@ -83,14 +91,15 @@
     <resource id="2" name="Keyi Shi" short-name="Keyi" type="1" units="0" email="keyi.shi@utoronto.ca" note="" std-rate="0"/>
   </resources>
   <allocations>
-    <allocation task-id="12" resource-id="1" units="100"/>
     <allocation task-id="14" resource-id="1" units="100"/>
+    <allocation task-id="13" resource-id="1" units="100"/>
+    <allocation task-id="16" resource-id="1" units="100"/>
     <allocation task-id="3" resource-id="1" units="100"/>
     <allocation task-id="4" resource-id="1" units="100"/>
     <allocation task-id="9" resource-id="1" units="100"/>
     <allocation task-id="6" resource-id="1" units="100"/>
     <allocation task-id="11" resource-id="2" units="100"/>
-    <allocation task-id="13" resource-id="2" units="100"/>
+    <allocation task-id="15" resource-id="2" units="100"/>
     <allocation task-id="10" resource-id="2" units="100"/>
     <allocation task-id="5" resource-id="2" units="100"/>
     <allocation task-id="4" resource-id="2" units="100"/>
