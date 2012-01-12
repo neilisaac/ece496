@@ -10,6 +10,7 @@
 \usepackage[toc,page]{appendix}
 \usepackage{setspace}
 \usepackage{pdfpages}
+\usepackage{mdwlist}
 
 \usepackage{ulem}
 \normalem
@@ -101,19 +102,149 @@ blah blah blah
 \pagebreak
 \pagenumbering{arabic}
 
+
+
+
 \section{Individual Progress and Contributions}
 
-blah blah blah
+This section lists the major tasks I have been responsible for.
+The respective tasks are discussed fully in section 2.
+
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+\textbf{Task title} & \textbf{Category} & \textbf{Status} & \textbf{Original date} & \textbf{New date} \\ \hline
+\hline
+1. Virtual FPGA Verilog code & hardware & completed & Aug-Dec 15 & Aug-Jan 15 \\ \hline
+2. External tool flow & tools & completed & Dec 1-15 & Dec 1-15 \\ \hline
+3. Bitstream generation software & software & completed & Dec 1-15 & Dec 1-Jan 15 \\ \hline
+4. Stress-testing and improvement & testing & not started & Dec 15-Apr & Jan 15-Apr \\ \hline
+\end{tabular}
 
 
-\section{Information on individual Milestones}
 
-blah blah blah
+
+\section{Information on Individual Milestones}
+
+\begin{tabular}{|p{6in}|}
+\hline
+\textbf{1. Virtual FPGA Verilog code} \\
+\emph{Category:} hardware \\
+\emph{Original date:} August - December 15 \\
+\emph{New date:} August - January 15 \\
+\hline
+\textbf{Responsibility:} Neil, Keyi \\
+The components I wrote were the UART, logic block, connection block, and tile grid. \\
+% Keyi: logic element, logic block, shift multiplexing, switch block, logic tile, grid boundary, tile optimization
+\hline
+\textbf{Status:} completed; future improvements are planned \\
+\vspace{-2em}
+\begin{itemize*}
+\item Verilog code for basic virtual FPGA is complete.
+\item Parameters can be changed to create virtual FPGAs of different sizes.
+\item Future improvements will aim to to reduce the size of the circuit.
+\end{itemize*} 
+\vspace{-2em} \\
+\hline
+\textbf{Actions} \\
+\vspace{-2em}
+\begin{itemize*}
+\item asdf
+\end{itemize*} 
+\vspace{-2em} \\
+\hline
+\textbf{Decisions} \\
+\vspace{-2em}
+\begin{itemize*}
+\item asdf
+\end{itemize*} 
+\vspace{-2em} \\
+\hline
+\textbf{Testing, verification and results} \\
+details \\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|p{6in}|}
+\hline
+\textbf{2. External tool flow} \\
+\emph{Category:} tools \\
+\emph{Original date:} December 1 - December 15 \\
+\emph{New date:} December 1 - December 15 \\
+\hline
+\textbf{Responsibility:} Neil \\
+\hline
+\textbf{Status:} completed \\
+details \\
+\hline
+\textbf{Actions} \\
+list \\
+\hline
+\textbf{Decisions} \\
+list \\
+\hline
+\textbf{Testing, verification and results} \\
+details \\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|p{6in}|}
+\hline
+\textbf{3. Bitstream generation software} \\
+\emph{Category:} software \\
+\emph{Original date:} December 1- December 15 \\
+\emph{New date:} December 1 - January 15 \\
+\hline
+\textbf{Responsibility:} Neil \\
+\hline
+\textbf{Status:} completed \\
+details \\
+\hline
+\textbf{Actions} \\
+list \\
+\hline
+\textbf{Decisions} \\
+list \\
+\hline
+\textbf{Testing, verification and results} \\
+details \\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|p{6in}|}
+\hline
+\textbf{4. Stress-testing and improvement} \\
+\emph{Category:} testing, hardware \\
+\emph{Original date:} December 15 - April \\
+\emph{New date:} January 15 - April \\
+\hline
+\textbf{Responsibility:} Neil, Keyi \\
+\hline
+\textbf{Status:} completed \\
+details \\
+\hline
+\textbf{Actions} \\
+list \\
+\hline
+\textbf{Decisions} \\
+list \\
+\hline
+\textbf{Testing, verification and results} \\
+details \\
+\hline
+\end{tabular}
+
+
+
 
 
 \section{Progress Assessment}
 
 blah blah blah
+
+
 
 
 \pagebreak
@@ -123,6 +254,38 @@ blah blah blah
 
 \pagebreak
 \begin{appendices}
+
+\include{gantt}
+
+\pagebreak
+\section{Test Verilog file}
+
+\begin{verbatim}
+module test(
+    a, b, c,
+    x, y, z,
+    clk
+);
+        
+    input a, b, c;
+    input clk;
+    output x, y, z;
+
+    assign x = a & b;
+    assign y = a | b;
+
+    always @ (posedge clk)
+        z <= c;
+
+endmodule
+\end{verbatim}
+
+
+\pagebreak
+\section{VPR Placement and Routing Result}
+
+\includegraphics[scale=0.5]{vpr.png}
+
 
 \end{appendices}
 
