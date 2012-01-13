@@ -53,35 +53,33 @@ wire user_reset;
 TRANSITION user_clock_tran_inst(SYSCLK, ~SYSRST, PUSH_N, user_clock);
 TRANSITION user_reset_tran_inst(SYSCLK, ~SYSRST, PUSH_C, user_reset);
 
-
-wire [4:0] shift_chain;
-assign shift_chain[0] = shift_head;
-assign shift_tail = shift_chain[4];
-
-wire [7:0] out, alt;
-
 parameter NUM_LB_IN = 16;
 parameter NUM_LB_OUT = 4;
 parameter BUS_WIDTH = 2;
 
+parameter ROWS = 1;
+parameter COLS = 1;
+parameter IO_PER_CB = 1;
+
 OVERLAY # (
 	.NUM_LB_IN		(NUM_LB_IN),
 	.NUM_LB_OUT		(NUM_LB_OUT),
-	.BUS_WIDTH		(BUS_WIDTH)
+	.BUS_WIDTH		(BUS_WIDTH),
+	.ROWS			(ROWS),
+	.COLS			(COLS),
+	.IO_PER_CB		(IO_PER_CB)
 ) overlay_inst (
 	.PCLK			(SYSCLK),
 	.PRST			(~SYSRST),
 	.UCLK			(user_clock),
 	.URST			(user_reset),
 	.SE				(shift_enable),
-	.SIN			(),
-	.SOUT			(),
-	.INPUTS			(),
-	.OUTPUTS		()
+	.SIN			(shift_head),
+	.SOUT			(shift_tail),
+	.INPUTS			(DIP[7:0]),
+	.OUTPUTS		(LEDS[7:0])
 );
 
-
-assign LEDS = PUSH_S ? alt : out;
 
 assign { LED_N, LED_W, LED_S, LED_E, LED_C } = { PUSH_N, PUSH_W, PUSH_S, PUSH_E, PUSH_C };
 

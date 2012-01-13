@@ -80,8 +80,8 @@ CONNECTION_BLOCK # (
 	.SB1_OUT (NORTH_BUS_OUT),
 	.SB2_OUT (bus_down),
 	.SE (SE),
-	.SIN (CB1_SIN),
-	.SOUT (CB1_SOUT)
+	.SIN (CB2_SIN),
+	.SOUT (CB2_SOUT)
 );
 
 
@@ -100,8 +100,8 @@ CONNECTION_BLOCK # (
 	.SB1_OUT (bus_left),
 	.SB2_OUT (EAST_BUS_OUT),
 	.SE (SE),
-	.SIN (CB2_SIN),
-	.SOUT (CB2_SOUT)
+	.SIN (CB1_SIN),
+	.SOUT (CB1_SOUT)
 );
 
 
