@@ -25,7 +25,7 @@ generate //generate muxes to exit to the north
 		SRLC32E #( .INIT(32'h00000000) ) OUTNMux_inst (
 			.Q(OUT_N[i]),
 			.Q31(scan_chain[i+1]),
-			.A({0, 0, IN_W[i], IN_S[i], IN_E[i]}),
+			.A({1'b0, 1'b0, IN_W[i], IN_S[i], IN_E[i]}),
 			.CE(SE),
 			.CLK(CLK),
 			.D(scan_chain[i])
@@ -38,7 +38,7 @@ generate //generate muxes to exit to the east
 		SRLC32E #( .INIT(32'h00000000) ) OUTEMux_inst (
 			.Q(OUT_E[i]),
 			.Q31(scan_chain[W+i+1]),
-			.A({0, 0, IN_N[i], IN_W[i], IN_S[i]}),
+			.A({1'b0, 1'b0, IN_N[i], IN_W[i], IN_S[i]}),
 			.CE(SE),
 			.CLK(CLK),
 			.D(scan_chain[W+i])
@@ -51,7 +51,7 @@ generate //generate muxes to exit to the south
 		SRLC32E #( .INIT(32'h00000000) ) OUTSMux_inst (
 			.Q(OUT_S[i]),
 			.Q31(scan_chain[2*W+i+1]),
-			.A({0, 0, IN_E[i], IN_N[i], IN_W[i]}),
+			.A({1'b0, 1'b0, IN_E[i], IN_N[i], IN_W[i]}),
 			.CE(SE),
 			.CLK(CLK),
 			.D(scan_chain[2*W+i])
@@ -64,7 +64,7 @@ generate //generate muxes to exit to the west
 		SRLC32E #( .INIT(32'h00000000) ) OUTWMux_inst (
 			.Q(OUT_W[i]),
 			.Q31(scan_chain[3*W+i+1]),
-			.A({0, 0, IN_S[i], IN_E[i], IN_N[i]}),
+			.A({1'b0, 1'b0, IN_S[i], IN_E[i], IN_N[i]}),
 			.CE(SE),
 			.CLK(CLK),
 			.D(scan_chain[3*W+i])
