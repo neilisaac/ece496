@@ -95,7 +95,7 @@ generate
 				.SB_SIN			(shift_chain[y][COLS]),
 				.SB_SOUT		(shift_east_border),
 				.CB_SIN			(shift_east_border),
-				.CB_SOUT		(shift_chain[ROWS][COLS])
+				.CB_SOUT		(shift_chain[y+1][COLS])
 		);
 	end
 	
@@ -117,8 +117,8 @@ generate
 
 	// instantiate tiles
 	for (y = 0; y < ROWS; y = y + 1) begin : OVERLAY_ROW
-		assign lb_out_right[y][0][0] = io_in_west[y];
-		assign io_out_west[y] = lb_in_left[y][0][0];
+		assign lb_out_right[y][0][IO_PER_CB-1:0] = io_in_west[IO_PER_CB*y+IO_PER_CB-1:IO_PER_CB*y];
+		assign io_out_west[IO_PER_CB*y+IO_PER_CB-1:IO_PER_CB*y] = lb_in_left[y][0][IO_PER_CB-1:0];
 		for (x = 0; x < COLS; x = x + 1) begin : OVERLAY_COL
 			wire [2:0] shift_internal;
 
@@ -158,17 +158,12 @@ generate
 				.LB_SOUT		(shift_chain[y+1][x])
 			);
 			if (y==0) begin: SOUTH_OUTPUT
-				assign lb_out_up[0][x][0] = io_in_south[x];
-				assign io_out_south[x] = lb_in_down[0][x][0];
+				assign lb_out_up[0][x][IO_PER_CB-1:0] = io_in_south[IO_PER_CB*x+IO_PER_CB-1:IO_PER_CB*x];
+				assign io_out_south[IO_PER_CB*x+IO_PER_CB-1:IO_PER_CB*x] = lb_in_down[0][x][IO_PER_CB-1:0];
 			end
 		end
 	end
 endgenerate
-
-//assign lb_out_up[0][COLS-1:0][IO_PER_CB-1:0] = io_in_south;
-//assign lb_out_right[ROWS-1:0][0][IO_PER_CB-1:0] = io_in_west;
-//assign io_out_south = lb_in_down[0][COLS-1:0][IO_PER_CB-1:0];
-//assign io_out_west = lb_in_left[ROWS-1:0][0][IO_PER_CB-1:0];
 
 endmodule
 
