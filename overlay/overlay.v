@@ -22,8 +22,7 @@ output [NUM_IO-1:0] OUTPUTS;
 // connections between tiles
 wire [NUM_LB_IN/4-1:0] lb_in_left[ROWS:0][COLS:0], lb_in_down[ROWS:0][COLS:0];
 wire [NUM_LB_OUT/4-1:0] lb_out_right[ROWS:0][COLS:0], lb_out_up[ROWS:0][COLS:0];
-wire [BUS_WIDTH-1:0] bus_up[ROWS:0][COLS:0], bus_right[ROWS:0][COLS:0],
-	bus_down[ROWS:0][COLS:0], bus_left[ROWS:0][COLS:0];
+wire [BUS_WIDTH-1:0] bus_up[ROWS:0][COLS:0], bus_right[ROWS:0][COLS:0], bus_down[ROWS:0][COLS:0], bus_left[ROWS:0][COLS:0];
 
 // shift chain between tiles
 wire [COLS:0] shift_chain[ROWS:0];
@@ -55,8 +54,8 @@ generate
 		) north_border_inst (
 				.PCLK			(PCLK),
 				.SE				(SE),
-				.NORTH_IO_IN	(io_in_north[IO_PER_CB_*x+IO_PER_CB-1:IO_PER_CB*x]),
-				.NORTH_IO_OUT	(io_out_north[IO_PER_CB_*x+IO_PER_CB-1:IO_PER_CB*x]),
+				.NORTH_IO_IN	(io_in_north[IO_PER_CB*x+IO_PER_CB-1:IO_PER_CB*x]),
+				.NORTH_IO_OUT	(io_out_north[IO_PER_CB*x+IO_PER_CB-1:IO_PER_CB*x]),
 				.SOUTH_CB_IN	(lb_out_up[ROWS][x]),
 				.SOUTH_CB_OUT	(lb_in_down[ROWS][x]),
 				.EAST_BUS_IN	(bus_left[ROWS][x+1]),
@@ -83,8 +82,8 @@ generate
 		) east_border_inst (
 				.PCLK			(PCLK),
 				.SE				(SE),
-				.EAST_IO_IN		(io_in_east[IO_PER_CB_*y+IO_PER_CB-1:IO_PER_CB*y]),
-				.EAST_IO_OUT	(io_out_east[IO_PER_CB_*y+IO_PER_CB-1:IO_PER_CB*y]),
+				.EAST_IO_IN		(io_in_east[IO_PER_CB*y+IO_PER_CB-1:IO_PER_CB*y]),
+				.EAST_IO_OUT	(io_out_east[IO_PER_CB*y+IO_PER_CB-1:IO_PER_CB*y]),
 				.WEST_CB_IN		(lb_out_right[y][COLS]),
 				.WEST_CB_OUT	(lb_in_left[y][COLS]),
 				.NORTH_BUS_IN	(bus_down[y+1][COLS]),
@@ -118,6 +117,8 @@ generate
 
 	// instantiate tiles
 	for (y = 0; y < ROWS; y = y + 1) begin : OVERLAY_ROW
+		assign lb_out_right[y][0][0] = io_in_west[y];
+		assign io_out_west[y] = lb_in_left[y][0][0];
 		for (x = 0; x < COLS; x = x + 1) begin : OVERLAY_COL
 			wire [2:0] shift_internal;
 
@@ -156,14 +157,18 @@ generate
 				.LB_SIN			(shift_internal[2]),
 				.LB_SOUT		(shift_chain[y+1][x])
 			);
+			if (y==0) begin: SOUTH_OUTPUT
+				assign lb_out_up[0][x][0] = io_in_south[x];
+				assign io_out_south[x] = lb_in_down[0][x][0];
+			end
 		end
 	end
 endgenerate
 
-assign lb_out_up[0][COLS-1:0][IO_PER_CB-1:0] = io_in_south;
-assign lb_out_right[ROWS-1:0][0][IO_PER_CB-1:0] = io_in_west;
-assign io_out_south = lb_in_down[0][COLS-1:0][IO_PER_CB-1:0];
-assign io_out_west = lb_in_left[ROWS-1:0][0][IO_PER_CB-1:0];
+//assign lb_out_up[0][COLS-1:0][IO_PER_CB-1:0] = io_in_south;
+//assign lb_out_right[ROWS-1:0][0][IO_PER_CB-1:0] = io_in_west;
+//assign io_out_south = lb_in_down[0][COLS-1:0][IO_PER_CB-1:0];
+//assign io_out_west = lb_in_left[ROWS-1:0][0][IO_PER_CB-1:0];
 
 endmodule
 
