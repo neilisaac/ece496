@@ -13,4 +13,30 @@
 %   project milestones. Again, be brief here since you will provide the details in Appendix A.
 
 
+Our project is progressing well and we are optimistic that we can meet our deadlines.
+We initially planned optimistic deadline for long-term tasks, but left a couple of months of slack at the end of the project.
+Now that we have begun those tasks, we have adjusted the gantt chart to reflect more realistic expectations for some of those tasks.
+The slack time is now reflected within the time allocations for the tasks themselves.
+The updated gantt chart is included in Appendix \ref{new-gantt-chart}, and the old version is in Appendix \ref{old-gantt-chart}.
+
+In order to build a working \emph{Overlay FPGA}, we need to produce the following:
+\begin{itemize}
+\item Verilog for the individual FPGA building-blocks: the logic cell, logic block, connection block, and the switch block.
+\item Verilog to connect the building block components together in a grid and feed the programming signals through them.
+\item Verilog circuit to interface with the UART to enable serial programming of the Overlay FPGA.
+\item Scripts to run the third-party tools which will process an input circuit (from the user) and produce a valid placment and routing. Some adjustments need to be made so the tools can read each others' outputs.
+\item Software to convert the placement and routing into a programmable bitstream.
+\end{itemize}
+
+We have completed the building-block components of the design, and the components all work individually, but need to do extensive debugging work to get it all working together.
+
+The software is also complete, but can't be fully tested until the hardware is fully functional.
+Partial validation was done on the software by manually reading the bitstream file it produces.
+
+Once we complete this debugging, we have a number of improvements planned to improve the quality of the virtual FPGA (in terms of usability to researchers, as well as its efficiency.)
+These improvements are not necessary for a proof-of-concept, or for a fully functional demo.
+
+We are confident that we can complete these remaining tasks before the design fair.
+
+
 
