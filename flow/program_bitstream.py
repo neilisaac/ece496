@@ -46,7 +46,7 @@ def serialize(values):
 	return bytelist
 
 
-def write_btye(value):
+def write_byte(value):
 	for i in range(5):
 		s.write(chr(value))
 		read = s.read()
