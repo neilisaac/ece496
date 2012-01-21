@@ -65,6 +65,33 @@ def write_btye(value):
 	return True
 
 
+def write_verilog(filename, data):
+	f = open(filename, "w")
+	f.write("`timescale 1ns / 1ps\n\n")
+	f.write("module SCAN_TB ( SCAN, ENABLE );\n\n")
+	f.write("output reg SCAN;\noutput reg ENABLE;\n\n")
+
+	f.write("reg done;\n\n");
+
+	f.write("initial begin\n");
+	f.write("\tdone = 0;\n\tSCAN = 0;\n\tENABLE = 0;\n")
+	f.write("end\n\n")
+
+	f.write("always if (!done) begin\n")
+	f.write("\tENABLE = 1;\n")
+
+	for byte in data:
+		for bit in range(8):
+			f.write("\t#1 SCAN = {:d};\n".format((byte >> bit) & 0x1))
+
+	f.write("\t#1 ENABLE = 0;\n")
+	f.write("\tdone = 0;\n")
+	f.write("end\n\n")
+
+	f.write("\nendmodule\n")
+	f.close()
+
+
 parser = optparse.OptionParser()
 
 parser.add_option("-f", "--file", dest="filename", type="string",
@@ -78,14 +105,17 @@ parser.add_option("-t", "--timeout", dest="timeout", type="float",
 parser.add_option("--dump", dest="dump", action="store_true",
 		default=False, help="print binary bitstream")
 parser.add_option("--dry", dest="dry", action="store_true",
-		default=False, help="don't flash the bitstream (implies --dump)")
+		default=False, help="don't flash the bitstream")
+parser.add_option("--sim", dest="sim", type="string",
+		default=None, help="save verilog file to simulate bitstream")
 
 options, args = parser.parse_args(sys.argv)
 
-if options.dry:
-	options.dump = True
-
 data = read_bitstream(options.filename, options.dump)
+
+if options.sim is not None:
+	write_verilog(options.sim, serialize(data))
+	print "wrote testbench verilog to {:s}".format(options.sim)
 
 if options.dry:
 	print "dry run read", len(serialize(data)), "bytes"
