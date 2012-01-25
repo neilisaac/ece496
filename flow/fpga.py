@@ -70,7 +70,7 @@ class FPGA:
 	
 
 	def gen_cb(self, cb, x, y, orientation):
-		print "# cb", x, y
+		print "# cb", orientation, x, y
 		lb1 = [False for t in range(self.bitgen.lbpins)]
 		lb2 = [False for t in range(self.bitgen.lbpins)]
 		sb1 = [False for t in range(self.bitgen.tracks)]
@@ -162,12 +162,12 @@ class FPGA:
 						if dst.qualifier == "Pad":
 							lb2[0] = num
 						else:
-							lb2[dst.value - self.bitgen.lbpins] = num
+							lb2[dst.value - 3 * self.bitgen.lbpins] = num
 					else:
 						if dst.qualifier == "Pad":
 							lb1[0] = num
 						else:
-							lb1[dst.value - 3 * self.bitgen.lbpins] = num
+							lb1[dst.value - self.bitgen.lbpins] = num
 
 				else:
 					raise Exception, "unknown src kind for IPIN sink in gen_cb"
