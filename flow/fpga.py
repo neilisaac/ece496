@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.7
 
 import sys
+from collections import deque
 
 from placement import Placement, Block
 from routing import Routing
@@ -26,6 +27,11 @@ class FPGA:
 		clbs = dict()
 		for clb in netlist.clbs:
 			clbs[clb.name] = clb
+
+		# make a dictionary of routing nets, hashed by net name
+		self.nets = dict()
+		for net in routing.nets:
+			self.nets[net.name] = net.nodes
 
 		# make a dictionary of logic functions and flops, by output net name
 		self.functions = dict()
@@ -54,19 +60,19 @@ class FPGA:
 
 
 	def generate(self):	
-		for col in range(self.cols-1):
-			for row in range(self.rows):
-				self.gen_sb(self.sb[col][row], col, row)
-				self.gen_cb(self.cbx[col+1][row], col+1, row, "x")
-				if row < self.rows-1:
-					self.gen_cb(self.cby[col][row+1], col, row+1, "y")
-					self.gen_lb(self.lb[col+1][row+1], col+1, row+1)
-	
 		col = self.cols-1
-		self.gen_sb(self.sb[col][0], col, 0)
-		for row in range(1, self.rows):
-			self.gen_cb(self.cby[col][row], col, row, "y")
+		for row in range(self.rows-1, 0, -1):
 			self.gen_sb(self.sb[col][row], col, row)
+			self.gen_cb(self.cby[col][row], col, row, "y")
+		self.gen_sb(self.sb[col][0], col, 0)
+
+		for col in range(self.cols-2, -1, -1):
+			for row in range(self.rows-1, -1, -1):
+				if row < self.rows-1:
+					self.gen_lb(self.lb[col+1][row+1], col+1, row+1)
+					self.gen_cb(self.cby[col][row+1], col, row+1, "y")
+				self.gen_cb(self.cbx[col+1][row], col+1, row, "x")
+				self.gen_sb(self.sb[col][row], col, row)
 	
 
 	def gen_cb(self, cb, x, y, orientation):
@@ -227,10 +233,60 @@ class FPGA:
 			if sub != 0:
 				raise Exception, "I'm not sure what a non-zero subblock for a CLB means"
 
-			# process subblocks, ordered by output pin number
-			for subblock in sorted(lb[sub].clb.subblocks, key=lambda b: b[-2]):
-				outpin = int(subblock[-2])
-				index = outpin - 4 * self.bitgen.lbpins
+			# map pin indices in netlist to routed pin numbers
+			pins = dict()
+			for i, pin in zip(range(len(lb[sub].clb.pinlist)), lb[sub].clb.pinlist):
+				if pin == "open": pass
+
+				# find input pin
+				elif i < 4 * self.bitgen.lbpins:
+					if pin not in self.nets:
+						raise Exception, "couldn't find output net " + pin
+					node = self.nets[pin][-2]
+					if node.kind != "IPIN" or node.qualifier != "Pin":
+						raise Exception, "expecting CLB pin before sink of net " + pin
+					pins[i] = node.value + self.bitgen.cluster
+
+				# find output pin
+				elif i < 4 * self.bitgen.lbpins + self.bitgen.cluster:
+					if pin not in self.nets:
+						raise Exception, "couldn't find input net " + pin
+					node = self.nets[pin][1]
+					if node.kind != "OPIN" or node.qualifier != "Pin":
+						raise Exception, "expecting CLB pin to drive net " + pin
+					pins[i] = node.value - 4 * self.bitgen.lbpins
+
+				# ignore clk pin
+
+			# make a list of subblocks where subblocks which have
+			# a specific output pin are at the start of the list
+			subblocks = deque()
+			n = 0
+			for subblock in lb[sub].clb.subblocks:
+				if int(subblock[-2]) in pins:
+					subblocks.appendleft((n, subblock))
+				else:
+					subblocks.append((n, subblock))
+				n += 1
+
+			# assign the subblocks
+			assignments = dict()
+			clb_to_physical_order = dict()
+			for n, subblock in subblocks:
+				pin = int(subblock[-2])
+				if pin in pins:
+					assignments[pins[pin]] = subblock
+					clb_to_physical_order[n] = i
+				else:
+					for i in range(self.bitgen.cluster):
+						if i not in assignments.keys():
+							assignments[i] = subblock
+							clb_to_physical_order[n] = i
+
+			print "# assignments", assignments
+
+			for index in sorted(assignments.keys()):
+				subblock = assignments[index]
 				key = subblock[0]
 
 				# is the sink latched?
@@ -252,10 +308,10 @@ class FPGA:
 				for pin in range(1, self.bitgen.lbpins + 1):
 					selection = False
 					try:
-						selection = int(subblock[pin])
+						selection = pins[int(subblock[pin])]
 					except ValueError:
 						if subblock[pin][:4] == "ble_":
-							selection = 4 * self.bitgen.lbpins + int(subblock[pin][4:])
+							selection = clb_to_physical_order[int(subblock[pin][4:])]
 						elif subblock[pin] != "open":
 							raise Exception, "unknown BLE pin assignment {:s}".format(subblock[pin]) 
 					inputs[index * self.bitgen.inputs + pin - 1] = selection
