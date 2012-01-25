@@ -86,6 +86,12 @@ class FPGA:
 		for dst, src in cb:
 			num = None
 
+			# find the real source
+			for dst1, src1 in cb:
+				if dst1 == src:
+					src = src1
+					print "# real source:", dst, src
+
 			if dst.kind == "CHANX":
 				if src.kind == "CHANX":
 					num = 0
@@ -174,6 +180,52 @@ class FPGA:
 							lb1[0] = num
 						else:
 							lb1[dst.value - self.bitgen.lbpins] = num
+
+				elif src.kind == "OPIN":
+					if orientation == "y":
+						if src.x > x:
+							# left pins are 12-15, want value 5-8
+							num = src.value - 2 * self.bitgen.lbpins
+							if src.qualifier == "Pad":
+								num = 0 
+						else:
+							# right pins are 4-7, want value 1-4
+							num = src.value - self.bitgen.lbpins
+							if src.qualifier == "Pad":
+								num = 0
+
+						if dst.x > x:
+							if dst.qualifier == "Pad":
+								lb2[0] = num
+							else:
+								lb2[dst.value - 3 * self.bitgen.lbpins] = num
+						else:
+							if dst.qualifier == "Pad":
+								lb1[0] = num
+							else:
+								lb1[dst.value - self.bitgen.lbpins] = num
+					else:
+						if src.y > y:
+							# bottom pins are 8-11, want value 1-4
+							num = src.value - 2 * self.bitgen.lbpins
+							if src.qualifier == "Pad":
+								num = 0
+						else:
+							# top pins are 0-3, want value 5-8
+							num = src.value + self.bitgen.lbpins
+							if src.qualifier == "Pad":
+								num = 0
+
+						if dst.y > y:
+							if dst.qualifier == "Pad":
+								lb1[0] = num
+							else:
+								lb1[dst.value - 2 * self.bitgen.lbpins] = num
+						else:
+							if dst.qualifier == "Pad":
+								lb2[0] = num
+							else:
+								lb2[dst.value] = num
 
 				else:
 					raise Exception, "unknown src kind for IPIN sink in gen_cb"
