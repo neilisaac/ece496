@@ -1,16 +1,18 @@
 #!/bin/sh
 
-./odin_ii -V test.v -o test.odin.blif
+prefix="test"
 
-./abc-vtr -f abc.cmd || exit 1
+./odin_ii -V $prefix.v -o $prefix.odin.blif > $prefix.odin.log || exit 1
 
-cat test.abc.blif | awk '{ if ($1 == ".latch"){ print $1, $2, $3, "re", "top^clk", $4; } else { print $0; } }' > test.awk.blif
+./abc-vtr -f abc.cmd  > $prefix.abc.log || exit 1
 
-./t-vpack test.awk.blif test.net -inputs_per_cluster 16 -cluster_size 4 -lut_size 6 || exit 1
+cat $prefix.abc.blif | awk '{ if ($1 == ".latch"){ print $1, $2, $3, "re", "top^clk", $4; } else { print $0; } }' > $prefix.awk.blif
 
-./vpr test.net -nodisp k6-n4.xml place.out route.out  -route_chan_width 4 || exit 1
+./t-vpack $prefix.awk.blif $prefix.net -inputs_per_cluster 16 -cluster_size 4 -lut_size 6 > $prefix.vpack.log || exit 1
 
-./fpga.py place.out route.out test.net test.abc.blif > test.bit || exit 1
+./vpr $prefix.net -nodisp k6-n4.xml $prefix.place.out $prefix.route.out -fix_pins $prefix.pads -route_chan_width 4 > $prefix.vpr.log || exit 1
 
-./program_bitstream.py --file test.bit --dry --sim test.uart-tb.v || exit 1
+./fpga.py $prefix.place.out $prefix.route.out $prefix.net $prefix.abc.blif > $prefix.bit || exit 1
+
+./program_bitstream.py --file $prefix.bit --dry --sim $prefix.uart-tb.v || exit 1
 

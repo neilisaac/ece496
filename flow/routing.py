@@ -11,6 +11,13 @@ class Node:
 		self.y = y
 		self.qualifier = qualifier
 		self.value = value
+	
+	def __eq__(self, other):
+		return self.kind == other.kind and \
+				self.x == other.x and \
+				self.y == other.y and \
+				self.qualifier == other.qualifier and \
+				self.value == other.value
 
 	def __repr__(self):
 		return "{:s} {:d} {:d} {:s} {:d}".format(self.kind, self.x, self.y, self.qualifier, self.value)

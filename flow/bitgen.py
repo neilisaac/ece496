@@ -47,7 +47,7 @@ class Bitgen:
 
 		for function, flop in reversed(zip(functions, flops)):
 			print "1:{:X}".format(flop)
-			print "{:d}:{:X}".format(2 ** self.inputs, function)
+			print "{:d}:{:0{:d}X}".format(2 ** self.inputs, function, 2 ** self.inputs / 4)
 
 
 
