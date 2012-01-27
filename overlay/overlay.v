@@ -33,14 +33,38 @@ wire [IO_PER_CB*ROWS-1:0] io_in_west, io_out_west, io_in_east, io_out_east;
 wire [IO_PER_CB*COLS-1:0] io_in_north, io_out_north, io_in_south, io_out_south;
 
 assign io_in_north = INPUTS[IO_PER_CB*COLS-1:0];
-assign io_in_east = INPUTS[IO_PER_CB*COLS+IO_PER_CB*ROWS-1:IO_PER_CB*COLS];
-assign io_in_south = INPUTS[2*IO_PER_CB*COLS+IO_PER_CB*ROWS-1:IO_PER_CB*COLS+IO_PER_CB*ROWS];
+//assign io_in_east = INPUTS[IO_PER_CB*COLS+IO_PER_CB*ROWS-1:IO_PER_CB*COLS];
+//assign io_in_south = INPUTS[2*IO_PER_CB*COLS+IO_PER_CB*ROWS-1:IO_PER_CB*COLS+IO_PER_CB*ROWS];
 assign io_in_west = INPUTS[2*IO_PER_CB*COLS+2*IO_PER_CB*ROWS-1:2*IO_PER_CB*COLS+IO_PER_CB*ROWS];
 
-assign OUTPUTS = {io_out_west, io_out_south, io_out_east, io_out_north};
+//assign OUTPUTS = {io_out_west, io_out_south, io_out_east, io_out_north};
+assign OUTPUTS[IO_PER_CB*COLS-1:0] = io_out_north;
+assign OUTPUTS[2*IO_PER_CB*(COLS+ROWS)-1:IO_PER_CB*(2*COLS+ROWS)] = io_out_west;
 
 genvar x;
 genvar y;
+genvar i;
+
+generate
+	//reverse east side
+	for (y = 0; y < ROWS; y = y + 1) begin : REVERSE_EAST
+		for (i = 0; i < IO_PER_CB; i = i + 1) begin : REVERSE_EAST_BITWISE
+			assign io_in_east[IO_PER_CB*y+i] = INPUTS[IO_PER_CB*COLS+IO_PER_CB*(ROWS-y-1)+IO_PER_CB-i-1];
+			assign OUTPUTS[IO_PER_CB*COLS+IO_PER_CB*y+i] = io_out_east[IO_PER_CB*(ROWS-y-1)+IO_PER_CB-i-1];
+		end
+	end
+endgenerate
+
+generate
+	//reverse south side
+	for (x = 0; x < COLS; x = x + 1) begin : REVERSE_SOUTH
+		for (i = 0; i < IO_PER_CB; i = i + 1) begin : REVERSE_SOUTH_BITWISE
+			assign io_in_south[IO_PER_CB*x+i] = INPUTS[IO_PER_CB*(COLS+ROWS)+IO_PER_CB*(COLS-x-1)+IO_PER_CB-i-1];
+			assign OUTPUTS[IO_PER_CB*(COLS+ROWS)+IO_PER_CB*x+i] = io_out_south[IO_PER_CB*(COLS-x-1)+IO_PER_CB-i-1];
+		end
+	end
+endgenerate
+		
 
 generate
 	// top side

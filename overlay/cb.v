@@ -51,7 +51,7 @@ generate //generate muxes into logic block 2
 endgenerate
 
 generate //generate muxes for CB output in direction 1
-	for (i=0; i<W; i=i+1) begin : CB1OUTMux
+	for (i=0; i<W; i=i+1) begin : SB1OUTMux
 		XBAR # (.N(P*2+1)) CB1OUTMux_inst (
 			.A({lb_input,SB2_IN[i]}),
 			.SE(SE),
@@ -64,7 +64,7 @@ generate //generate muxes for CB output in direction 1
 endgenerate
 
 generate //generate muxes for CB output in direction 2
-	for (i=0; i<W; i=i+1) begin : CB2OUTMux
+	for (i=0; i<W; i=i+1) begin : SB2OUTMux
 		XBAR # (.N(P*2+1)) CB2OUTMux_inst (
 			.A({lb_input,SB1_IN[i]}),
 			.SE(SE),

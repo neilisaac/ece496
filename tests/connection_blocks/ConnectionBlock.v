@@ -52,7 +52,7 @@ endgenerate
 
 generate //generate muxes for CB output in direction 1
 	for (i=0; i<W; i=i+1) begin : CB1OUTMux
-		LayerMux # (.N(P*2+1)) CB1OUTMux_inst (
+		LayerMux # (.N(P*2+1)) SB1OUTMux_inst (
 			.A({lb_input,CB2_IN[i]}),
 			.CE(CE),
 			.CLK(CLK),
@@ -65,7 +65,7 @@ endgenerate
 
 generate //generate muxes for CB output in direction 2
 	for (i=0; i<W; i=i+1) begin : CB2OUTMux
-		LayerMux # (.N(P*2+1)) CB2OUTMux_inst (
+		LayerMux # (.N(P*2+1)) SB2OUTMux_inst (
 			.A({lb_input,CB1_IN[i]}),
 			.CE(CE),
 			.CLK(CLK),
