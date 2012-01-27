@@ -27,7 +27,7 @@ genvar i;
 generate //generate muxes into logic block 1
 	for (i=0; i<O; i=i+1) begin : LB1OUTMux
 		LayerMux # (.N(W*2+1)) LB1OUTMux_inst (
-			.A({cb_input, LB2_IN[i]}),
+			.A({cb_input, LB2_IN[0]}),
 			.CE(CE),
 			.CLK(CLK),
 			.SIN(scan_chain[i]),
@@ -40,7 +40,7 @@ endgenerate
 generate //generate muxes into logic block 2
 	for (i=0; i<O; i=i+1) begin : LB2OUTMux
 		LayerMux # (.N(W*2+1)) LB2OUTMux_inst (
-			.A({cb_input, LB1_IN[i]}),
+			.A({cb_input, LB1_IN[0]}),
 			.CE(CE),
 			.CLK(CLK),
 			.SIN(scan_chain[O+i]),
