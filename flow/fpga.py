@@ -90,7 +90,7 @@ class FPGA:
 			for dst1, src1 in cb:
 				if dst1 == src:
 					src = src1
-					print "# real source:", dst, src
+					print "# direct source:", dst, "<-", src
 
 			if dst.kind == "CHANX":
 				if src.kind == "CHANX":
