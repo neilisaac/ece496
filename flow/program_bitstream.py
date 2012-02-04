@@ -129,7 +129,7 @@ for value in serialize(data):
 	if write_byte(value):
 		bytes += 1
 	else:
-		print "failed to write complete bitstream"
+		print "failed to write complete bitstream (wrote {:d} bytes)".format(bytes)
 		sys.exit(1)
 
 print "wrote", bytes, "bytes to serial device"
