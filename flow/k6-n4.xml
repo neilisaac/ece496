@@ -23,7 +23,7 @@
 			</segment>
 		</segmentlist>
 		<typelist>
-			<io capacity="1" t_inpad="7.734000e-11" t_outpad="4.395000e-11">
+			<io capacity="2" t_inpad="7.734000e-11" t_outpad="4.395000e-11">
 				<fc_in type="frac">1.0000</fc_in>
 				<fc_out type="frac">1.000000</fc_out>
 			</io>

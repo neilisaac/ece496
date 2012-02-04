@@ -1,17 +1,11 @@
 module test(
-	a, b, c,
-	x, y, z,
-	clk
+	in,
+	out
 );
 
-input a, b, c;
-input clk;
-output x, y, z;
+input  [7:0] in;
+output [7:0] out;
 
-assign x = a & b;
-assign y = a | b;
-
-always @ (posedge clk)
-	z <= c;
+assign out = in;
 
 endmodule
