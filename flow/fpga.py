@@ -170,6 +170,8 @@ class FPGA:
 					else:
 						num = 1 + src.value / 2
 
+					# FIXME: use dst.value to pick up or down
+
 					if dst.x > x:
 						if dst.qualifier == "Pad":
 							lb2[0] = num
@@ -184,13 +186,11 @@ class FPGA:
 				elif src.kind == "OPIN":
 					if orientation == "y":
 						if src.x > x:
-							# left pins are 12-15, want value 5-8
-							num = src.value - 2 * self.bitgen.lbpins
+							num = src.value - 4 * self.bitgen.lbpins - (3 * self.bitgen.cluster / 4)
 							if src.qualifier == "Pad":
 								num = 0 
 						else:
-							# right pins are 4-7, want value 1-4
-							num = src.value - self.bitgen.lbpins
+							num = src.value - 4 * self.bitgen.lbpins - (self.bitgen.cluster / 4)
 							if src.qualifier == "Pad":
 								num = 0
 
@@ -206,13 +206,11 @@ class FPGA:
 								lb1[dst.value - self.bitgen.lbpins] = num
 					else:
 						if src.y > y:
-							# bottom pins are 8-11, want value 1-4
-							num = src.value - 2 * self.bitgen.lbpins
+							num = src.value - 4 * self.bitgen.lbpins - (2 * self.bitgen.cluster / 4)
 							if src.qualifier == "Pad":
 								num = 0
 						else:
-							# top pins are 0-3, want value 5-8
-							num = src.value + self.bitgen.lbpins
+							num = src.value - 4 * self.bitgen.lbpins
 							if src.qualifier == "Pad":
 								num = 0
 
@@ -238,6 +236,7 @@ class FPGA:
 
 	def gen_sb(self, sb, x, y):
 		print "# sb", x, y
+		print "#", sb
 		north = [Bitgen.SB_SOUTH for t in range(self.bitgen.tracks)]
 		east  = [Bitgen.SB_WEST  for t in range(self.bitgen.tracks)]
 		south = [Bitgen.SB_NORTH for t in range(self.bitgen.tracks)]
