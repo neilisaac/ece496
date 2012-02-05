@@ -56,16 +56,21 @@ class Logic:
 	
 	def compute(self):
 		for line in self.table:
-			result = line[1]
-			value = Logic.permute(line[0])
-			if self.func is None:
-				self.func = 0
-				if result == '0':
-					self.func = 2 ** 2 ** len(line[0]) - 1
-			if result == '1':
-				self.func |= value
+			if len(line) == 1:
+				# constant function
+				self.func = int(line[0])
+
 			else:
-				self.func &= ~value
+				result = line[1]
+				value = Logic.permute(line[0])
+				if self.func is None:
+					self.func = 0
+					if result == '0':
+						self.func = 2 ** 2 ** len(line[0]) - 1
+				if result == '1':
+					self.func |= value
+				else:
+					self.func &= ~value
 
 class BLIF:
 
