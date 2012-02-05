@@ -56,7 +56,8 @@ class FPGA:
 				else:
 					raise Exception, "couldn't find CLB for " + block.name + " in the netlist"
 			else:
-				sys.stderr.write("WARNING: ignoring placement block: {:s}\n".format(block))
+				#sys.stderr.write("WARNING: ignoring placement block: {:s}\n".format(block))
+				pass
 
 
 	def generate(self):	
@@ -84,152 +85,79 @@ class FPGA:
 
 		print "#", cb
 		for dst, src in cb:
+			# ignore sinks in list
+			# sinks are there when there's a fanout net
+			if src.kind == "SINK":
+				continue
+
 			num = None
 
 			# find the real source
 			for dst1, src1 in cb:
 				if dst1 == src:
+					print "# swapped direct source:", src, "<-", src1
 					src = src1
-					print "# direct source:", dst, "<-", src
 
-			if dst.kind == "CHANX":
-				if src.kind == "CHANX":
+			print "# connect:", dst, "<-", src
+
+			# driving switch block pin
+			if dst.kind in ("CHANX", "CHANY"):
+				# connection block to connection block is always straight-through
+				if src.kind in ("CHANX", "CHANY"):
+					# TODO: check for valid track
 					num = 0
-					if src.value != dst.value:
-						raise Exception, "switching tracks isn't supported"
-				elif src.kind == "CHANY":
-					num = 0
-					# TODO: check to make sure it's aligned correctly for the sb
+
+				# BLE output driving connection block bus to switch block
 				elif src.kind == "OPIN":
-					if src.y > y:
-						# bottom pins are 8-11, want value 1-4
-						num = 1 + src.value - 2 * self.bitgen.lbpins
-						if src.qualifier == "Pad":
-							num = 1
-					else:
-						# top pins are 0-3, want value 5-8
-						num = 1 + src.value + self.bitgen.lbpins
-						if src.qualifier == "Pad":
-							num = 1 + self.bitgen.lbpins
+					num = self.bitgen.cluster / 4
+					if src.qualifier != "Pad":
+						num += (src.value - 4 * self.bitgen.lbpins) % (self.bitgen.cluster / 4)
+
+					if (orientation == "y" and src.x > x) or (orientation == "x" and src.y == y):
+						num += self.bitgen.cluster / 4
+
+				# catch invalid connections as a sanity check
 				else:
-					raise Exception, "unknown src/dst kind combination"
+					raise Exception, "unknown src/dst kind combination: " + str(dst) + " <- " + str(src)
 
-				if dst.value % 2 == 0: # right
-					sb2[dst.value / 2] = num
-				else: # left
-					sb1[dst.value / 2] = num
+				# save connection
+				if orientation == "y":     # switch block above/below
+					if dst.value % 2 == 0: # above
+						sb1[dst.value / 2] = num
+					else:                  # below
+						sb2[dst.value / 2] = num
+				else:                      # switch block left/right
+					if dst.value % 2 == 0: # right
+						sb2[dst.value / 2] = num
+					else:                  # left
+						sb1[dst.value / 2] = num
 
-			elif dst.kind == "CHANY":
-				if src.kind == "CHANY":
-					num = 0
-					if src.value != dst.value:
-						raise Exception, "switching tracks isn't supported"
-				elif src.kind == "CHANX":
-					num = 0
-					# TODO: check to make sure it's aligned correctly for the sb
-				elif src.kind == "OPIN":
-					if src.x > x:
-						# left pins are 12-15, want value 5-8
-						num = 1 + src.value - 2 * self.bitgen.lbpins
-						if src.qualifier == "Pad":
-							num = 1 + self.bitgen.lbpins
-					else:
-						# right pins are 4-7, want value 1-4
-						num = 1 + src.value - self.bitgen.lbpins
-						if src.qualifier == "Pad":
-							num = 1
-				else:
-					raise Exception, "unknown src/dst kind combination"
-
-				if dst.value % 2 == 0: # above
-					sb1[dst.value / 2] = num
-				else: # below
-					sb2[dst.value / 2] = num
-
+			# driving logic block pin 
 			elif dst.kind == "IPIN":
-				if src.kind == "CHANX":
-					if src.value % 2 == 0:
-						num = 1 + src.value / 2
-					else:
-						num = 1 + src.value / 2 + self.bitgen.tracks
-
-					if dst.y > y:
-						if dst.qualifier == "Pad":
-							lb1[0] = num
-						else:
-							lb1[dst.value - 2 * self.bitgen.lbpins] = num
-					else:
-						if dst.qualifier == "Pad":
-							lb2[0] = num
-						else:
-							lb2[dst.value] = num
-
-				elif src.kind == "CHANY":
-					if src.value % 2 == 0:
-						num = 1 + src.value / 2 + self.bitgen.tracks
-					else:
-						num = 1 + src.value / 2
-
-					# FIXME: use dst.value to pick up or down
-
-					if dst.x > x:
-						if dst.qualifier == "Pad":
-							lb2[0] = num
-						else:
-							lb2[dst.value - 3 * self.bitgen.lbpins] = num
-					else:
-						if dst.qualifier == "Pad":
-							lb1[0] = num
-						else:
-							lb1[dst.value - self.bitgen.lbpins] = num
+				if src.kind in ("CHANX", "CHANY"):
+					num = (self.bitgen.cluster / 4) + (src.value / 2)
+					if (orientation == "y" and src.y < y) or (orientation == "x" and src.x == x):
+						num += self.bitgen.tracks
 
 				elif src.kind == "OPIN":
-					if orientation == "y":
-						if src.x > x:
-							num = src.value - 4 * self.bitgen.lbpins - (3 * self.bitgen.cluster / 4)
-							if src.qualifier == "Pad":
-								num = 0 
-						else:
-							num = src.value - 4 * self.bitgen.lbpins - (self.bitgen.cluster / 4)
-							if src.qualifier == "Pad":
-								num = 0
-
-						if dst.x > x:
-							if dst.qualifier == "Pad":
-								lb2[0] = num
-							else:
-								lb2[dst.value - 3 * self.bitgen.lbpins] = num
-						else:
-							if dst.qualifier == "Pad":
-								lb1[0] = num
-							else:
-								lb1[dst.value - self.bitgen.lbpins] = num
-					else:
-						if src.y > y:
-							num = src.value - 4 * self.bitgen.lbpins - (2 * self.bitgen.cluster / 4)
-							if src.qualifier == "Pad":
-								num = 0
-						else:
-							num = src.value - 4 * self.bitgen.lbpins
-							if src.qualifier == "Pad":
-								num = 0
-
-						if dst.y > y:
-							if dst.qualifier == "Pad":
-								lb1[0] = num
-							else:
-								lb1[dst.value - 2 * self.bitgen.lbpins] = num
-						else:
-							if dst.qualifier == "Pad":
-								lb2[0] = num
-							else:
-								lb2[dst.value] = num
+					# connection is stright through
+					num = 0
+					if src.kind != "Pad":
+						num = (src.value - 4 * self.bitgen.lbpins) % (self.bitgen.cluster / 4)
 
 				else:
-					raise Exception, "unknown src kind for IPIN sink in gen_cb"
+					raise Exception, "unknown src kind for IPIN sink in gen_cb: " + src
 
-			else:
-				raise Exception, "unknown dst kind from in gen_cb"
+				# get destination pin index
+				index = 0
+				if dst.qualifier != "Pad":
+					index = dst.value % self.bitgen.lbpins
+
+				# save connection
+				if (orientation == "y" and dst.x == x) or (orientation == "x" and dst.y > y):
+					lb1[index] = num
+				else:
+					lb2[index] = num
 
 		self.bitgen.gen_cb(lb1, lb2, sb1, sb2)
 
