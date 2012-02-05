@@ -57,8 +57,8 @@ parameter NUM_LB_IN = 16;
 parameter NUM_LB_OUT = 4;
 parameter BUS_WIDTH = 2;
 
-parameter ROWS = 1;
-parameter COLS = 1;
+parameter ROWS = 2;
+parameter COLS = 2;
 parameter IO_PER_CB = 1;
 
 OVERLAY # (
