@@ -43,7 +43,7 @@ CFLAGS   += -Wall -Wno-unused-function $(OPTFLAGS) $(patsubst %, -I%, $(MODULES)
 CXXFLAGS += $(CFLAGS) 
 
 #LIBS := -m32 -ldl -rdynamic -lreadline -ltermcap
-LIBS := -ldl /usr/lib/libreadline.a /usr/lib/libncurses.a -rdynamic
+LIBS := -ldl /usr/lib/libreadline.a /usr/lib/libncurses.a -rdynamic -m32
 
 SRC  := 
 GARBAGE := core core.* *.stackdump ./tags $(PROG)
