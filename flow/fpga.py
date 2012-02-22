@@ -221,10 +221,10 @@ class FPGA:
 				elif i < 4 * self.bitgen.lbpins:
 					if pin not in self.nets:
 						raise Exception, "couldn't find output net " + pin
-					node = self.nets[pin][-2]
-					if node.kind != "IPIN" or node.qualifier != "Pin":
-						raise Exception, "expecting CLB pin before sink of net " + pin
-					pins[i] = node.value + self.bitgen.cluster
+					pins[i] = dict()
+					for node in self.nets[pin]:
+						if node.kind == "IPIN" and node.qualifier == "Pin":
+							pins[i][(node.x, node.y)] = node.value + self.bitgen.cluster
 
 				# find output pin
 				elif i < 4 * self.bitgen.lbpins + self.bitgen.cluster:
@@ -236,6 +236,8 @@ class FPGA:
 					pins[i] = node.value - 4 * self.bitgen.lbpins
 
 				# ignore clk pin
+
+			print "# pins", pins
 
 			# make a list of subblocks where subblocks which have
 			# a specific output pin are at the start of the list
@@ -288,12 +290,13 @@ class FPGA:
 				for pin in range(1, self.bitgen.lbpins + 1):
 					selection = False
 					try:
-						selection = pins[int(subblock[pin])]
+						selection = pins[int(subblock[pin])][(x ,y)]
 					except ValueError:
 						if subblock[pin][:4] == "ble_":
 							selection = clb_to_physical_order[int(subblock[pin][4:])]
 						elif subblock[pin] != "open":
 							raise Exception, "unknown BLE pin assignment {:s}".format(subblock[pin]) 
+					print "#", index, pin, selection
 					inputs[index * self.bitgen.inputs + pin - 1] = selection
 
 
