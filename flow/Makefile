@@ -1,6 +1,6 @@
 # usage to compile mydir/mydir.v: make D=mydir flash
 
-D=buffer
+D=adder
 P=$(D)/$(D)
 
 .PHONY: clean flash verilog view
@@ -10,7 +10,7 @@ P=$(D)/$(D)
 all: $(P).done
 
 clean:
-	rm -f *.pyc *.pyo $(D)/*.echo $(D)/abc.cmd $(D)/gc.txt $(P).*.log $(P).*.blif $(P).*.out $(P).net $(P).done $(P).bit $(P).uart-tb.v
+	rm -f $(D)/*.echo $(D)/abc.cmd $(D)/gc.txt $(P).*.log $(P).*.blif $(P).*.out $(P).net $(P).done $(P).bit $(P).uart-tb.v
 
 $(P).odin.blif: $(P).v
 	bin/odin_ii -V $< -o $(P).odin.blif 2> $(P).odin.log > $(P).odin.log
@@ -35,12 +35,12 @@ view: $(P).net
 	bin/vpr $< k6-n4.xml $(P).place.out $(P).route.out -fix_pins $(P).pads -route_chan_width 4 > $(P).vpr.log
 
 $(P).done: $(P).place.out
-	./fpga.py $(P).place.out $(P).route.out $(P).net $(P).abc.blif > $(P).bit
+	scripts/fpga.py $(P).place.out $(P).route.out $(P).net $(P).abc.blif > $(P).bit
 	touch $@
 
 verilog: $(P).done
-	./program_bitstream.py --file $(P).bit --dry --sim $(P).uart-tb.v
+	scripts/program_bitstream.py --file $(P).bit --dry --sim $(P).uart-tb.v
 
 flash: $(P).done
-	./program_bitstream.py --file $(P).bit
+	scripts/program_bitstream.py --file $(P).bit
 
