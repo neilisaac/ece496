@@ -261,6 +261,7 @@ class FPGA:
 						if i not in assignments.keys():
 							assignments[i] = subblock
 							clb_to_physical_order[n] = i
+							break
 
 			print "# assignments", assignments
 
@@ -290,7 +291,7 @@ class FPGA:
 						selection = pins[int(subblock[pin])]
 					except ValueError:
 						if subblock[pin][:4] == "ble_":
-							selection = clb_to_physical_order[int(subblock[pin][4:]) - 1]
+							selection = clb_to_physical_order[int(subblock[pin][4:])]
 						elif subblock[pin] != "open":
 							raise Exception, "unknown BLE pin assignment {:s}".format(subblock[pin]) 
 					inputs[index * self.bitgen.inputs + pin - 1] = selection
