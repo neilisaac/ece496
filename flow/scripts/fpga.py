@@ -287,7 +287,7 @@ class FPGA:
 					raise Exception, "can't find logic function for sink node {:s} in blif".format(key)
 
 				# determine the input routing for each BLE pin
-				for pin in range(1, self.bitgen.lbpins + 1):
+				for pin in range(1, self.bitgen.inputs + 1):
 					selection = False
 					try:
 						selection = pins[int(subblock[pin])][(x ,y)]
