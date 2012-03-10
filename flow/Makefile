@@ -1,19 +1,25 @@
 # usage to compile mydir/mydir.v: make D=mydir flash
 
+# flow directory
+FLOW?=.
+
 # directory for project files
-D?=adder
+DIR?=adder
 
 # prefix for file names
-P?=$(D)/$(D)
+P?=$(DIR)/$(DIR)
 
-# configuration variables (don't overwrite if already set)
-BIN?=bin
-SCRIPTS?=scripts
-ARCH?=vpr5-k6-n4.template.xml
-TRACKS?=8
-ROWS?=4
-COLS?=4
-PADS?=pads-$(COLS)x$(ROWS).txt
+# configuration variables
+TRACKS?=4
+ROWS?=2
+COLS?=2
+PADVERSION?=clk
+
+# file path configuration
+BIN?=$(FLOW)/bin
+SCRIPTS?=$(FLOW)/scripts
+ARCH?=$(FLOW)/vpr5-k6-n4.template.xml
+PADS?=$(FLOW)/pads-$(COLS)x$(ROWS)-$(PADVERSION).txt
 
 # binary paths
 ODIN=$(BIN)/odin_ii
@@ -28,14 +34,14 @@ VPR=$(BIN)/vpr5
 all: $(P).done
 
 clean:
-	rm -f gc.txt *.echo $(D)/abc.cmd $(P).*.log $(P).*.blif $(P).*.out $(P).net $(P).done $(P).bit $(P).uart-tb.v $(P).arch.xml
+	rm -f gc.txt *.echo $(DIR)/abc.cmd $(P).*.log $(P).*.blif $(P).*.out $(P).net $(P).done $(P).bit $(P).uart-tb.v $(P).arch.xml
 
 $(P).odin.blif: $(P).v
 	$(ODIN) -V $< -o $(P).odin.blif 2> $(P).odin.log > $(P).odin.log
 
 $(P).abc.blif: $(P).odin.blif
-	printf "read $<\nif -K 6\nsweep\nwrite_hie $< $@" > $(D)/abc.cmd
-	$(ABC) -f $(D)/abc.cmd  > $(P).abc.log
+	printf "read $<\nif -K 6\nsweep\nwrite_hie $< $@" > $(DIR)/abc.cmd
+	$(ABC) -f $(DIR)/abc.cmd  > $(P).abc.log
 
 $(P).awk.blif: $(P).abc.blif
 	cat $< | awk '{ if ($$1 == ".latch"){ print $$1, $$2, $$3, "re", "top^clk", $$4 } else { print $$0 } }' > $@
