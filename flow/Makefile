@@ -19,7 +19,7 @@ PADVERSION?=clk
 BIN?=$(FLOW)/bin
 SCRIPTS?=$(FLOW)/scripts
 ARCH?=$(FLOW)/vpr5-k6-n4.template.xml
-PADS?=$(FLOW)/pads-$(COLS)x$(ROWS)-$(PADVERSION).txt
+PADS?=$(FLOW)/pads/pads-$(COLS)x$(ROWS)-$(PADVERSION).txt
 
 # binary paths
 ODIN=$(BIN)/odin_ii
