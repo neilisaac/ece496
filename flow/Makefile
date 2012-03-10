@@ -5,7 +5,7 @@ P?=$(D)/$(D)
 
 BIN?=bin
 SCRIPTS?=scripts
-ARCH?=vpr6-k6-n4.xml
+ARCH?=vpr5-k6-n4.xml
 TRACKS?=8
 ROWS=4
 COLS=4
@@ -13,7 +13,7 @@ COLS=4
 ODIN=$(BIN)/odin_ii
 ABC=$(BIN)/abc-vtr
 VPACK=$(BIN)/t-vpack
-VPR=$(BIN)/vpr6
+VPR=$(BIN)/vpr5
 
 .PHONY: clean flash verilog view
 
@@ -34,14 +34,14 @@ $(P).abc.blif: $(P).odin.blif
 $(P).awk.blif: $(P).abc.blif
 	cat $< | awk '{ if ($$1 == ".latch"){ print $$1, $$2, $$3, "re", "top^clk", $$4 } else { print $$0 } }' > $@
 
-#$(P).net: $(P).awk.blif
-#	$(VPACK) $< $@ -inputs_per_cluster 16 -cluster_size 4 -lut_size 6 > $(P).vpack.log
+$(P).net: $(P).awk.blif
+	$(VPACK) $< $@ -inputs_per_cluster 16 -cluster_size 4 -lut_size 6 > $(P).vpack.log
 
-$(P).place.out: $(P).pads $(P).awk.blif
-	$(VPR) $(ARCH) -blif_file $(P).awk.blif -net_file $(P).net -place_file $(P).place.out -route_file $(P).route.out -nodisp -fix_pins $(P).pads -route_chan_width $(TRACKS) -timing_analysis off > $(P).vpr.log
+$(P).place.out: $(P).pads $(P).net
+	$(VPR) $(P).net $(ARCH) $(P).place.out $(P).route.out -nodisp -fix_pins $(P).pads -route_chan_width $(TRACKS) > $(P).vpr.log
 
 view: $(P).awk.blif
-	$(VPR) $(ARCH) $(P) $(P).awk.blif -net_file $(P).net -blif_file -place_file $(P).place.out -route_file $(P).route.out -fix_pins $(P).pads -route_chan_width $(TRACKS) > $(P).vpr.log
+	$(VPR) $(P).net $(ARCH) $(P).place.out $(P).route.out -fix_pins $(P).pads -route_chan_width $(TRACKS) > $(P).vpr.log
 
 $(P).done: $(P).place.out
 	$(SCRIPTS)/fpga.py $(P).place.out $(P).route.out $(P).net $(P).abc.blif > $(P).bit

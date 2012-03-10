@@ -1,6 +1,4 @@
 <architecture>
-	<models>
-	</models>
 	<layout width="4" height="4" />
 	<device>
 		<sizing R_minW_nmos="5726.870117" R_minW_pmos="15491.700195" ipin_mux_trans_size="1.000000"/>
