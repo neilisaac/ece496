@@ -1,7 +1,19 @@
 # usage to compile mydir/mydir.v: make D=mydir flash
 
-D=adder
-P=$(D)/$(D)
+D?=adder
+P?=$(D)/$(D)
+
+BIN?=bin
+SCRIPTS?=scripts
+ARCH?=vpr6-k6-n4.xml
+TRACKS?=8
+ROWS=4
+COLS=4
+
+ODIN=$(BIN)/odin_ii
+ABC=$(BIN)/abc-vtr
+VPACK=$(BIN)/t-vpack
+VPR=$(BIN)/vpr6
 
 .PHONY: clean flash verilog view
 
@@ -10,37 +22,34 @@ P=$(D)/$(D)
 all: $(P).done
 
 clean:
-	rm -f $(D)/*.echo $(D)/abc.cmd $(D)/gc.txt $(P).*.log $(P).*.blif $(P).*.out $(P).net $(P).done $(P).bit $(P).uart-tb.v
+	rm -f gc.txt *.echo $(D)/abc.cmd $(P).*.log $(P).*.blif $(P).*.out $(P).net $(P).done $(P).bit $(P).uart-tb.v
 
 $(P).odin.blif: $(P).v
-	bin/odin_ii -V $< -o $(P).odin.blif 2> $(P).odin.log > $(P).odin.log
-	mv gc.txt $(D)/
+	$(ODIN) -V $< -o $(P).odin.blif 2> $(P).odin.log > $(P).odin.log
 
 $(P).abc.blif: $(P).odin.blif
 	printf "read $<\nif -K 6\nsweep\nwrite_hie $< $@" > $(D)/abc.cmd
-	bin/abc-vtr -f $(D)/abc.cmd  > $(P).abc.log
+	$(ABC) -f $(D)/abc.cmd  > $(P).abc.log
 
 $(P).awk.blif: $(P).abc.blif
 	cat $< | awk '{ if ($$1 == ".latch"){ print $$1, $$2, $$3, "re", "top^clk", $$4 } else { print $$0 } }' > $@
 
-$(P).net: $(P).awk.blif
-	bin/t-vpack $< $@ -inputs_per_cluster 16 -cluster_size 4 -lut_size 6 > $(P).vpack.log
-	mv input.echo $(D)/
-	mv vpack_critical_*.echo $(D)/
+#$(P).net: $(P).awk.blif
+#	$(VPACK) $< $@ -inputs_per_cluster 16 -cluster_size 4 -lut_size 6 > $(P).vpack.log
 
-$(P).place.out: $(P).net
-	bin/vpr $< -nodisp k6-n4.xml $(P).place.out $(P).route.out -fix_pins $(P).pads -route_chan_width 4 > $(P).vpr.log
+$(P).place.out: $(P).pads $(P).awk.blif
+	$(VPR) $(ARCH) -blif_file $(P).awk.blif -net_file $(P).net -place_file $(P).place.out -route_file $(P).route.out -nodisp -fix_pins $(P).pads -route_chan_width $(TRACKS) -timing_analysis off > $(P).vpr.log
 
-view: $(P).net
-	bin/vpr $< k6-n4.xml $(P).place.out $(P).route.out -fix_pins $(P).pads -route_chan_width 4 > $(P).vpr.log
+view: $(P).awk.blif
+	$(VPR) $(ARCH) $(P) $(P).awk.blif -net_file $(P).net -blif_file -place_file $(P).place.out -route_file $(P).route.out -fix_pins $(P).pads -route_chan_width $(TRACKS) > $(P).vpr.log
 
 $(P).done: $(P).place.out
-	scripts/fpga.py $(P).place.out $(P).route.out $(P).net $(P).abc.blif > $(P).bit
+	$(SCRIPTS)/fpga.py $(P).place.out $(P).route.out $(P).net $(P).abc.blif > $(P).bit
 	touch $@
 
 verilog: $(P).done
-	scripts/program_bitstream.py --file $(P).bit --dry --sim $(P).uart-tb.v
+	$(SCRIPTS)/program_bitstream.py --file $(P).bit --dry --sim $(P).uart-tb.v
 
 flash: $(P).done
-	scripts/program_bitstream.py --file $(P).bit
+	$(SCRIPTS)/program_bitstream.py --file $(P).bit
 
