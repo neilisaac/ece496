@@ -73,6 +73,8 @@ view: $(PROJ).par.ncd
 # flash bitstream to device
 flash: $(PROJ).bit
 	@echo === running impact ===
+	@printf "cleancablelock\nquit\n" > $(PROJ).impact.scr
+	@impact -batch $(PROJ).impact.scr > $(PROJ).impact.log 2>&1 | true
 	@printf "setMode -bscan\nsetCable -p auto\nidentify\nassignFile -p 5 -file $(PROJ).bit\nprogram -p 5\nquit\n" > $(PROJ).impact.scr
 	impact -batch $(PROJ).impact.scr > $(PROJ).impact.log 2>&1
 	@grep -E 'ERROR|WARNING' $(PROJ).impact.log || true
