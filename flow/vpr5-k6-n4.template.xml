@@ -1,5 +1,5 @@
 <architecture>
-	<layout width="4" height="4" />
+	<layout width="#COLS#" height="#ROWS#" />
 	<device>
 		<sizing R_minW_nmos="5726.870117" R_minW_pmos="15491.700195" ipin_mux_trans_size="1.000000"/>
 		<timing C_ipin_cblock="1.191000e-14" T_ipin_cblock="1.482000e-10"/>

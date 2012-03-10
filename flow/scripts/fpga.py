@@ -307,7 +307,7 @@ class FPGA:
 if __name__ == '__main__':
 	import sys
 
-	if len(sys.argv) != 5:
+	if len(sys.argv) != 6:
 		sys.stderr.write("usage: {:s} <placement.out> <routing.out> <netlist.net> <logic.blif>\n".format(sys.argv[0]))
 		sys.exit(1)
 	
@@ -315,8 +315,9 @@ if __name__ == '__main__':
 	routing = Routing(sys.argv[2])
 	netlist = NET(sys.argv[3])
 	blif = BLIF(sys.argv[4])
+	tracks = int(sys.argv[5]) / 2
 
-	bitgen = Bitgen(cluster_size=4, ble_inputs=6, lb_inputs_per_side=4, tracks_per_direction=2, mux_size=5)
+	bitgen = Bitgen(cluster_size=4, ble_inputs=6, lb_inputs_per_side=4, tracks_per_direction=tracks, mux_size=5)
 
 	fpga = FPGA(placement, routing, netlist, blif, bitgen)
 	fpga.generate()
