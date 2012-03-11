@@ -117,8 +117,9 @@ if options.sim is not None:
 	write_verilog(options.sim, serialize(data))
 	print "wrote testbench verilog to {:s}".format(options.sim)
 
+size = len(serialize(data))
 if options.dry:
-	print "dry run read", len(serialize(data)), "bytes"
+	print "dry run read", size, "bytes"
 	sys.exit(0)
 
 s = serial.Serial(options.device, baudrate=options.baud, timeout=options.timeout,
@@ -128,6 +129,7 @@ bytes = 0
 for value in serialize(data):
 	if write_byte(value):
 		bytes += 1
+		print "writing bitstream: {:d}%\r".format(100 * bytes / size),
 	else:
 		print "failed to write complete bitstream (wrote {:d} bytes)".format(bytes)
 		sys.exit(1)
