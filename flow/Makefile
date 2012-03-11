@@ -52,13 +52,14 @@ $(P).net: $(P).awk.blif
 $(P).arch.xml: $(ARCH)
 	sed 's/#ROWS#/$(ROWS)/g' $< | sed 's/#COLS#/$(COLS)/g' > $@
 
-$(P).place.out: $(P).net $(P).arch.xml
+$(P).route.out: $(P).net $(P).arch.xml
 	$(VPR) $(P).net $(P).arch.xml $(P).place.out $(P).route.out -nodisp -fix_pins $(PADS) -route_chan_width $(TRACKS) > $(P).vpr.log
+	@test -e $(P).route.out
 
 view: $(P).net $(P).arch.xml
 	$(VPR) $(P).net $(P).arch.xml $(P).place.out $(P).route.out -fix_pins $(PADS) -route_chan_width $(TRACKS) > $(P).vpr.log
 
-$(P).done: $(P).place.out
+$(P).done: $(P).route.out
 	$(SCRIPTS)/fpga.py $(P).place.out $(P).route.out $(P).net $(P).abc.blif $(TRACKS) > $(P).bit
 	touch $@
 
