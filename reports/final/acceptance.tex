@@ -1,0 +1,35 @@
+\section{Validation and Accptance Tests} % from project proposal
+
+\subsection*{Validation and Acceptance Tests from our Project Proposal}
+
+\subsection{Functional validation}
+
+To validate the functional requirements, we will:
+\begin{enumeration}
+	\item configure the Overlay FGPA and program it onto the physical FPGA,
+	\item select and use a benchmark circuit commonly used to test VPR,
+	\item configure VPR to match our architecture and dimensions,
+	\item place and route the benchmark circuit with VPR,
+	\item convert the VPR output into a bitstream for the overlay FPGA,
+	\item load the bitstream onto the overlay FPGA, then 
+	\item test the functionality of the benchmark circuit running on the overlay FPGA.
+\end{enumeration}
+
+The exact verification process for inputs and outputs will depend on the benchmark circuit's intended function.
+For the simple test circuits we will test initially, we will set inputs using hardware switches, and observe outputs on LEDs.
+
+Intermediate outputs can also be verified throughout the development process.
+We can dump out the bitstream to a text file to verify that it matches the placement and routing in VPR.
+We can test the hardware component independently by writing a bitstream by hand as well.
+
+
+\subsection{Size and overhead validation}
+
+To ensure that the overhead is low enough that the overlay FPGA can fit useful circuits, we will test it using the \emph{``Golden 20''} MCNC benchmark circuits.
+For each circuit, we will:
+\begin{enumeration}
+	\item run synthesis and technology mapping using the ABC synthesis tool,
+	\item run placement and routing using VPR configured, and
+	\item confirm that VPR can place and route the benchmark circuit using the number and arrangement of logic blocks that we can fit.
+\end{enumeration}
+
