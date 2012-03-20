@@ -1,2 +1,89 @@
 \section{Final Design}
 
+
+\subsection{System overview}
+\label{system-overview}
+
+\figref{system-diagram} shows the high-level system interactions of the components used in our project.
+The components we are building shown in solid rectangles.
+
+The finished project will consist of three main parts: The overlay FPGA, bitstream generation software, and interfacing of inputs/outputs of the overlay FPGA.
+
+The \emph{Overlay FPGA} is a Verilog HDL circuit implementation of the Academic FPGA model which will be constructed as an overlay on a Xilinx FPGA board.
+The arrangement, size and connectivity of the overlay circuit will be controllable via parameters in the source Verilog.
+The overlay FPGA will consist of organized tiles of \emph{logic block}, \emph{connection block}, and \emph{switch block} modules.
+Together, these modules will allow the overlay FPGA to implement different logic circuits.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.6]{system.png}
+	\caption{System overview}
+	\label{system-diagram}
+\end{figure}
+
+Once built, the overlay FPGA can be configured to implement user-specified \emph{test circuits} that have been placed and routed by VPR.
+This will be achieved by creating \emph{bitstream generation and programming software} that will translate the VPR output circuit into a bitstream that the overlay FPGA will understand.
+The bitstream will then be injected into the overlay FPGA via a \emph{serial interface}.
+The FPGA will receive and decode the bitstream into the appropriate test circuits on the overlay.
+
+Finally, the circuits on the overlay FPGA can be tested for functionality by connecting devices (e.g. Switches and LEDs) to the \emph{Test circuit inputs} and \emph{Test circuit outputs} of the Overlay FPGA.
+More elaborate input and output mechanisms will be explored once the Overlay FPGA is complete.
+
+
+
+\subsection{Module design}
+
+The \emph{Overlay FPGA} will be composed of a two-dimensional array of \emph{Logic tiles}.
+The logic tiles make it easier to build a large overlay, and help keep the internal 
+logic modules organized.
+Each logic tile will consist of one \emph{logic block module}, two \emph{connection block modules}, 
+and one \emph{switch block module}.
+\figref{tile-diagram} shows the internal composition of a single logic tile.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.7]{overlay.png}
+	\caption{Logic tile and tile arrangement}
+	\label{tile-diagram}
+\end{figure}
+
+The \emph{Logic block module} consists of programmable look-up tables that perform all of the logical 
+funcionality required by the circuit.
+A logic block module may be composed of multiple look-up tables, the number of which 
+can be determined by verilog parameters.
+
+The \emph{Connection block} and \emph{Switch block} modules regulate the routing of signals in the overlay.
+\emph{Connection blocks} connect logic block signals to buses that run throughout the 
+overlay.
+\emph{Switch blocks} control the routing between buses when they cross each other.
+
+The \emph{Bitstream generation software} will be a program that translates VPR output circuits into a 
+bitstream capable of programming the overlay FPGA directly.
+The program will consist of functions that parse the output from VPR and generate the 
+appropriate bitstream from the parsed information.
+
+The \emph{Bitstream programming software} will take the bitstream formed by the bitstream generator 
+and format it for proper transmission over a serial interface.
+
+The \emph{Serial decoder} will be a circuit attached to the overlay FPGA that receives the 
+bitstream sent through the serial interface.
+It will decode and extract the bitstream 
+from the serial format, then inject it into the overlay circuit to configure the 
+overlay.
+
+
+
+\subsection{Assessment of design}
+
+The decision to take advantage of the custom 32-bit shift registers in implementing our design entails the following trade-offs versus using only basic Verilog logic:
+\begin{itemlist}
+	\item The design is more efficient area and timing-wise.
+	\item The data describing the circuit (known as the \emph{bitstream}) which is needed to program the design will be larger.
+	\item The maximum size of the design will be limited by the amount of 32-bit shift registers available on the FPGA board, as opposed to the amount of flops.
+	\item The design will be incompatible with boards that do not have custom 32-bit shift registers
+\end{itemlist}
+
+We have decided that performance efficiency outweighs the negative aspects of the larger bitstream and limitation of implementation platforms.
+If the design is successful, adaptations can be made in the future to support the implementation of the design on more FPGA boards.
+
+

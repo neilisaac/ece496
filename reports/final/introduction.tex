@@ -1,2 +1,59 @@
 \section{Introduction}
 
+
+
+\subsection{Background and Motivation}
+
+Academic researchers who study Field Programmable Gate Array (FPGA) design commonly use variations of an FPGA design architecture, described by Kuon et al\cite{fpga}, which we will refer to as the \emph{Academic FPGA Model}.
+While FPGA chips are available from a variety of commercial vendors, their inner design is proprietary, making their architectures difficult to study.
+Furthermore, there is no existing physical implementation\footnote{Alex Brant is also developing a comparable FPGA overlay platform with Prof. Guy Lemieux at University of British Columbia.} of an Academic FPGA Model.
+
+VPR\cite{vpr} is an open-source placement and routing tool used in FPGA architecture research.
+It can handle many variations of the Academic FPGA Model.
+It is not currently possible to implement circuits produced by VPR on a commercial FPGA.\footnote{A technology-mapped input netlist for VPR can be converted to an Altera Quartus VQM netlist file using \emph{nettovqm}\cite{nettovqm}, but the placement and routing can not be converted.}
+
+Computer Aided Design (CAD) researchers who work on placement and routing algorithms for FPGA designs are presently limited to using simulations to evaluate or verify their work.
+They may be interested in testing circuits on a physical medium because it would be much faster than simulating the circuits.
+
+
+
+\subsection{Project Goal}
+
+The goal of this project is to design a circuit design based on the Academic FPGA Model.
+Researchers will be able to use the circuit to study FPGA architecture and CAD algorithms with circuits produced by VPR.
+
+
+
+\subsubsection{Functional Requirements}
+
+An Overlay FGPA circuit that will:
+
+\begin{itemlist}
+	\item Work on a commercially available FPGA chip.
+	\item Be re-programmable over a serial interface after being flashed to the FPGA.
+	\item Have a tunable number and arrangement of logic cells, and have tunable connectivity parameters. 
+	\item Support inputs to and outputs from test circuits programmed onto the Overlay FGPA.
+\end{itemlist}
+
+A software program that can:
+\begin{itemlist}
+	\item Translate VPR placement and routing data for a test circuit into a bitstream for the Overlay FGPA.
+	\item Program the bitstream onto the Overlay FGPA to implement the circuit.
+\end{itemlist}
+
+\subsubsection{Constraints}
+
+\begin{itemlist}
+	\item HOW BIG and HOW MANY cells?
+	%\item The overlay circuit must support at least 3000 logic cells\footnote{3000 logic cells was chosen as the minimum target because the largest of the ``Golden 20'' circuits, \emph{``s38417''} requires 2567 6-input logic cells\cite{synthesis-density}.} in order to accommodate the \emph{``Golden 20''} MCNC benchmark circuits\footnote{The ``Golden 20'' MCNC circuits are available in BLIF format at \url{http://www.ece.ubc.ca/~julienl/benchmarks.htm}.} commonly used in FPGA research.
+\end{itemlist}
+
+
+\subsubsection{Objectives}
+
+\begin{itemlist}
+	\item Be compatible with a family of commercial FPGAs that are available to researchers.
+	\item Use the native logic cells in the physical FPGA directly in the overlay FPGA design to reduce area and latency.
+	\item Be fast enough that it outperforms software emulation of most test circuits.
+\end{itemlist}
+
