@@ -1,2 +1,21 @@
 \section*{Group Highlights}
 
+In order to build a working \emph{Overlay FPGA}, we produced the following:
+\begin{itemize}
+\item Verilog for the individual FPGA building-blocks: the logic cell, logic block, connection block, and the switch block. (Keyi)
+\item Verilog to connect the building block components together in a grid and feed the programming signals through them. (Keyi)
+\item Verilog circuit to interface with the UART to enable serial programming of the Overlay FPGA. (Neil)
+\item Scripts to run the third-party tools which will process an input circuit (from the user) and produce a valid placment and routing. Some adjustments need to be made so the tools can read each others' outputs. (Neil)
+\item Software to convert the placement and routing into a programmable bitstream. (Neil)
+\end{itemize}
+
+Our Overlay FPGA circuit meets the functional requirements and objectives set out in our project proposal.
+
+We found that overhead of implementing and FPGA on an FPGA was higher than we extected because some resources we used extensively were limited.
+Due to this limitation, we reduced our target size constraint for the Overlay FPGA from 3000 logic cells down to 100 logic cells. % FIXME: 100?
+Although this sounds much lower, it is still large enough to implement working overlay designs.
+
+The size restriction limits the size of circuits our \overlay can support, so we can no longer accommodate the MCNC benchmark circuits we originally planned to use.
+We developed our own simple \emph{unit-test} circuits which each test very specific functionality.
+These new test circuits allowed us to incrementally track down basic issues with our bitstream.
+
