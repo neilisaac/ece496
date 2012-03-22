@@ -24,7 +24,6 @@ The goal of this project is to design a circuit design based on the Academic FPG
 Researchers will be able to use the circuit to study FPGA architecture and CAD algorithms with circuits produced by VPR.
 
 
-
 \subsubsection{Requirements}
 
 Hardware (overlay) requirements:
@@ -52,6 +51,7 @@ S1 & Capable of translating VPR placement and route data for a test circuit into
 S2 & Capable of programming the bitstream onto the Overlay FPGA to implement the actual circuit \\ \hline
 \end{tabular}
 
+
 %\begin{itemlist}
 %	\item Translate VPR placement and routing data for a test circuit into a bitstream for the Overlay FGPA.
 %	\item Program the bitstream onto the Overlay FGPA to implement the circuit.
@@ -68,15 +68,4 @@ G2 & Fit at least 100 overlay logic elements on the Virtex 5 FPGA \\ \hline
 %\begin{itemlist}
 %	\item Support 6-input logic elements, which allows for comparison with current generation commercial FPGAs.
 %	\item Fit at least 100 overlay logic elements on the Virtex 5 FPGA.  This number was chosen to be adequately large for our proof of concent.  100 cells will fit our test circuits fit, and concevable circuits can be implemented by participants at the design fair.
-	%\item The overlay circuit must support at least 3000 logic cells\footnote{3000 logic cells was chosen as the minimum target because the largest of the ``Golden 20'' circuits, \emph{``s38417''} requires 2567 6-input logic cells\cite{synthesis-density}.} in order to accommodate the \emph{``Golden 20''} MCNC benchmark circuits\footnote{The ``Golden 20'' MCNC circuits are available in BLIF format at \url{http://www.ece.ubc.ca/~julienl/benchmarks.htm}.} commonly used in FPGA research.
-%\end{itemlist}
-
-
-%\subsubsection{Objectives}
-
-%\begin{itemlist}
-%	\item Be compatible with a family of commercial FPGAs that are available to researchers.
-%	\item Use the native logic cells in the physical FPGA directly in the overlay FPGA design to reduce area and latency.
-%	\item Be fast enough that it outperforms software emulation of most test circuits.
-%\end{itemlist}
 
