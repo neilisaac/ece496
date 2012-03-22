@@ -9,13 +9,23 @@ We then pushed in a manually composed bitstream through a serial connection to p
 Once the tile was programmed, we verified the behaviour of the tile against what we expected from the bitstream, including the functions in the lookup tables, and the routing of input and output signals.
 The tile can be re-programmed as many times as we like to test different functions and signal routing.
 
-Excerpt from our manually generated bitstream:
-0FFFFFFFFFFFFFFFE
-18000000000000000
-0FFFFFFFFFFFFFFFF
-08888888888888888
+\begin{figure}[!h]
+	\centering
+	\begin{tabular}{|p{13cm}|}
+	\hline
+	\begin{verbatim}
+	0FFFFFFFFFFFFFFFE
+	18000000000000000
+	0FFFFFFFFFFFFFFFF
+	08888888888888888
+	\end{verbatim}
+	\\ \hline
+	\end{tabular}
+	\caption{Excerpt from a manually written bitstream showing logic element programming. Values represent 65 bit hexadecimal numbers.}
+	\label{manual-bitstream}
+\end{figure}
 
-The above snippet programs the four 6-input lookup tables and their connected flops.
+\figref{manual-bitstream} shows the values used to program the four 6-input lookup tables and connected flip-flops.
 The leftmost value indicates whether or not the output of the lookup table is routed through a flop (0=no, 1=yes), and the rest determines the function of the lookup table itself.
 From the top, the lookup tables are programmed as follows: 6-input OR gate, 6-input AND gate with flop, always 1, 2-input AND gate.
 
@@ -47,112 +57,124 @@ The test proved that our project satisfied the following requirements:
 Finally, to test the project as a whole, we combined the hardware and software tests, building test circuits in verilog, passing them through VPR and translating the output into a bitstream, and injecting the bitstream onto a full overlay on the Virtex 5 for testing.
 
 We first tested the project with a simple buffer circuit, where inputs to the overlay were connected directly to outputs.
-When the buffer proved successful, we moved on to a slightly more complex circuit, an 8-bit adder.
-
-Verilog code for the adder:
-
-\begin{tabular}{|p{7cm}|}
-\hline
-\begin{verbatim}
-module test( in, out);
-
-input  [7:0] in;
-output [7:0] out;
-
-assign out = in[7:4] + in[3:0];
-
-endmodule
-\end{verbatim}
-\\ \hline
-\end{tabular}
+When the buffer proved successful, we moved on to a slightly more complex circuit, a 4-bit adder.
+The Verilog for the adder is shown in \figref{adder-verilog}.
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[scale=0.5]{vpr-adder.png}
-	\caption{VPR screenshot of 8-bit adder placement and routing}
-	\label{adder}
+	\begin{tabular}{|p{13cm}|}
+	\hline
+	\begin{verbatim}
+	module adder( in, out);
+
+	input  [7:0] in;
+	output [7:0] out;
+
+	assign out = in[7:4] + in[3:0];
+
+	endmodule
+	\end{verbatim}
+	\\ \hline
+	\end{tabular}
+	\caption{Verilog for adder test circuit}
+	\label{adder-verilog}
 \end{figure}
 
-\figref{adder} shows a screenshot of VPR after placing and routing the 8-bit adder.
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.3]{vpr-adder.png}
+	\caption{VPR screenshot of 4-bit adder placement and routing}
+	\label{adder-vpr}
+\end{figure}
 
-Excerpt from VPR placement output:
+\figref{adder-vpr} shows a screenshot of VPR after placing and routing the 8-bit adder.
+The grey \emph{.clb} boxes indicate the logic in use.
+The grey boxes at the top represent the IOs used for the signals \emph{in} and \emph{out}.
 
-\begin{tabular}{|p{13cm}|}
-\hline
-\begin{verbatim}
-Netlist file: adder.net Architecture file: adder.arch.xml
-Array size: 8 x 8 logic blocks
+\begin{figure}[!h]
+	\centering
+	\begin{tabular}{|p{13cm}|}
+	\hline
+	\begin{verbatim}
+	Netlist file: adder.net Architecture file: adder.arch.xml
+	Array size: 8 x 8 logic blocks
 
-#block name x y subblk block number
-#---------- -- -- ------ ------------
-top^in~0 1 9 0 #0
-top^in~1 2 9 0 #1
-top^in~2 3 9 0 #2
-top^in~3 4 9 0 #3
-top^in~4 5 9 0 #4
-top^in~5 6 9 0 #5
-top^in~6 7 9 0 #6
-top^in~7 8 9 0 #7
-out:top^out~0 1 9 1 #8
-out:top^out~1 2 9 1 #9
-out:top^out~2 3 9 1 #10
-out:top^out~3 4 9 1 #11
-out:top^out~4 5 9 1 #12
-out:top^out~5 6 9 1 #13
-out:top^out~6 7 9 1 #14
-out:top^out~7 8 9 1 #15
-n21 4 3 0 #16
-top^out~0 3 1 0 #17
-top^out~5 6 1 0 #18
-\end{verbatim}
-\\ \hline
-\end{tabular}
+	#block name x y subblk block number
+	#---------- -- -- ------ ------------
+	top^in~0 1 9 0 #0
+	top^in~1 2 9 0 #1
+	top^in~2 3 9 0 #2
+	top^in~3 4 9 0 #3
+	top^in~4 5 9 0 #4
+	top^in~5 6 9 0 #5
+	top^in~6 7 9 0 #6
+	top^in~7 8 9 0 #7
+	out:top^out~0 1 9 1 #8
+	out:top^out~1 2 9 1 #9
+	out:top^out~2 3 9 1 #10
+	out:top^out~3 4 9 1 #11
+	out:top^out~4 5 9 1 #12
+	out:top^out~5 6 9 1 #13
+	out:top^out~6 7 9 1 #14
+	out:top^out~7 8 9 1 #15
+	n21 4 3 0 #16
+	top^out~0 3 1 0 #17
+	top^out~5 6 1 0 #18
+	\end{verbatim}
+	\\ \hline
+	\end{tabular}
+	\caption{VPR placement result for adder test circuit}
+	\label{adder-place}
+\end{figure}
 
-The above excerpt shows the locations in the overlay VPR has placed logic components and input/output pads.
+\figref{adder-place} shows the locations in the overlay VPR has placed logic components and input/output pads.
 This is one of the output files our software utilizes to generate the bitstream.
 
-Excerpt from VPR routing output:
+\begin{figure}[!h]
+	\centering
+	\begin{tabular}{|p{13cm}|}
+	\hline
+	\begin{verbatim}
+	Net 13 (top^out~6)
 
-\begin{tabular}{|p{5cm}|}
-\hline
-\begin{verbatim}
-Net 13 (top^out~6)
+	SOURCE (3,1) Class: 1
+	OPIN (3,1) Pin: 18
+	CHANX (3,0) Track: 0
+	CHANX (4,0) Track: 0
+	CHANX (5,0) Track: 0
+	CHANX (6,0) Track: 0
+	CHANY (6,1) Track: 0
+	CHANY (6,2) Track: 0
+	CHANY (6,3) Track: 0
+	CHANY (6,4) Track: 0
+	CHANY (6,5) Track: 0
+	CHANY (6,6) Track: 0
+	CHANY (6,7) Track: 0
+	CHANY (6,8) Track: 0
+	CHANX (7,8) Track: 0
+	IPIN (7,9) Pad: 3
+	SINK (7,9) Pad: 3
+	\end{verbatim}
+	\\ \hline
+	\end{tabular}
+	\caption{Excerpt from VPR routing result for adder test circuit showing the routing for one output net, connecting a logic block output to drive an output pad}
+	\label{adder-route}
+\end{figure}
 
-SOURCE (3,1) Class: 1
-OPIN (3,1) Pin: 18
-CHANX (3,0) Track: 0
-CHANX (4,0) Track: 0
-CHANX (5,0) Track: 0
-CHANX (6,0) Track: 0
-CHANY (6,1) Track: 0
-CHANY (6,2) Track: 0
-CHANY (6,3) Track: 0
-CHANY (6,4) Track: 0
-CHANY (6,5) Track: 0
-CHANY (6,6) Track: 0
-CHANY (6,7) Track: 0
-CHANY (6,8) Track: 0
-CHANX (7,8) Track: 0
-IPIN (7,9) Pad: 3
-SINK (7,9) Pad: 3
-\end{verbatim}
-\\ \hline
-\end{tabular}
-
-The above excerpt shows the routing done by VPR of one net in the overlay.
+\figref{adder-route} shows the routing done by VPR of one net in the overlay.
 Each line traces the path of the signal as it moves through the overlay, starting at the source of the signal and ending at the sink.
 This is part of another output file that our software uses to generate the bitstream.
 
 The overlay functioned correctly with the adder, proving that our design meets the following requirements:
 \begin{itemlist}
-	\item H1: The overlay was implemented on a Virtex 5 FPGA chip
-	\item H2: The overlay was customized to 8x8 tiles, with a bus width of 4, logic block input per side of 4, and 4 look up tables per logic block
-	\item H3: The overlay only needed to be built once on the chip, after which it was re-programmable via serial cable without the need to be re-flashed onto the chip
-	\item H4: The overlay had connectivity to the switches and LEDs of the chip
-	\item S1: Our software generated the overlay bitstream by parsing and translating VPR placement and routing output files
-	\item S2: Our bitstream sending/receiving software operated correctly in order to program the tile
-	\item G1: The tile implemented four 6-input lookup tables
-	\item G2: The 8x8 logic grid contains 256 overlay logic elements, well over 100
+	\item H1: The overlay was implemented on a Virtex 5 FPGA chip.
+	\item H2: The overlay was customized to 8x8 tiles, with a bus width of 4, logic block input per side of 4, and 4 look up tables per logic block.
+	\item H3: The overlay only needed to be built once on the chip, after which it was re-programmable via serial cable without the need to be re-flashed onto the chip.
+	\item H4: The overlay had connectivity to the switches and LEDs of the chip.
+	\item S1: Our software generated the overlay bitstream by parsing and translating VPR placement and routing output files.
+	\item S2: Our bitstream sending/receiving software operated correctly in order to program the tile.
+	\item G1: The tile implements four 6-input lookup tables by using 2 multiplexed 32-bit shift registers.
+	\item G2: The 8x8 logic grid contains 256 overlay logic elements (64 logic blocks * 4 logic elements / logic block), which is more than 100.
 \end{itemlist}
 
 % for each requirement #, report final result. comment on degree of compliance.
