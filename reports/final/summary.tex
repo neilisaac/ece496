@@ -1,10 +1,19 @@
 \section{Summary} % and Conclusions
 
 Overall, the project succeeded in what we set out to do.
-We met all of our final goals and requirements, producing a flexible overlay FPGA design and tool flow that is capable of implementing a user-specified verilog circuit on the custom overlay.
-We were able to produce a functioning buffer and adder on an 8x8 overlay using our custom tool flow, demonstrating the functionality of all parts of our project (overlay generation, bitstream generation, bitstream injection).
-We believe that our design idea has the potential to become a useful tool for FPGA researchers to test custom architectures without the use of time consuming simulations.
-The current design is a successful proof-of-concept, for it to be useful it will require further area efficiency optimization and testing.
+We met all of our final goals and requirements, producing a flexible overlay FPGA design and tool flow that is capable of implementing a user-specified verilog circuit on the overlay.
+We were able to produce a functioning buffer and adder on an 8x8 overlay using our custom tool flow, demonstrating the functionality of all parts of our project (overlay circuit, bitstream generation, bitstream injection).
+
+We believe that our design idea has the potential to become a useful tool for FPGA researchers to test custom architectures or CAD algorithms on real hardware.
+The current design is a successful proof-of-concept; it may be useful to some researchers, but others may require a lower overhead.
+Some overhead reduction can be achieved by optimizing the structure of the \overlay, by using Clos networks for example.
+
+Modern FPGAs include a lot of fixed-function blocks (\emph{hard macros}) that implement common functions such as multipliers and memories in order to reduce the overhead of using an FPGA for circuits containing many instances of these elements.
+A possible extension to our project would be to encorporate \emph{hard macros} available on the Virtex 5 in our overlay circuit.
+
+With our \overlay design, a researcher could easily instantiate the overlay in an FPGA-based embedded system with a \emph{soft microprocessor} such as Xilinx's MicroBlaze.
+This would enable research on using re-programmable hardware in embedded systems.
+
 % Did you meet your project goals and requirements, as demonstrated through your validation and acceptance tests?
 % To what extent does your testing and verification work prove out your final design?
 %  Were your design ideas proven out? If not, explain why.
