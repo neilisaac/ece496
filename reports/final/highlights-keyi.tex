@@ -1,2 +1,21 @@
 \section*{Highlights for Keyi Shi}
 
+My contributions to the final design were:
+\begin{itemlist}
+	\item shift multiplexing for all logic tile modules
+	\item component modules for the overlay verilog design
+	\item verilog overlay tile boundary design and optimization
+\end{itemlist}
+
+Multiplexers are used extensively in all our verilog modules.
+Each module has different multiplexing requirements, and one of our design goals was to have a configurable size/routing parameters; as such, the sizes of multiplexers required by our design vary module to module, parameter to parameter.
+I designed a flexible multiplexer capable of changing its size based on the number of inputs required, and this multiplexer is what drives all our overlay modules.
+
+I focused on the routing elements of the overlay design, building the switch block and connection block modules and ensuring their compatibility with each other and the logic block.
+The modules were all designed to be flexible, capable of accepting user parameters and changing their sizes and arrangements to fit user needs.
+The modules also went through bitstream testing to make sure they behaved correctly under all use cases.
+
+The verilog overlay tile combined basic verilog components into a single module, capable of being replicated in a grid formation to create the final overlay.
+The boundaries of the overlay required special modules to tie the grid together and interface between the overlay's internal and input/output signals.
+I wrote the boundary modules and debugged/optimized the overlay design, ensuring all signals between tiles are routed correctly, and the boundary signals are gathered into their appropriate input/output pads.
+I tested the overlay with manual and generated bitstreams to debug both the overlay hardware and the bitstream software.
