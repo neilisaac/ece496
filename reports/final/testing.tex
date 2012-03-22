@@ -1,11 +1,70 @@
 \section{Testing and Verification}
 
-\begin{tabular}{|l|l|l|l|l|}
-\hline
-Requirement & Target specification & Final result & Compliance & Comments \\ \hline \hline
- & & & & \\ \hline
-\end{tabular}
+We performed 4 tests on our final design, 1 test to ensure our hardware works correctly, 1 test to verify our software, and 2 tests on the full work flow to confirm that the project is working as a whole.
 
+\subsection{Hardware Test}
+
+To test that our overlay tiles are working correctly, we built a single tile onto the Virtex 5 FPGA and connected the inputs and outputs of the tile to the switches and LEDs of the FPGA.
+We then pushed in a manually composed bitstream through a serial connection to program the tile's function and routing.
+Once the tile was programmed, we verified the behaviour of the tile against what we expected from the bitstream, including the functions in the lookup tables, and the routing of input and output signals.
+The tile can be re-programmed as many times as we like to test different functions and signal routing.
+
+Excerpt from our manually generated bitstream:
+0FFFFFFFFFFFFFFFE
+18000000000000000
+0FFFFFFFFFFFFFFFF
+08888888888888888
+
+The above snippet programs the four 6-input lookup tables and their connected flops.
+The leftmost value indicates whether or not the output of the lookup table is routed through a flop (0=no, 1=yes), and the rest determines the function of the lookup table itself.
+From the top, the lookup tables are programmed as follows: 6-input OR gate, 6-input AND gate with flop, always 1, 2-input AND gate.
+
+The test showed that our tile was fully functional, behaving as expected in both lookup table functionality and correct routing.
+The test proved that our project satisfied the following requirements:
+\begin{itemlist}
+	\item H1: The tile was implemented on a Virtex 5 FPGA chip
+	\item H3: The tile only needed to be built once on the chip, after which it was re-programmable via serial cable without the need to be re-flashed onto the chip.
+	\item H4: The tile had connectivity to the switches and LEDs of the chip
+	\item S2: Our bitstream sending/receiving software operated correctly in order to program the tile
+	\item G1: The tile implemented four 6-input lookup tables
+\end{itemlist}
+
+\subsection{Software Test}
+
+To test our bitstream generation software, we wrote simple circuits in verilog, then used our selected third-party software to synthesize, place and route the circuits according to our architecture.
+We then took the resultant output and used our software to generate a bitstream capable of programming our overlay circuit.
+We went through the generated bitstream manually to ensure the logic and routing matched the overlay, and that it was of the appropriate format for the overlay.
+Because of the size of the bitstream, this test is restricted to simple circuits on a small overlay.
+
+The bitstream passed manual inspection; it was structured correctly and the logic and routing matched the third-party software outputs.
+The test proved that our project satisfied the following requirements:
+\begin{itemlist}
+	\item S1: The software was successful in translating VPR placement and route data into a bitstream appropriate for the overlay FPGA
+\end{itemlist}
+
+\subsection{Full Tool Flow Test}
+
+Finally, to test the project as a whole, we combined the hardware and software tests, building test circuits in verilog, passing them through VPR and translating the output into a bitstream, and injecting the bitstream onto a full overlay on the Virtex 5 for testing.
+
+We first tested the project with a simple buffer circuit, where inputs to the overlay were connected directly to outputs.
+When the buffer proved successful, we moved on to a slightly more complex circuit, an 8-bit adder.
+
+Verilog code for the adder:
+
+\begin{tabular}{|p{7cm}|}
+\hline
+\begin{verbatim}
+module test( in, out);
+
+input  [7:0] in;
+output [7:0] out;
+
+assign out = in[7:4] + in[3:0];
+
+endmodule
+\end{verbatim}
+\\ \hline
+\end{tabular}
 
 % for each requirement #, report final result. comment on degree of compliance.
 % can add more detailed comments after the table.
