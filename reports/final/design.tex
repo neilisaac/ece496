@@ -5,14 +5,14 @@
 \label{system-overview}
 
 \figref{system-diagram} shows the high-level system interactions of the components used in our project.
-The components we are building shown in solid rectangles.
+The components we built are shown in solid rectangles.
 
-The finished project will consist of three main parts: The overlay FPGA, bitstream generation software, and interfacing of inputs/outputs of the overlay FPGA.
+The finished project consists of three main parts: The overlay FPGA, bitstream generation software, and interfacing of inputs/outputs of the overlay FPGA.
 
-The \emph{Overlay FPGA} is a Verilog HDL circuit implementation of the Academic FPGA model which will be constructed as an overlay on a Xilinx FPGA board.
-The arrangement, size and connectivity of the overlay circuit will be controllable via parameters in the source Verilog.
-The overlay FPGA will consist of organized tiles of \emph{logic block}, \emph{connection block}, and \emph{switch block} modules.
-Together, these modules will allow the overlay FPGA to implement different logic circuits.
+The \emph{Overlay FPGA} is a Verilog HDL circuit implementation of the Academic FPGA model which is constructed as an overlay on a Xilinx FPGA board.
+The arrangement, size and connectivity of the overlay circuit is controllable via parameters in the source Verilog.
+The overlay FPGA consists of organized tiles of \emph{logic block}, \emph{connection block}, and \emph{switch block} modules.
+Together, these modules allow the overlay FPGA to implement different logic circuits.
 
 \begin{figure}[!h]
 	\centering
@@ -21,22 +21,21 @@ Together, these modules will allow the overlay FPGA to implement different logic
 	\label{system-diagram}
 \end{figure}
 
-Once built, the overlay FPGA can be configured to implement user-specified \emph{test circuits} that have been placed and routed by VPR.
-This will be achieved by creating \emph{bitstream generation and programming software} that will translate the VPR output circuit into a bitstream that the overlay FPGA will understand.
-The bitstream will then be injected into the overlay FPGA via a \emph{serial interface}.
-The FPGA will receive and decode the bitstream into the appropriate test circuits on the overlay.
+The \overlay can be configured to implement user-specified \emph{test circuits} that have been placed and routed by VPR.
+This is achieved using the \emph{bitstream generation and programming software} that translates the VPR output circuit into a bitstream that the overlay FPGA understands.
+The bitstream is then injected into the overlay FPGA via a \emph{serial interface}.
+The FPGA receives and decode the bitstream into the appropriate test circuits on the overlay.
 
-Finally, the circuits on the overlay FPGA can be tested for functionality by connecting devices (e.g. Switches and LEDs) to the \emph{Test circuit inputs} and \emph{Test circuit outputs} of the Overlay FPGA.
-More elaborate input and output mechanisms will be explored once the Overlay FPGA is complete.
+Finally, the circuits on the overlay FPGA are controlled by connecting devices such as switches and LEDs connected through the physical FPGA.
 
 
 
 \subsection{Module design}
 
-The \emph{Overlay FPGA} will be composed of a two-dimensional array of \emph{Logic tiles}.
+The \emph{Overlay FPGA} is composed of a two-dimensional array of \emph{Logic tiles}.
 The logic tiles make it easier to build a large overlay, and help keep the internal 
 logic modules organized.
-Each logic tile will consist of one \emph{logic block module}, two \emph{connection block modules}, 
+Each logic tile consists of one \emph{logic block module}, two \emph{connection block modules}, 
 and one \emph{switch block module}.
 \figref{tile-diagram} shows the internal composition of a single logic tile.
 
@@ -57,19 +56,24 @@ The \emph{Connection block} and \emph{Switch block} modules regulate the routing
 overlay.
 \emph{Switch blocks} control the routing between buses when they cross each other.
 
-The \emph{Bitstream generation software} will be a program that translates VPR output circuits into a 
-bitstream capable of programming the overlay FPGA directly.
-The program will consist of functions that parse the output from VPR and generate the 
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.6]{modules.png}
+	\caption{Module overview}
+	\label{module-diagram}
+\end{figure}
+
+\figref{module-diagram} shows the relationship between the higher-level modules.
+
+The \emph{Bitstream generation software} is a program that translates VPR output circuits into a bitstream capable of programming the overlay FPGA directly.
+The program consists of functions that parse the output from VPR and generate the 
 appropriate bitstream from the parsed information.
 
-The \emph{Bitstream programming software} will take the bitstream formed by the bitstream generator 
-and format it for proper transmission over a serial interface.
+The \emph{Bitstream programming software} takes the bitstream formed by the bitstream generator and formats it for proper transmission over a serial interface.
 
-The \emph{Serial decoder} will be a circuit attached to the overlay FPGA that receives the 
+The \emph{Serial decoder} is a circuit attached to the overlay FPGA that receives the 
 bitstream sent through the serial interface.
-It will decode and extract the bitstream 
-from the serial format, then inject it into the overlay circuit to configure the 
-overlay.
+It decodes and extracts the bitstream from the serial format, then injects it into the overlay circuit to configure the overlay.
 
 
 
