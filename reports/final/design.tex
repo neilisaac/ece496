@@ -86,4 +86,15 @@ The decision to take advantage of the custom 32-bit shift registers in implement
 We have decided that performance efficiency outweighs the negative aspects of the larger bitstream and limitation of implementation platforms.
 If the design is successful, adaptations can be made in the future to support the implementation of the design on more FPGA boards.
 
+We have also looked into using a Clos network for the logic block crossbar.
+Currently, the crossbar is implemented using layered multiplexers built from 32-bit shift registers for each lookup table input, and is the most resource-heavy part of the tile.
+By replacing all the input multiplexers with a large Clos network, it is possible to reduce the number of shift registers consumed by up to 35\%.
+However, the fact that we only have 32-bit shift registers available as building blocks severely restricts the size of the crossbar, and would have removed the flexibility of choosing the number of logic block inputs currently built into the design.
+Additionally, the algorithm for routing the Clos network is much more complex than the current crossbar design; the signal path to each lookup table input are dependent on each other, and cannot be routed individually.
+There are existing algorithms for routing Clos networks, but they focus on networks where one input can only route to one output.
+For our design, we need a network that can route multiple outputs from a single input.
+We were unable to develop our own algorithm for the Clos network due to time constraints.
+Because of these reasons, we decided against incorporating Clos networks into our current design.
+For future improvements, we may return to Clos networks.
+
 
