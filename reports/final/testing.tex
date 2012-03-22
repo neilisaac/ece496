@@ -1,8 +1,8 @@
-\section{Testing and Verification}
+\section{Testing and Verification (author: K. Shi)}
 
 We performed 4 tests on our final design, 1 test to ensure our hardware works correctly, 1 test to verify our software, and 2 tests on the full work flow to confirm that the project is working as a whole.
 
-\subsection{Hardware Test}
+\subsection{Hardware Test (author: K. Shi)}
 
 To test that our overlay tiles are working correctly, we built a single tile onto the Virtex 5 FPGA and connected the inputs and outputs of the tile to the switches and LEDs of the FPGA.
 We then pushed in a manually composed bitstream through a serial connection to program the tile's function and routing.
@@ -39,7 +39,7 @@ The test proved that our project satisfied the following requirements:
 	\item G1: The tile implemented four 6-input lookup tables
 \end{itemlist}
 
-\subsection{Software Test}
+\subsection{Software Test (author: K. Shi)}
 
 To test our bitstream generation software, we wrote simple circuits in verilog, then used our selected third-party software to synthesize, place and route the circuits according to our architecture.
 We then took the resultant output and used our software to generate a bitstream capable of programming our overlay circuit.
@@ -52,7 +52,7 @@ The test proved that our project satisfied the following requirements:
 	\item S1: The software was successful in translating VPR placement and route data into a bitstream appropriate for the overlay FPGA
 \end{itemlist}
 
-\subsection{Full Tool Flow Test}
+\subsection{Full Tool Flow Test (author: K. Shi)}
 
 Finally, to test the project as a whole, we combined the hardware and software tests, building test circuits in verilog, passing them through VPR and translating the output into a bitstream, and injecting the bitstream onto a full overlay on the Virtex 5 for testing.
 

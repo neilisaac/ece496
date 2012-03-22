@@ -1,7 +1,7 @@
 \section{Final Design}
 
 
-\subsection{System overview}
+\subsection{System overview (author: N. Isaac)}
 \label{system-overview}
 
 \figref{system-diagram} shows the high-level system interactions of the components used in our project.
@@ -30,7 +30,7 @@ Finally, the circuits on the overlay FPGA are controlled by connecting devices s
 
 
 
-\subsection{Module design}
+\subsection{Module design (author: K. Shi)}
 
 The \emph{Overlay FPGA} is composed of a two-dimensional array of \emph{Logic tiles}.
 The logic tiles make it easier to build a large overlay, and help keep the internal 
@@ -77,7 +77,7 @@ It decodes and extracts the bitstream from the serial format, then injects it in
 
 
 
-\subsection{Assessment of design}
+\subsection{Assessment of design (author: K. Shi)}
 
 The decision to take advantage of the custom 32-bit shift registers in implementing our design entails the following trade-offs versus using only basic Verilog logic:
 \begin{itemlist}
