@@ -8,22 +8,19 @@
 
 Academic studies of Field Programmable Gate Array (FPGA) chip architecture rely on simulations, as commercial FPGA chips contain proprietary designs that make their underlying architecture inaccessible to academic researchers.
 The goal of this project is to provide a physical platform for researchers to carry out FPGA architecture studies.
-The finished design should capable of running common benchmark circuits.
+The finished design is capable of implementing basic Verilog circuits with combinational and sequential logic.
 
-The proposed design is to implement an Overlay FGPA on an existing, commercially available FPGA chip.
+Our design is an implementation of an Overlay FGPA on an existing, commercially available FPGA chip.
 Using a commercial FPGA as the physical medium for this project makes the design cheaper and more accessible to researchers, as they may have an appropriate FPGA chip already.
 
 
 We have selected the Xilinx Virtex 5 FPGA as our development platform because we can use its native logic units directly.
-This will limit the models of FPGA chips that the overlay circuit can be implemented on, but it should reduce the design's area overhead and improve its timing characteristics.
-The features we will use on the Virtex 5 are forward-compatible with all current-generation Xilinx FPGA products, allowing the researcher to use a variety of FPGAs.
+This will limit the models of FPGA chips that the overlay circuit can be implemented on, but it reduces the design's area overhead and improve its timing characteristics.
+The features we use on the Virtex 5 are forward-compatible with all current-generation Xilinx FPGA products, allowing the researcher to use a variety of FPGAs.
 
-The validation of the design will involve testing a set of benchmark circuits by placing and routing them with VPR, then transferring them to the FPGA overlay.
+The validation of the design involves testing a set of unit-test circuits we wrote by placing and routing them with VPR, then transferring them to the FPGA overlay.
 The circuits can then be tested for correct behavior, confirming that the overlay design can be correctly programmed using VPR output, and that the inputs and outputs to the design are functioning properly.
 
-The current budget for the proposed design is \$14.00 and will be covered by the students.
+The current budget for the proposed design was \$14.00 and was covered by the students.
 The required FPGA development boards and software licenses have been provided by the supervisor.
-
-We have designed and tested the modules required to build one tile of the Overlay FGPA.
-By December, we expect to have assembled a grid of tiles and have software support for programming the logic cells.
 
