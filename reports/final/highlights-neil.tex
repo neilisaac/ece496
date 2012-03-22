@@ -1,2 +1,22 @@
 \section*{Highlights for Neil Isaac}
 
+My main contributions to the project were:
+\begin{itemlist}
+	\item components of the \overlay Verilog design,
+	\item compiling and scripting the third-party tool flow, and
+	\item writing the software to produce and program the bitstream.
+\end{itemlist}
+
+The basic components of the \overlay are the \emph{connection block}, \emph{switch block} and the \emph{logic block}.
+The logic block consists of a variable number of \emph{logic elements} and flip-flops which are the fundamental pieces that allow a user to implement their circuit on the \overlay.
+We designed the basic components so they can be replicated and connected on a grid of arbitrary size, and with an arbitrary amount of routing interconnect resources.
+The level of configurability we support limits the scope of optimizations we could consider, so our highly configurable \overlay takes more resources on the physical FPGA than a may be strictly necessary.
+
+The third-party software flow consists of \emph{ODIN} for synthesis, \emph{ABC} for technology mapping, \emph{T-VPack} for clustering, and \emph{VPR 5} for placement and routing.
+My work on the tool flow involved figuring out how to use the individual tools, and producing the appropriate formats of files for each stage.
+Each of these tools had various bugs or technical issues I needed to work around.
+
+The bitstream generation software I wrote reads the \emph{BLIF} format function tables from ABC, the connectivity netlist from T-VPack, and the placements and routing files from VPR.
+I needed to correlate the files to find the location of each functional element in the placement file, its inputs from the netlist file, and how the inputs are connected from the routing file.
+In some cases, this data needs to be inferred because the tools don't fully specify the placements or connections.
+
