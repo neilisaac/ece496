@@ -77,6 +77,7 @@ iseconfig
 usage_statistics_webtalk.html
 webtalk_pn.xml
 webtalk_impact.xml
+xlnx_auto_0.ise
 
 # latex files
 *.aux
