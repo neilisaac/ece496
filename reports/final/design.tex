@@ -82,9 +82,9 @@ It decodes and extracts the bitstream from the serial format, then injects it in
 The decision to take advantage of the custom 32-bit shift registers in implementing our design entails the following trade-offs versus using only basic Verilog logic:
 \begin{itemlist}
 	\item The design is more efficient area and timing-wise.
-	\item The data describing the circuit (known as the \emph{bitstream}) which is needed to program the design will be larger.
-	\item The maximum size of the design will be limited by the amount of 32-bit shift registers available on the FPGA board, as opposed to the amount of flops.
-	\item The design will be incompatible with boards that do not have custom 32-bit shift registers
+	\item The data describing the circuit (known as the \emph{bitstream}) which is needed to program the design is larger.
+	\item The maximum size of the design is limited by the amount of 32-bit shift registers available on the FPGA board, as opposed to the amount of flops.
+	\item The design is incompatible with boards that do not have custom 32-bit shift registers.
 \end{itemlist}
 
 We have decided that performance efficiency outweighs the negative aspects of the larger bitstream and limitation of implementation platforms.
