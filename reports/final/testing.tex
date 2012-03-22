@@ -56,8 +56,8 @@ The test proved that our project satisfied the following requirements:
 
 Finally, to test the project as a whole, we combined the hardware and software tests, building test circuits in verilog, passing them through VPR and translating the output into a bitstream, and injecting the bitstream onto a full overlay on the Virtex 5 for testing.
 
-We first tested the project with a simple buffer circuit, where inputs to the overlay were connected directly to outputs.
-When the buffer proved successful, we moved on to a slightly more complex circuit, a 4-bit adder.
+We first tested the project with a simple circuit, where inputs to the overlay were connected directly to outputs.
+When the first circuit proved successful, we moved on to a more complex circuit, a 4-bit adder.
 The Verilog for the adder is shown in \figref{adder-verilog}.
 
 \begin{figure}[!h]
@@ -129,6 +129,8 @@ The grey boxes at the top represent the IOs used for the signals \emph{in} and \
 
 \figref{adder-place} shows the locations in the overlay VPR has placed logic components and input/output pads.
 This is one of the output files our software utilizes to generate the bitstream.
+
+\pagebreak
 
 \begin{figure}[!h]
 	\centering
