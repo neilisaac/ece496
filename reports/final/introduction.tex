@@ -25,37 +25,58 @@ Researchers will be able to use the circuit to study FPGA architecture and CAD a
 
 
 
-\subsubsection{Functional Requirements}
+\subsubsection{Requirements}
 
-An Overlay FGPA circuit that will:
+Hardware (overlay) requirements:
 
-\begin{itemlist}
-	\item Work on a commercially available FPGA chip.
-	\item Be re-programmable over a serial interface after being flashed to the FPGA.
-	\item Have a tunable number and arrangement of logic cells, and have tunable connectivity parameters. 
-	\item Support inputs to and outputs from test circuits programmed onto the Overlay FGPA.
-\end{itemlist}
+\begin{tabular}{|p{1cm}|p{15cm}|}
+\hline
+H1 & Compatible with a commercially available FPGA chip\\ \hline
+H2 & Capable of supporting user-specified number of logic cells and connectivity parameters \\ \hline
+H3 & Re-programmable over a serial interface after being flashed to the FPGA \\ \hline
+H4 & Support for inputs to and outputs from test circuits \\ \hline
+\end{tabular}
 
-A software program that can:
-\begin{itemlist}
-	\item Translate VPR placement and routing data for a test circuit into a bitstream for the Overlay FGPA.
-	\item Program the bitstream onto the Overlay FGPA to implement the circuit.
-\end{itemlist}
+%\begin{itemlist}
+%	\item Work on a commercially available FPGA chip.
+%	\item Be re-programmable over a serial interface after being flashed to the FPGA.
+%	\item Have a tunable number and arrangement of logic cells, and have tunable connectivity parameters. 
+%	\item Support inputs to and outputs from test circuits programmed onto the Overlay FGPA.
+%\end{itemlist}
 
-\subsubsection{Constraints}
+Software requirements:
 
-\begin{itemlist}
-	\item Support 6-input logic elements, which allows for comparison with current generation commercial FPGAs.
-	\item Fit at least 100 overlay logic elements on the Virtex 5 FPGA.  This number was chosen to be adequately large for our proof of concent.  100 cells will fit our test circuits fit, and concevable circuits can be implemented by participants at the design fair.
+\begin{tabular}{|p{1cm}|p{15cm}|}
+\hline
+S1 & Capable of translating VPR placement and route data for a test circuit into a bitstream for the Overlay FPGA\\ \hline
+S2 & Capable of programming the bitstream onto the Overlay FPGA to implement the actual circuit \\ \hline
+\end{tabular}
+
+%\begin{itemlist}
+%	\item Translate VPR placement and routing data for a test circuit into a bitstream for the Overlay FGPA.
+%	\item Program the bitstream onto the Overlay FGPA to implement the circuit.
+%\end{itemlist}
+
+General requirements:
+
+\begin{tabular}{|p{1cm}|p{15cm}|}
+\hline
+G1 & Support 6-input logic elements, which allows for comparison with current generation commercial FPGAs\\ \hline
+G2 & Fit at least 100 overlay logic elements on the Virtex 5 FPGA \\ \hline
+\end{tabular}
+
+%\begin{itemlist}
+%	\item Support 6-input logic elements, which allows for comparison with current generation commercial FPGAs.
+%	\item Fit at least 100 overlay logic elements on the Virtex 5 FPGA.  This number was chosen to be adequately large for our proof of concent.  100 cells will fit our test circuits fit, and concevable circuits can be implemented by participants at the design fair.
 	%\item The overlay circuit must support at least 3000 logic cells\footnote{3000 logic cells was chosen as the minimum target because the largest of the ``Golden 20'' circuits, \emph{``s38417''} requires 2567 6-input logic cells\cite{synthesis-density}.} in order to accommodate the \emph{``Golden 20''} MCNC benchmark circuits\footnote{The ``Golden 20'' MCNC circuits are available in BLIF format at \url{http://www.ece.ubc.ca/~julienl/benchmarks.htm}.} commonly used in FPGA research.
-\end{itemlist}
+%\end{itemlist}
 
 
-\subsubsection{Objectives}
+%\subsubsection{Objectives}
 
-\begin{itemlist}
-	\item Be compatible with a family of commercial FPGAs that are available to researchers.
-	\item Use the native logic cells in the physical FPGA directly in the overlay FPGA design to reduce area and latency.
-	\item Be fast enough that it outperforms software emulation of most test circuits.
-\end{itemlist}
+%\begin{itemlist}
+%	\item Be compatible with a family of commercial FPGAs that are available to researchers.
+%	\item Use the native logic cells in the physical FPGA directly in the overlay FPGA design to reduce area and latency.
+%	\item Be fast enough that it outperforms software emulation of most test circuits.
+%\end{itemlist}
 
