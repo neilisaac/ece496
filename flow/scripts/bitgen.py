@@ -19,12 +19,12 @@ class Bitgen:
 
 	def gen_cb(self, lb1, lb2, sb1, sb2):
 		for dest in [sb2, sb1]:
-			for part in reversed([xbar_stream(pin, self.tracks) for pin in dest]):
+			for part in reversed([xbar_stream(pin, 3) for pin in dest]):
 				for pattern, length in part:
 					print "{:d}:{:X}".format(length, pattern)
 
 		for dest in [lb2, lb1]:
-			for part in reversed([xbar_stream(pin, self.lbpins) for pin in dest]):
+			for part in reversed([xbar_stream(pin, 2 * self.tracks + 1) for pin in dest]):
 				for pattern, length in part:
 					print "{:d}:{:X}".format(length, pattern)
 	
@@ -42,7 +42,7 @@ class Bitgen:
 
 	def gen_lb(self, inputs, functions, flops):
 		for value in reversed(inputs):
-			for pattern, length in xbar_stream(value, 4 * self.lbpins, self.muxsize):
+			for pattern, length in xbar_stream(value, 4 * self.lbpins + self.cluster, self.muxsize):
 				print "{:d}:{:X}".format(length, pattern)
 
 		for function, flop in reversed(zip(functions, flops)):
