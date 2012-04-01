@@ -136,12 +136,10 @@ class FPGA:
 			elif dst.kind == "IPIN":
 				if src.kind in ("CHANX", "CHANY"):
 					num = (self.bitgen.cluster / 4) + (src.value / 2)
-					if orientation == "y":
-						if src.y < y or src.x == x and src.value % 2 == 0:
-							num += self.bitgen.tracks
-					elif orientation == "x":
-						if src.x == x or src.y == y and src.value % 2 == 1:
-							num += self.bitgen.tracks
+					if orientation == "y" and src.y < y:
+						num += self.bitgen.tracks
+					elif orientation == "x" and src.x >= x:
+						num += self.bitgen.tracks
 
 				elif src.kind == "OPIN":
 					# connection is stright through
@@ -301,7 +299,7 @@ class FPGA:
 							selection = net_to_physical_order[int(subblock[pin][4:])]
 						elif subblock[pin] != "open":
 							raise Exception, "unknown BLE pin assignment {:s}".format(subblock[pin]) 
-					print "#", index, pin, selection
+					print "# ble", index, "pin", pin, ":", selection, "(", subblock[pin], ")"
 					inputs[index * self.bitgen.inputs + pin - 1] = selection
 
 
