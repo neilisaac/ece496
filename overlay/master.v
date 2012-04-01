@@ -47,18 +47,43 @@ DECODER decoder_inst (
 );
 
 
-wire user_clock;
+wire user_click_clk;
 wire user_reset;
+wire user_clk_toggle;
 
-TRANSITION user_clock_tran_inst(SYSCLK, ~SYSRST, PUSH_N, user_clock);
+TRANSITION user_click_clk_tran_inst(SYSCLK, ~SYSRST, PUSH_N, user_click_clk);
 TRANSITION user_reset_tran_inst(SYSCLK, ~SYSRST, PUSH_C, user_reset);
+TRANSITION user_clk_toggle_tran_inst(SYSCLK, ~SYSRST, PUSH_W, user_clk_toggle);
+
+reg slow_clk;
+reg [25:0] slow_clk_count;
+
+always @ (posedge SYSCLK) begin
+	if (slow_clk_count == 50000000) begin
+		slow_clk <= ~slow_clk;
+		slow_clk_count <= 0;
+	end else begin
+		slow_clk_count <= slow_clk_count + 1;
+	end
+end
+
+reg user_clk_select;
+
+always @ (posedge SYSCLK) begin
+	if (~SYSRST)
+		user_clk_select <= 0;
+	else begin
+		if (user_clk_toggle)
+			user_clk_select <= ~user_clk_select;
+	end
+end
 
 parameter NUM_LB_IN = 16;
 parameter NUM_LB_OUT = 4;
-parameter BUS_WIDTH = 2;
+parameter BUS_WIDTH = 4;
 
-parameter ROWS = 2;
-parameter COLS = 2;
+parameter ROWS = 8;
+parameter COLS = 8;
 parameter IO_PER_CB = 1;
 
 OVERLAY # (
@@ -71,7 +96,7 @@ OVERLAY # (
 ) overlay_inst (
 	.PCLK			(SYSCLK),
 	.PRST			(~SYSRST),
-	.UCLK			(user_clock),
+	.UCLK			(user_clk_select ? slow_clk : user_click_clk),
 	.URST			(user_reset),
 	.SE				(shift_enable),
 	.SIN			(shift_head),
