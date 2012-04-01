@@ -1,9 +1,9 @@
 FLOW=..
 DIR=.
 P=flops
-TRACKS=4
-ROWS=8
-COLS=8
+TRACKS=16
+ROWS=7
+COLS=7
 PADVERSION=clk
 
 include $(FLOW)/Makefile
