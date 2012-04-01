@@ -164,7 +164,7 @@ class BLIF:
 				print "\tlogic", table.nets
 				for line in table.table:
 					print "\t\t", line
-				print "\t\tfunction:", table.func
+				print "\t\tfunction: {:016X}".format(table.func)
 			print ""
 
 
