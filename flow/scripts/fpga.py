@@ -136,7 +136,7 @@ class FPGA:
 			elif dst.kind == "IPIN":
 				if src.kind in ("CHANX", "CHANY"):
 					num = (self.bitgen.cluster / 4) + (src.value / 2)
-					if (orientation == "y" and src.y < y) or (orientation == "x" and src.x == x):
+					if (orientation == "y" and src.value % 2 == 0) or (orientation == "x" and src.value % 2 == 1):
 						num += self.bitgen.tracks
 
 				elif src.kind == "OPIN":
