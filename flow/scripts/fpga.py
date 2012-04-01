@@ -256,19 +256,20 @@ class FPGA:
 
 			# assign the subblocks
 			assignments = dict()
-			clb_to_physical_order = dict()
+			net_to_physical_order = dict()
 			for n, subblock in subblocks:
 				pin = int(subblock[-2])
 				if pin in pins:
 					assignments[pins[pin]] = subblock
-					clb_to_physical_order[n] = i
+					net_to_physical_order[n] = pins[pin]
 				else:
 					for i in range(self.bitgen.cluster):
 						if i not in assignments.keys():
 							assignments[i] = subblock
-							clb_to_physical_order[n] = i
+							net_to_physical_order[n] = i
 							break
 
+			print "# net to physical", net_to_physical_order
 			print "# assignments", assignments
 
 			for index in sorted(assignments.keys()):
@@ -297,7 +298,7 @@ class FPGA:
 						selection = pins[int(subblock[pin])][(x ,y)]
 					except ValueError:
 						if subblock[pin][:4] == "ble_":
-							selection = clb_to_physical_order[int(subblock[pin][4:])]
+							selection = net_to_physical_order[int(subblock[pin][4:])]
 						elif subblock[pin] != "open":
 							raise Exception, "unknown BLE pin assignment {:s}".format(subblock[pin]) 
 					print "#", index, pin, selection
