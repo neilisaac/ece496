@@ -80,18 +80,25 @@ class Routing:
 		for net in self.nets:
 			prev = None
 			for node in net.nodes:
-				if prev is None:
+				# sink nodes indicate multi-fanout net
+				# fanout driver is repeated after SINK node
+				if node.kind == "SINK":
+					prev = None
+					continue
+
+				# no previous node; node is driver for next node
+				elif prev is None:
 					prev = node
 					continue
 
 				# connection block interconnect drivers
-				if node.kind == "CHANX":
+				elif node.kind == "CHANX":
 					cbx[node.x][node.y].append((node, prev))
 				elif node.kind == "CHANY":
 					cby[node.x][node.y].append((node, prev))
 
 				# connection block driving logic block or pad input
-				if node.kind == "IPIN":
+				elif node.kind == "IPIN":
 					if prev.kind == "CHANX":
 						cbx[prev.x][prev.y].append((node, prev))
 					elif prev.kind == "CHANY":
