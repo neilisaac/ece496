@@ -13,8 +13,8 @@ input [NUM_IO-1:0] INPUTS;
 output [NUM_IO-1:0] OUTPUTS;
 
 // connections between tiles
-wire [`CLB_INPUTS/4-1:0] lb_in_left[`ROWS:0][`COLS:0], lb_in_down[`ROWS:0][`COLS:0];
-wire [`BLE_PER_CLB/4-1:0] lb_out_right[`ROWS:0][`COLS:0], lb_out_up[`ROWS:0][`COLS:0];
+wire [`CLB_INPUTS/4-1:0] lb_in_left[`ROWS-1:0][`COLS:0], lb_in_down[`ROWS:0][`COLS-1:0];
+wire [`BLE_PER_CLB/4-1:0] lb_out_right[`ROWS-1:0][`COLS:0], lb_out_up[`ROWS:0][`COLS-1:0];
 wire [`TRACKS-1:0] bus_up[`ROWS:0][`COLS:0], bus_right[`ROWS:0][`COLS:0], bus_down[`ROWS:0][`COLS:0], bus_left[`ROWS:0][`COLS:0];
 
 // shift chain between tiles
@@ -29,8 +29,6 @@ wire [`IO_PER_CB*`COLS-1:0] io_in_north, io_out_north, io_in_south, io_out_south
 // assigned directly
 assign io_in_north = INPUTS[`IO_PER_CB*`COLS-1:0];
 assign io_in_west = INPUTS[2*`IO_PER_CB*`COLS+2*`IO_PER_CB*`ROWS-1:2*`IO_PER_CB*`COLS+`IO_PER_CB*`ROWS];
-
-//assign OUTPUTS = {io_out_west, io_out_south, io_out_east, io_out_north};
 assign OUTPUTS[`IO_PER_CB*`COLS-1:0] = io_out_north;
 assign OUTPUTS[2*`IO_PER_CB*(`COLS+`ROWS)-1:`IO_PER_CB*(2*`COLS+`ROWS)] = io_out_west;
 
@@ -107,31 +105,39 @@ generate
 				.CB_SOUT		(shift_chain[y+1][`COLS])
 		);
 	end
-	
+
 	// instantiate top right switch block to connect right-most north border tile
 	// to the top-most east border tile
 	SWITCH_BLOCK corner_sb_inst (
-	.CLK (PCLK),
-	.IN_N (),
-	.IN_E (),
-	.IN_S (bus_up[`ROWS][`COLS]),
-	.IN_W (bus_right[`ROWS][`COLS]),
-	.OUT_N (),
-	.OUT_E (),
-	.OUT_S (bus_down[`ROWS][`COLS]),
-	.OUT_W (bus_left[`ROWS][`COLS]),
-	.SE (SE),
-	.SIN (shift_chain[`ROWS][`COLS]),
+		.CLK (PCLK),
+		.IN_N (0),
+		.IN_E (0),
+		.IN_S (bus_up[`ROWS][`COLS]),
+		.IN_W (bus_right[`ROWS][`COLS]),
+		.OUT_N (),
+		.OUT_E (),
+		.OUT_S (bus_down[`ROWS][`COLS]),
+		.OUT_W (bus_left[`ROWS][`COLS]),
+		.SE (SE),
+		.SIN (shift_chain[`ROWS][`COLS]),
 		.SOUT () // end of the shift chain
 	);
 
 	// instantiate the logic tiles
 	for (y = 0; y < `ROWS; y = y + 1) begin : OVERLAY_ROW
+		assign bus_right[y][0] = 0;
+		assign bus_left[y][`COLS] = 0;
+		
 		assign lb_out_right[y][0][`IO_PER_CB-1:0] = io_in_west[`IO_PER_CB*y+`IO_PER_CB-1:`IO_PER_CB*y];
 		assign io_out_west[`IO_PER_CB*y+`IO_PER_CB-1:`IO_PER_CB*y] = lb_in_left[y][0][`IO_PER_CB-1:0];
 		for (x = 0; x < `COLS; x = x + 1) begin : OVERLAY_COL
 			wire [2:0] shift_internal;
 
+			// logic tile (containing a LB, 2 CBs, and a SB)
+			// note: this is done connected genericly, but some outputs on the
+			//   left and bottom aren't used.  XST generates warnings for
+			//   trimmed signals: lb_in_left, lb_in_down, bus_left, bus_down
+			//   which can should be ignored.
 			TILE tile_inst (
 				.PCLK			(PCLK),
 				.PRST			(PRST),
@@ -163,13 +169,21 @@ generate
 				.LB_SIN			(shift_internal[2]),
 				.LB_SOUT		(shift_chain[y+1][x])
 			);
-			if (y==0) begin: SOUTH_OUTPUT
+
+			if (y == 0) begin: SOUTH_OUTPUT
 				assign lb_out_up[0][x][`IO_PER_CB-1:0] = io_in_south[`IO_PER_CB*x+`IO_PER_CB-1:`IO_PER_CB*x];
 				assign io_out_south[`IO_PER_CB*x+`IO_PER_CB-1:`IO_PER_CB*x] = lb_in_down[0][x][`IO_PER_CB-1:0];
+
+				assign bus_up[0][x] = 0;
+				assign bus_down[`ROWS][x] = 0;
 			end
 		end
 	end
 endgenerate
+
+// assign remaining unused boundary signals
+assign bus_up[0][`COLS] = 0;
+assign bus_right[`ROWS][0] = 0;
 
 endmodule
 
