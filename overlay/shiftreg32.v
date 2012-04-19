@@ -32,10 +32,13 @@ module SHIFTREG32 (Q, Q31, A, CE, CLK, D);
 
 	reg [31:0] bits; // shift register bits
 
+	initial
+		bits <= 0;
+
 	// shift up on CE
 	always @ (posedge CLK)
 		if (CE)
-			bits <= { bits[31:1], D };
+			bits <= { bits[30:0], D };
 
 	assign Q = bits[A];
 	assign Q31 = bits[31];
