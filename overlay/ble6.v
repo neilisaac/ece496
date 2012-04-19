@@ -1,3 +1,5 @@
+`include "params.v"
+
 module BLE6 (
 	input [5:0]A,
 	input PCLK,
@@ -13,9 +15,7 @@ module BLE6 (
 
 // Shift register used as virtual lookup table
 wire q1, scan1;
-SRLC32E #(
-.INIT(32'h00000000)
-) lut_inst1 (
+SHIFTREG32 lut_inst1 (
 	.Q(q1),			// SRL data output
 	.Q31(scan1),	// SRL cascade output pin
 	.A(A[4:0]),		// 5-bit shift depth select input
@@ -25,9 +25,7 @@ SRLC32E #(
 );
 
 wire q2, scan2;
-SRLC32E #(
-.INIT(32'h00000000)
-) lut_inst2 (
+SHIFTREG32 lut_inst2 (
 	.Q(q2),
 	.Q31(scan2),
 	.A(A[4:0]),
@@ -37,15 +35,20 @@ SRLC32E #(
 );
 
 
-// Use F7 mux to select between the two 32-bit shift registers
+// select between the two 32-bit shift registers to implement
+// the 64-bit lookup table
 wire logic_value;
-MUXF7 shift_select_mux (
-	.O(logic_value),
-	.I0(q1),
-	.I1(q2),
-	.S(A[5])
-);
-
+`ifdef USE_F7_MUX
+	MUXF7 shift_select_mux (
+		.O(logic_value),
+		.I0(q1),
+		.I1(q2),
+		.S(A[5])
+	);
+`else
+	// use generic logic
+	assign logic_value = A[5] ? q2 : q1;
+`endif
 
 // User flip-flop
 reg flop_value;

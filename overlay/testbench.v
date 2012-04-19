@@ -2,9 +2,9 @@
 
 module testbench;
 
-parameter NUM_LB_IN = 16;
-parameter NUM_LB_OUT = 4;
-parameter BUS_WIDTH = 2;
+parameter `CLB_INPUTS = 16;
+parameter `BLE_PER_CLB = 4;
+parameter `TRACKS = 2;
 
 reg clk, rst;
 reg [7:0] inputs;
@@ -34,9 +34,9 @@ wire shift_enable;
 SCAN_TB scan_tb_inst ( shift_head, shift_enable );
 
 OVERLAY # (
-	.NUM_LB_IN		(NUM_LB_IN),
-	.NUM_LB_OUT		(NUM_LB_OUT),
-	.BUS_WIDTH		(BUS_WIDTH)
+	.`CLB_INPUTS		(`CLB_INPUTS),
+	.`BLE_PER_CLB		(`BLE_PER_CLB),
+	.`TRACKS		(`TRACKS)
 ) overlay_inst (
 	.PCLK			(clk),
 	.PRST			(rst),

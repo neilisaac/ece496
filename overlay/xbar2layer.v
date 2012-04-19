@@ -17,9 +17,7 @@ genvar i;
 //generate first layer: ceil(N/5) LUTs
 generate
 	 for (i=0; i<lay1; i=i+1) begin : SR321
-		SRLC32E #(
-		.INIT(32'h00000000) // Initial Value of Shift Register
-		) L1A (
+		SHIFTREG32 L1A (
 		.Q(b[i]), // SRL data output
 		.Q31(scan_chain[i+1]), // SRL cascade output pin
 		.A(A[(i*5+4):(i*5)]), // 5-bit shift depth select input
@@ -27,14 +25,12 @@ generate
 		.CLK(CLK), // Clock input
 		.D(scan_chain[i]) // SRL data input
 		);
-		// End of SRLC32E_inst instantiation
+		// End of SHIFTREG32_inst instantiation
 	 end
 endgenerate
 
 //final layer
-SRLC32E #(
-.INIT(32'h00000000) // Initial Value of Shift Register
-) W (
+SHIFTREG32 W (
 .Q(Z), // SRL data output
 .Q31(SOUT), // SRL cascade output pin
 .A(b), // 5-bit shift depth select input
@@ -42,7 +38,7 @@ SRLC32E #(
 .CLK(CLK), // Clock input
 .D(scan_chain[lay1]) // SRL data input
 );
-// End of SRLC32E_inst instantiation
+// End of SHIFTREG32_inst instantiation
 
 endmodule
 

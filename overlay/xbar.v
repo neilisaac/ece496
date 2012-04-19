@@ -12,7 +12,7 @@ output SOUT;
 
 generate
 	if (N < 6) begin : XBARLAY1
-		SRLC32E #( .INIT(32'h00000000) ) xbar1_inst (
+		SHIFTREG32 xbar1_inst (
 			.A(A),
 			.CE(SE),
 			.CLK(CLK),

@@ -1,8 +1,10 @@
+`include "params.v"
+
 module CONNECTION_BLOCK(LB1_IN, LB2_IN, SB1_IN, SB2_IN, LB1_OUT, LB2_OUT, SB1_OUT, SB2_OUT, CLK, SE, SIN, SOUT);
 
-parameter W = 5; //size of interconnecting bus (one way)
-parameter O = 6; //size of input into logic blocks
-parameter P = 1; //size of output from logic blocks
+parameter W = `TRACKS;        // size of interconnecting bus (one way)
+parameter O = `CLB_INPUTS/4;   //size of input into logic blocks
+parameter P = `BLE_PER_CLB/4; //size of output from logic blocks
 
 input [P-1:0] LB1_IN; //input into the connection block from logic block 1
 input [P-1:0] LB2_IN; //input into the connection block from logic block 2

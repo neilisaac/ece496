@@ -1,3 +1,5 @@
+`include "params.v"
+
 module MASTER (
 	input SYSCLK,
 	input SYSRST,
@@ -78,22 +80,14 @@ always @ (posedge SYSCLK) begin
 	end
 end
 
-parameter NUM_LB_IN = 16;
-parameter NUM_LB_OUT = 4;
-parameter BUS_WIDTH = 8;
 
-parameter ROWS = 7;
-parameter COLS = 7;
-parameter IO_PER_CB = 1;
+parameter NUM_IO = 2 * `IO_PER_CB * (`ROWS + `COLS);
 
-OVERLAY # (
-	.NUM_LB_IN		(NUM_LB_IN),
-	.NUM_LB_OUT		(NUM_LB_OUT),
-	.BUS_WIDTH		(BUS_WIDTH),
-	.ROWS			(ROWS),
-	.COLS			(COLS),
-	.IO_PER_CB		(IO_PER_CB)
-) overlay_inst (
+wire [NUM_IO-1:0] overlay_inputs = DIP;
+wire [NUM_IO-1:0] overlay_outputs;
+assign LEDS = overlay_outputs;
+
+OVERLAY overlay_inst (
 	.PCLK			(SYSCLK),
 	.PRST			(~SYSRST),
 	.UCLK			(user_clk_select ? slow_clk : user_click_clk),
@@ -101,8 +95,8 @@ OVERLAY # (
 	.SE				(shift_enable),
 	.SIN			(shift_head),
 	.SOUT			(shift_tail),
-	.INPUTS			(DIP[7:0]),
-	.OUTPUTS		(LEDS[7:0])
+	.INPUTS			(overlay_inputs),
+	.OUTPUTS		(overlay_outputs)
 );
 
 
