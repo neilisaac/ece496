@@ -25,16 +25,16 @@ wire [`TRACKS-1:0] bus_left, bus_right;
 wire [`CLB_INPUTS/4-1:0] io_in;
 wire [`BLE_PER_CLB/4-1:0] io_out;
 
-assign io_in[`IO_PER_CB-1:0] = NORTH_IO_IN;
+assign io_in = { 0, NORTH_IO_IN };
 assign NORTH_IO_OUT = io_out[`IO_PER_CB-1:0];
 
-SWITCH_BLOCK # ( .W(`TRACKS) ) sb_inst (
+SWITCH_BLOCK sb_inst (
 	.CLK (PCLK),
-	.IN_N (),
+	.IN_N (0),
 	.IN_E (bus_left),
 	.IN_S (SOUTH_BUS_IN),
 	.IN_W (WEST_BUS_IN),
-	.OUT_N (),
+	.OUT_N (), // not connected to anything
 	.OUT_E (bus_right),
 	.OUT_S (SOUTH_BUS_OUT),
 	.OUT_W (WEST_BUS_OUT),
@@ -44,11 +44,7 @@ SWITCH_BLOCK # ( .W(`TRACKS) ) sb_inst (
 );
 
 
-CONNECTION_BLOCK # (
-	.W (`TRACKS),
-	.O (`CLB_INPUTS/4),
-	.P (`BLE_PER_CLB/4)
-) cb_inst (
+CONNECTION_BLOCK cb_inst (
 	.CLK (PCLK),
 	.LB1_IN (io_in),
 	.LB2_IN (SOUTH_CB_IN),
