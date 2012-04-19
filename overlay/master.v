@@ -32,7 +32,6 @@ UART UART_inst (
 
 
 wire shift_head;
-wire shift_tail;
 wire shift_enable;
 
 DECODER decoder_inst (
@@ -44,7 +43,6 @@ DECODER decoder_inst (
 	.RX_DATA(uart_rx_data),
 	.TX_DATA(uart_tx_data),
 	.SHIFT_HEAD(shift_head),
-	.SHIFT_TAIL(shift_tail),
 	.SHIFT_ENABLE(shift_enable)
 );
 
@@ -94,7 +92,6 @@ OVERLAY overlay_inst (
 	.URST			(user_reset),
 	.SE				(shift_enable),
 	.SIN			(shift_head),
-	.SOUT			(shift_tail),
 	.INPUTS			(overlay_inputs),
 	.OUTPUTS		(overlay_outputs)
 );

@@ -10,7 +10,6 @@ module DECODER (
 	input [7:0]		RX_DATA,		// input data from uart
 	output [7:0]	TX_DATA,		// output data to uart
 	output			SHIFT_HEAD,		// beginning of the shift chain
-	input			SHIFT_TAIL,		// end of the shift chain
 	output			SHIFT_ENABLE	// signal to do a shift
 );
 

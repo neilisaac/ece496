@@ -2,14 +2,13 @@
 
 module OVERLAY (
 	PCLK, PRST, UCLK, URST,
-	SIN, SOUT, SE,
+	SIN, SE,
 	INPUTS, OUTPUTS
 );
 
 parameter NUM_IO = 2 * `IO_PER_CB * (`ROWS + `COLS);
 
 input PCLK, PRST, UCLK, URST, SIN, SE;
-output SOUT;
 input [NUM_IO-1:0] INPUTS;
 output [NUM_IO-1:0] OUTPUTS;
 
@@ -123,7 +122,7 @@ generate
 	.OUT_W (bus_left[`ROWS][`COLS]),
 	.SE (SE),
 	.SIN (shift_chain[`ROWS][`COLS]),
-	.SOUT (SOUT)
+		.SOUT () // end of the shift chain
 	);
 
 	// instantiate the logic tiles
