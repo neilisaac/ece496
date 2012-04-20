@@ -42,11 +42,13 @@
 //
 // note1: available on Virtex-5 or later host FPGAs
 // note2: comment this out to use fallback shift register implementation
-`define USE_SRLC32E
+// note3: the fallback implementation is written such that ISE synthesizes
+//   it using a LUT as memory regardless of this option
+////`define USE_SRLC32E
 
 // enable use of the F7 multiplexer 
 //
 // note1: available on Virtex-5
 // note2: comment this out to use a generic verilog mux
-`define USE_F7_MUX
+////`define USE_F7_MUX
 
