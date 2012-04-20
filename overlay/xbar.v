@@ -11,6 +11,7 @@ output SOUT;
 
 
 generate
+	// use 1 shift register to implement an N:1 mux for (1 <= N <= 5)
 	if (N < 6) begin : XBARLAY1
 		SHIFTREG32 xbar1_inst (
 			.A(A),
@@ -21,6 +22,8 @@ generate
 			.Q31(SOUT)
 		);
 	end
+
+	// for (6 <= N <= 25) we use 2 layers of shift register multiplexers
 	else if (N < 26) begin : XBARLAY2
 		XBAR2LAYER # (.N(N)) xbar2_inst (
 			.A(A),
@@ -31,6 +34,8 @@ generate
 			.SOUT(SOUT)
 		);
 	end
+
+	// for (26 <= N <= 125) we need 3 layers
 	else begin : XBARLAY3
 		XBAR3LAYER # (.N(N)) xbar3_inst (
 			.A(A),

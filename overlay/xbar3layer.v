@@ -25,14 +25,13 @@ genvar i;
 generate
 	 for (i=0; i<lay1; i=i+1) begin : SR321
 		SHIFTREG32 L1A (
-		.Q(b[i]), // SRL data output
-		.Q31(scan_chain[i+1]), // SRL cascade output pin
-		.A(inputs[(i*5+4):(i*5)]), // 5-bit shift depth select input
-		.CE(SE), // Clock enable input
-		.CLK(CLK), // Clock input
-		.D(scan_chain[i]) // SRL data input
+			.Q(b[i]), // SRL data output
+			.Q31(scan_chain[i+1]), // SRL cascade output pin
+			.A(inputs[(i*5+4):(i*5)]), // 5-bit shift depth select input
+			.CE(SE), // Clock enable input
+			.CLK(CLK), // Clock input
+			.D(scan_chain[i]) // SRL data input
 		);
-		// End of SHIFTREG32_inst instantiation
 	 end
 endgenerate
 
@@ -40,27 +39,25 @@ endgenerate
 generate
 	 for (i=0; i<lay2; i=i+1) begin : SR322
 		SHIFTREG32 L2A (
-		.Q(c[i]), // SRL data output
-		.Q31(scan_chain[lay1+i+1]), // SRL cascade output pin
-		.A(b[(i*5+4):(i*5)]), // 5-bit shift depth select input
-		.CE(SE), // Clock enable input
-		.CLK(CLK), // Clock input
-		.D(scan_chain[lay1+i]) // SRL data input
+			.Q(c[i]), // SRL data output
+			.Q31(scan_chain[lay1+i+1]), // SRL cascade output pin
+			.A(b[(i*5+4):(i*5)]), // 5-bit shift depth select input
+			.CE(SE), // Clock enable input
+			.CLK(CLK), // Clock input
+			.D(scan_chain[lay1+i]) // SRL data input
 		);
-		// End of SHIFTREG32_inst instantiation
 	 end
 endgenerate
 
 //final layer
 SHIFTREG32 W (
-.Q(Z), // SRL data output
-.Q31(SOUT), // SRL cascade output pin
-.A(c), // 5-bit shift depth select input
-.CE(SE), // Clock enable input
-.CLK(CLK), // Clock input
-.D(scan_chain[lay1+lay2]) // SRL data input
+	.Q(Z), // SRL data output
+	.Q31(SOUT), // SRL cascade output pin
+	.A(c), // 5-bit shift depth select input
+	.CE(SE), // Clock enable input
+	.CLK(CLK), // Clock input
+	.D(scan_chain[lay1+lay2]) // SRL data input
 );
-// End of SHIFTREG32_inst instantiation
 
 endmodule
 
