@@ -1,0 +1,222 @@
+Virtual FPGA HDL Documentation
+
+
+Design hierarchy:
+
+ * params.v              parameters to set up virtual FPGA size (start here)
+ * master.v              top-level module
+    > uart.v             RS232 serial interface to receive bitstream
+    > decover.v          buffer the bitstream and control shift enable
+    > overlay.v          virtual FPGA implementation
+       ~ tile.v          a logic tile (containing LB, SB, 2 CBs)
+          - lb.v         logic block (LB/CLB)
+             + ble6.v    basic logic element (BLE)
+          - cb.v         connection block (CB)
+          - sb.v         switch block (SB)
+       ~ north_border.v  fix boundary symmetry (contains 1 CB and 1 SB)
+       ~ east_border.v   fix boundary symmetry (contains 1 CB and 1 SB)
+    > transition.v       debounce push buttons and output 1 cycle pulse
+
+
+Other files used within overlay.v and below:
+ 
+ * xbar.v                programmable N:1 crossbar multiplexer
+ * xbar2layer.v          crossbar implementation for 6-25 inputs
+ * xbar3layer.v          crossbar implementation for 26-125 inputs
+ * shiftreg32.v          efficient multiplexed 32-bit shift register
+
+
+
+Details:
+
+These details focus on specifications, so read this first.
+Implementation-specific details are provided by inline verilog comments.
+
+
+clocks:
+
+ - the "programming clock" or "system clock" is the fast clock (ex 100MHz) used
+   for operating the programming logic and shifting in the bitstream
+ - the "user clock" is the clock connected to the flip-flops in the virtual FPGA
+ - both clocks are be routed using the host FPGA's native clock network
+ - the "user reset" signal is also globally distributed
+ - the "user reset" signal sets all the virtual FGPA's flip-flops to 0, so
+   initial values and non-zero resets are not supported
+
+
+bitstream:
+
+ - the bitstream sets the configuration for the virtual FPGA
+ - the order the bitstream shift chain travels is described in each
+   applicable block below
+ - note that the bitstream must be reversed so that the bit for the last element
+   that the shift chain reaches appears first in the bitstream file
+
+
+IOs:
+
+ - IOs are connected as input and outputs signals to overlay.v
+ - inputs and outputs to the virtual FPGA are connected like a logic block
+ - each IO is currently limited to 1 input plus 1 output
+ - inputs and outputs in the same IO can be used at the same time
+ - VPR requires that the clock be connected to an IO, so just assign it to a 
+   an unused pin because our "user clock" is already routed and connected
+
+
+uart.v:
+
+ - bitstream is sent 1 byte at a time
+ - default is 115200 baud rate
+ - checks even parity and rejects corrupted bytes (which are sent again)
+ - flags valid bytes which are then used by decoder.v
+ 
+
+decoder.v:
+
+ - buffers valid bytes received by uart.v
+ - when byte arrives, it shifts it into the design serially using the system
+   clock (ex 100MHz clock)
+ - each valid byte is sent back over the UART, so the host can detect a
+   corrupted byte, even if it has correct parity
+ - the programming software aborts if a returned byte doesn't match
+
+
+overlay.v:
+
+ - implements the grid of wires that connects tiles
+ - connects the programming shift chain between all tiles and borders
+ - shift chain goes up the columns (left to right) ending at SB
+ - our coordinate system is (y, x) with (0, 0) in the south-west corner
+ - adds north/east boundary tiles for symmetry (correct connectivity)
+ - adds one switch block in the north-east corner for symmetry
+ - a 3x3 tile grid would look like this within overlay.v:
+ 
+     NB0  NB1  NB2  SB       NBx: north border at (3, x)
+     T20  T21  T22  EB2      EBy: east border at (y, 3)
+     T10  T11  T12  EB1      SB:  switch block at (3, 3)
+     T00  T01  T02  EB0      Tyx: tile at (y, x)
+ 
+
+tile.v:
+
+ - contains a logic block, switch block and 2 connection blocks
+ - shift chain comes in to SB, then CB1, then CB2 then LB, then to next tile
+ - the tile is arranged like this:
+ 
+     CB2  LB
+     SB   CB1
+
+
+lb.v:
+
+ - lookup table is implemented by multiplexing 2 32-bit shift registers
+ - inputs are distributed evenly on all 4 sides of the logic block
+ - outputs are distributed evenly on all 4 sides
+ - each output is driven by a different BLE, so the number
+   of BLEs must be a multiple of 4
+ - BLEs are ordered north, east, south, then west
+ - each BLE has 6 inputs (for a 6-LUT) and 1 output
+ - each BLE input can be driven by any input, or any output from
+   BLEs in the same LB (full crossbar)
+ - BLE pin reordering could be implemented in the bitstream software
+   to allow for changes that could reduce the size of these crossbar
+ - the shift chain goes through each BLE, then through each crossbar,
+   also in the north, east, south, then west order
+
+
+ble6.v:
+
+ - contains a lookup table and optional flip-flop
+ - the flip-flop is connected to the lookup table's output
+ - the flip-flop is clocked by the "user clock"
+ - the "user clock" uses the host FPGA's clock routing so it's not programmable
+ - the BLE's output is driven be either the lookup table or the flip-flow,
+   and the selection is determined by the bitstream
+ - output selection is implemented using a multiplexer controlled by a flip-flop
+ - if you want to implement a flip-flip without logic, you need to configure
+   the lookup table as a buffer
+ - the bitstream shift chain goes through the lookup table, then the output
+   selection flip-flop
+ - see ble6-naive.v for a simpler and equivalent model (less efficient)
+ - here's are some example bitstreams for a 2-input (4-bit) lookup table:
+     
+             bits (MSB-LSB)
+     buffer: 0010 (only considers lowest input)
+     not:    0001
+     or:     1110
+     nor:    0001
+     and:    1000
+     xor:    0110
+
+
+cb.v:
+
+ - routes connections between logic blocks, switch blocks and IOs
+ - connection blocks are either in vertical (Y) or horizontal (X) orientation
+ - the orientation refers to the axis the switch block tracks travel along
+ - either have logic blocks above and below and switch blocks left and right
+   or logic blocks left and right and switch blocks above and below
+ - IOs are connected in place of a logic block
+ - each switch block track can be driven by (in this order)
+    (1) the same track from the switch block on the opposite side
+    (2) the logic block or IO above or to the left
+    (3) the logic block or IO below or to the right
+ - each logic block or IO can be driven by (in this order)
+    (1) the output from the logic block or IO opposite it
+    (2) any track from the switch block above or to the left
+    (3) any track from the switch block below or to the right
+ - the bitstream is shifted through the left/top LB multiplexers,
+   right/bottom LB multiplexers, left/top SB multiplexers, then
+   right/bottom SB multiplexers
+
+
+sb.v:
+
+ - connects connection blocks to adjacent connection blocks
+ - contains routing multiplexers for each track in each direction
+ - for example, if there are 8 tracks per channel, it has 24 multiplexers
+ - each multiplexer selects from 3 signals: the signals from the same track
+   that are coming from the 3 other directions
+ - for north outputs, the multiplexer inputs are ordered east, south west
+ - for the east outputs, the inputs are ordered south, west, north
+ - for the south outputs, the inputs are ordered west, north, east
+ - for the west outputs, the inputs are ordered north, east, south
+ - each multiplexer is controlled by the bitstream
+ - the bitstram shift chain is ordered north, east, south, then west
+
+
+shiftreg32.v:
+
+ - used to implement lookup tables and programmable routing
+ - implements an efficient 32-bit shift register with 32:1 multiplexer
+ - on Xilinx Virtex-5 and later, this synthesizes to a single SRLC32E
+ - we include the param USE_SRLC32E to explicitly instantiate the SRLC32E,
+   but it doesn't make any difference because the fallback verilog
+   reduces to the same in the advanced synthesis stage of XST
+ - one could adapt this to Altera's recent architecture
+
+
+xbar.v:
+
+ - we use this to implement static multiplexers where the output selection
+   is controlled by the bitstream (not by circuit signals)
+ - used for routing in cb.v and sb.v, and for BLE pin crossbars in tile.v
+ - this instantiates shift registers with multiplexers
+ - the size of the shift register depends on the number of signals to mux
+ - the signals to mux are connected to the address input
+ - the bitstream is set such that the result reflects the same value as 
+   the signal on the desired bit of the address input
+ - on Xilinx Virtex-5, we use the SRLC32E 32-bit shift registers (which
+   include a multiplexer) to build 5:1 multiplexers with 1 V-5 LUT
+ - on older FPGAs that don't have shift register lut-rams,
+   this technique would be very inefficient
+ - if 1-5 signals are to be multiplexed, we use 1 32-bit shift register
+ - if 6-25 signals, then we use 2 layers of 32-bit shift registers where
+   the first layer has 1-5 shift registers, and the second layer selects
+   on of their outputs (xbar2layer.v)
+ - the 26-125 signals, then we use 3 layers, similar to above (xbar3layer.v)
+ - we don't support a 4 layer version
+ - one could add an optimization where input signals could be connected
+   to the second or third layer when space is available to reduce the number
+   of shift registers in the first layer
+
