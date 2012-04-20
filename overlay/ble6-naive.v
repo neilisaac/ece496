@@ -1,5 +1,7 @@
 `include "params.v"
 
+// this in an "intuitive" or "naive" implementation that
+// is inefficient on modern architectures
 module BLE6 (
 	input [5:0]A,
 	input PCLK,
