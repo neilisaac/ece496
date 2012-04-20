@@ -21,12 +21,8 @@ output [`IO_PER_CB-1:0] EAST_IO_OUT;
 
 
 
+// bus wires to connect SB and CB
 wire [`TRACKS-1:0] bus_up, bus_down;
-wire [`CLB_INPUTS/4-1:0] io_in;
-wire [`BLE_PER_CLB/4-1:0] io_out;
-
-assign io_in = { 0, EAST_IO_IN };
-assign EAST_IO_OUT = io_out[`IO_PER_CB-1:0];
 
 SWITCH_BLOCK sb_inst (
 	.CLK (PCLK),
@@ -47,11 +43,11 @@ SWITCH_BLOCK sb_inst (
 CONNECTION_BLOCK cb_inst (
 	.CLK (PCLK),
 	.LB1_IN (WEST_CB_IN),
-	.LB2_IN (io_in),
+	.LB2_IN (EAST_IO_IN),
 	.SB1_IN (NORTH_BUS_IN),
 	.SB2_IN (bus_up),
 	.LB1_OUT (WEST_CB_OUT),
-	.LB2_OUT (io_out),
+	.LB2_OUT (EAST_IO_OUT),
 	.SB1_OUT (NORTH_BUS_OUT),
 	.SB2_OUT (bus_down),
 	.SE (SE),
