@@ -64,6 +64,9 @@ class Routing:
 			else:
 				if len(self.nets) == 0:
 					raise Exception, "routing file doesn't match expected format"
+
+				if line[3] == "to":
+					raise Exception, "wires of length > 1 are not supported"
 				
 				coord = re.sub("\).*$", "", re.sub("^\(", "", line[1]))
 				coord = coord.split(",")
