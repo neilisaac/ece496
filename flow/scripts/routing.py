@@ -69,8 +69,23 @@ class Routing:
 				coord = coord.split(",")
 				x = int(coord[0])
 				y = int(coord[1])
-				qualifier = re.sub(":.*", "", line[2])
-				self.nets[-1].nodes.append(Node(line[0], x, y, qualifier, int(line[3])))
+
+				if line[2] == "to":
+					# add intermediate nodes to interpolate along >1 length wires (bad idea)
+					qualifier = re.sub(":.*", "", line[4])
+					value = int(line[5])
+					x1, y1 = [int(c) for c in re.sub("\).*$", "", re.sub("^\(", "", line[3])).split(",")]
+					dx, dy = (x1 - x, y1 - y)
+					count = max(abs(dx), abs(dy))
+					dx, dy = (dx / count, dy / count)
+					if abs(dx) + abs(dy) != 1:
+						raise Exception, "can only interpolate routing nodes in straight line"
+					for i in range(count + 1):
+						self.nets[-1].nodes.append(Node(line[0], x + i * dx, y + i * dy, qualifier, value))
+				else:
+					qualifier = re.sub(":.*", "", line[2])
+					value = int(line[3])
+					self.nets[-1].nodes.append(Node(line[0], x, y, qualifier, value))
 	
 	def infer(self):
 		cby = [[list() for row in range(self.height + 1)] for col in range(self.width + 1)]
