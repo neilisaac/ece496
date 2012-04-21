@@ -27,11 +27,11 @@
 	</switchlist>
 
 	<segmentlist>
-		<segment freq="1.000000" length="4" type="unidir" Rmetal="0.000000"
+		<segment freq="1.000000" length="1" type="unidir" Rmetal="0.000000"
 			Cmetal="0.000000e+00">
 			<mux name="0" />
-			<sb type="pattern">1 1 1 1 1</sb>
-			<cb type="pattern">1 1 1 1</cb>
+			<sb type="pattern">1 1</sb>
+			<cb type="pattern">1</cb>
 		</segment>
 	</segmentlist>
 
@@ -86,7 +86,6 @@
 			<input name="I" num_pins="16" equivalent="true" />
 			<output name="O" num_pins="4" />
 			<clock name="clk" num_pins="1" />
-
 			<pb_type name="ble" num_pb="4">
 				<input name="in" num_pins="6" />
 				<output name="out" num_pins="1" />
