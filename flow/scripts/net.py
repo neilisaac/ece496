@@ -1,6 +1,116 @@
 #!/usr/bin/env python2.7
 
+import re
 import tokenizer
+from xml.etree import ElementTree
+
+class Block:
+	def __init__(self, xml):
+		self.name = xml.attrib["name"]
+		self.inst = xml.attrib["instance"]
+
+		self.mode = None
+		if "mode" in xml.attrib:
+			self.mode = xml.attrib["mode"]
+
+		self.inputs = dict()
+		self.outputs = dict()
+		self.globalnets = dict()
+		self.blocks = list()
+		self.pinlist = list()
+
+		for subtag in xml:
+			# build dictionaries of pins to net names
+			if subtag.tag in ("inputs", "outputs", "globals"):
+				for port in subtag:
+					i = 0
+					for net in port.text.split():
+						net = re.sub("->.*", "", net)
+						if subtag.tag == "inputs":
+							if self.mode is not None:
+								name = "{:s}.{:s}[{:d}]".format(self.mode, port.attrib["name"], i)
+							else:
+								name = "{:s}[{:d}]".format(port.attrib["name"], i)
+							self.inputs[name] = net
+						elif subtag.tag == "outputs":
+							name = "{:s}.{:s}[{:d}]".format(self.inst, port.attrib["name"], i)
+							self.outputs[name] = net
+						else:
+							self.globalnets[name] = net
+						i += 1
+
+			elif subtag.tag == "block":
+				self.blocks.append(Block(subtag))
+
+			else:
+				raise Exception, "unknown tag: " + subtag.tag
+
+		# find the real net for each output
+		for output in self.outputs:
+			src = self.outputs[output]
+			for block in self.blocks:
+				if src in block.outputs:
+					self.outputs[output] = block.outputs[src]
+					break
+
+		# find the real net for each input to child blocks
+		for block in self.blocks:
+			for dst in block.inputs:
+				src = block.inputs[dst]
+				if src in self.inputs:
+					block.inputs[dst] = self.inputs[src]
+				else:
+					for b in self.blocks:
+						if src in b.outputs:
+							block.inputs[dst] = b.outputs[src]
+							break
+
+
+class VPR6Net:
+
+	def __init__(self, filename):
+		# initialize data structures
+		self.globalnets = list()
+		self.inputs = list()
+		self.outputs = list()
+		self.clbs = dict()
+
+		# open and read the xml file
+		f = open(filename)
+		text = f.read()
+		f.close()
+
+		# parse the xml
+		xml = ElementTree.XML(text)
+		for tag in xml:
+			if tag.tag == "inputs":
+				self.inputs.extend(tag.text.split())
+
+			elif tag.tag == "outputs":
+				self.outputs.extend(tag.text.split())
+
+			elif tag.tag == "globals":
+				self.globalnets.extend(tag.text.split())
+
+			elif tag.tag == "block":
+				if tag.attrib["mode"] == "clb":
+					block = Block(tag)
+
+					bles = dict()
+					for ble in block.blocks:
+						if len(ble.outputs) > 1:
+							raise Exception, "BLE {:s} has {:d} outputs".format(ble.inst, len(ble.outputs))
+						elif len(ble.outputs) == 1:
+							bles[ble.outputs.values()[0]] = ble.inputs.values()
+
+					self.clbs[block.name] = bles
+
+
+			else:
+				raise Exception, "unknown tag " + tag.tag
+
+
+
 
 class CLB:
 	def __init__(self, name):
@@ -8,18 +118,17 @@ class CLB:
 		self.pinlist = list()
 		self.subblocks = list()
 
-class NET:
+
+class VPR5Net:
 
 	def __init__(self, filename):
 		tokens = tokenizer.tokenize(filename)
 		self.globalnets = list()
 		self.inputs = list()
 		self.outputs = list()
-		self.clbs = list()
-		self.process(tokens)
-	
-	
-	def process(self, tokens):
+		self.clbs = dict()
+
+		blocks = list()
 		context = None
 		subcontext = None
 
@@ -38,7 +147,7 @@ class NET:
 					subcontext = tok
 
 				elif tok == 'subblock:':
-					self.clbs[-1].subblocks.append(list())
+					blocks[-1].subblocks.append(list())
 					subcontext = tok
 
 				# global net name (clock)
@@ -48,70 +157,75 @@ class NET:
 				# input pin
 				elif context == '.input':
 					if subcontext == 'pinlist:':
-						self.inputs[-1].append(tok)
-					else:
-						self.inputs.append(list())
-						self.inputs[-1].append(tok)
+						self.inputs.append(tok)
 
 				# ouput pin
 				elif context == '.output':
 					if subcontext == 'pinlist:':
-						self.outputs[-1].append(tok)
-					else:
-						self.outputs.append(list())
-						self.outputs[-1].append(tok)
+						self.outputs.append(tok)
 
 				# clb
 				elif context == '.clb':
 					if subcontext == 'pinlist:':
-						self.clbs[-1].pinlist.append(tok)
+						blocks[-1].pinlist.append(tok)
 					elif subcontext == 'subblock:':
-						self.clbs[-1].subblocks[-1].append(tok)
+						blocks[-1].subblocks[-1].append(tok)
 					else:
-						self.clbs.append(CLB(tok))
+						blocks.append(CLB(tok))
 
 				# we should always be in a section
 				elif context is None:
 					raise Exception, "unexpected token " + tok
-	
-	
-	def dump(self):
-		print "globals:"
-		for net in self.globalnets:
-			print "\t", net
 
-		print "inputs:"
-		for nets in self.inputs:
-			print "\t", nets[0], nets[1]
-
-		print "outputs:"
-		for nets in self.outputs:
-			print "\t", nets[0], nets[1]
-
-		for clb in self.clbs:
-			print "clb:", clb.name
-			i = 0
-			print "\tpinlist:"
-			for pin in clb.pinlist:
-				print "\t\t", str(i) + ":", pin
-				i += 1
-			for subblock in clb.subblocks:
-				print "\tsubblock:"
-				for pin in subblock:
+		for block in blocks:
+			clb = dict()
+			for ble in block.subblocks:
+				clb[ble[0]] = list()
+				for pin in ble[1:7]:
 					try:
-						name = clb.pinlist[int(pin)]
-						print "\t\t", pin, "(" + name + ")"
+						name = block.pinlist[int(pin)]
 					except ValueError:
-						print "\t\t", pin
+						name = pin
+					clb[ble[0]].append(name)
+			self.clbs[block.name] = clb
+	
+	
+# print out text version of interpreted data
+def dump(self):
+	print "globals:"
+	for net in self.globalnets:
+		print "\t", net
 
+	print "inputs:"
+	for net in self.inputs:
+		print "\t", net
+
+	print "outputs:"
+	for net in self.outputs:
+		print "\t", net
+
+	for clb in self.clbs:
+		print "clb:", clb
+		for ble in self.clbs[clb]:
+			print "\tble:", ble
+			for pin in self.clbs[clb][ble]:
+				print "\t\t" + pin
 
 
 if __name__ == "__main__":
 	import sys
 	
-	if len(sys.argv) != 2:
-		print "usage:", sys.argv[0], "<net file>"
+	if len(sys.argv) != 3:
+		print "usage:", sys.argv[0], " <5|6> <net file>"
 		sys.exit(1)
 	
-	NET(sys.argv[1]).dump()
+	if sys.argv[1] == "5":
+		dump(VPR5Net(sys.argv[2]))
+
+	elif sys.argv[1] == "6":
+		dump(VPR6Net(sys.argv[2]))
+
+	else:
+		print "usage:", sys.argv[0], " <5|6> <net file>"
+		sys.exit(1)
 

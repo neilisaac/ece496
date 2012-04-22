@@ -5,7 +5,7 @@ from collections import deque
 
 from placement import Placement, Block
 from routing import Routing
-from net import NET
+from net import VPR5Net, VPR6Net
 from blif import BLIF
 from bitgen import Bitgen
 
@@ -22,11 +22,6 @@ class FPGA:
 		self.cols = placement.width + 1
 
 		self.cby, self.cbx, self.sb = routing.infer()
-
-		# make a dictionary of CLBs, hashed by name
-		clbs = dict()
-		for clb in netlist.clbs:
-			clbs[clb.name] = clb
 
 		# make a dictionary of routing nets, hashed by net name
 		self.nets = dict()
@@ -51,8 +46,8 @@ class FPGA:
 		for block in placement.blocks.values():
 			if 0 < block.x < self.cols and 0 < block.y < self.rows:
 				self.lb[block.x][block.y][block.subblock] = block
-				if block.name in clbs:
-					block.clb = clbs[block.name]
+				if block.name in self.netlist.clbs:
+					block.clb = self.netlist.clbs[block.name]
 				else:
 					raise Exception, "couldn't find CLB for " + block.name + " in the netlist"
 			else:
@@ -210,98 +205,79 @@ class FPGA:
 		functions = [False for f in range(self.bitgen.cluster)]
 		flops     = [False for f in range(self.bitgen.cluster)]
 
-		for sub in lb:
-			if sub != 0:
-				raise Exception, "I'm not sure what a non-zero subblock for a CLB means"
+		if len(lb) == 0:
+			return
+		elif len(lb) > 1:
+			raise Exception, "Expecting exactly 1 logic block at ({:d},{:d}) with subblock #0".format(x, y)
 
-			# map pin indices in netlist to routed pin numbers
-			pins = dict()
-			for i, pin in zip(range(len(lb[sub].clb.pinlist)), lb[sub].clb.pinlist):
-				if pin == "open": pass
+		lb = lb[0]
 
-				# find input pin
-				elif i < 4 * self.bitgen.lbpins:
-					if pin not in self.nets:
-						raise Exception, "couldn't find output net " + pin
-					pins[i] = dict()
-					for node in self.nets[pin]:
+		# map pin indices in netlist to routed pin numbers
+		assignments = dict()
+		unassigned = list()
+		net_to_physical_pin = dict()
+
+		# find the real BLE pin number that each output net is routed to
+		for ble in lb.clb:
+			print "#", ble, lb.clb[ble]
+			if ble in self.nets:
+				node = self.nets[ble][1]
+				if node.kind != "OPIN" or node.qualifier != "Pin":
+					raise Exception, "expecting CLB pin to drive net " + ble
+				net_to_physical_pin[ble] = node.value - 4 * self.bitgen.lbpins
+				assignments[net_to_physical_pin[ble]] = ble
+			else:
+				unassigned.append(ble)
+
+		# assign the remaining BLEs
+		for ble in unassigned:
+			for index in range(self.bitgen.cluster):
+				if index not in assignments:
+					assignments[index] = ble
+					net_to_physical_pin[ble] = index
+					break
+
+		print "# assignments", assignments
+
+		for index in assignments:
+			ble = assignments[index]
+			key = ble
+
+			# is the sink latched?
+			# if so, set key to the intermediate net name
+			if ble in self.flops:
+				flops[index] = True
+				key = self.flops[key][0]
+
+			# get the logic function
+			try:
+				func = self.functions[key].func
+				if func is None:
+					sys.stderr.write("WARNING: no logic function computed for sink node {:s}\n".format(key))
+					func = 0
+				functions[index] = func
+			except KeyError:
+				raise Exception, "can't find logic function for sink node {:s} in blif".format(key)
+
+			# determine the input routing for each BLE pin
+			for pin in range(self.bitgen.inputs):
+				selection = False
+				net = lb.clb[ble][pin]
+				if net == "open":
+					pass
+				elif net in net_to_physical_pin:
+					selection = net_to_physical_pin[net]
+				elif net in self.nets:
+					for node in self.nets[net]:
 						if node.kind == "IPIN" and node.qualifier == "Pin":
-							pins[i][(node.x, node.y)] = node.value + self.bitgen.cluster
-
-				# find output pin
-				elif i < 4 * self.bitgen.lbpins + self.bitgen.cluster:
-					if pin not in self.nets:
-						raise Exception, "couldn't find input net " + pin
-					node = self.nets[pin][1]
-					if node.kind != "OPIN" or node.qualifier != "Pin":
-						raise Exception, "expecting CLB pin to drive net " + pin
-					pins[i] = node.value - 4 * self.bitgen.lbpins
-
-				# ignore clk pin
-
-			print "# pins", pins
-
-			# make a list of subblocks where subblocks which have
-			# a specific output pin are at the start of the list
-			subblocks = deque()
-			n = 0
-			for subblock in lb[sub].clb.subblocks:
-				if int(subblock[-2]) in pins:
-					subblocks.appendleft((n, subblock))
+							if node.x == x and node.y == y:
+								selection = node.value + self.bitgen.cluster
+								break
 				else:
-					subblocks.append((n, subblock))
-				n += 1
+					raise Exception, "unknown BLE pin assignment for {:s}".format(net) 
 
-			# assign the subblocks
-			assignments = dict()
-			net_to_physical_order = dict()
-			for n, subblock in subblocks:
-				pin = int(subblock[-2])
-				if pin in pins:
-					assignments[pins[pin]] = subblock
-					net_to_physical_order[n] = pins[pin]
-				else:
-					for i in range(self.bitgen.cluster):
-						if i not in assignments.keys():
-							assignments[i] = subblock
-							net_to_physical_order[n] = i
-							break
-
-			print "# net to physical", net_to_physical_order
-			print "# assignments", assignments
-
-			for index in sorted(assignments.keys()):
-				subblock = assignments[index]
-				key = subblock[0]
-
-				# is the sink latched?
-				if key in self.flops:
-					flops[index] = True
-					key = self.flops[key][0]
-
-				# get the logic function
-				try:
-					func = self.functions[key].func
-					if func is None:
-						sys.stderr.write("WARNING: no logic function computed for sink node {:s}\n".format(key))
-						func = 0
-					functions[index] = func
-				except KeyError:
-					raise Exception, "can't find logic function for sink node {:s} in blif".format(key)
-
-				# determine the input routing for each BLE pin
-				for pin in range(1, self.bitgen.inputs + 1):
-					selection = False
-					try:
-						selection = pins[int(subblock[pin])][(x ,y)]
-					except ValueError:
-						if subblock[pin][:4] == "ble_":
-							selection = net_to_physical_order[int(subblock[pin][4:])]
-						elif subblock[pin] != "open":
-							raise Exception, "unknown BLE pin assignment {:s}".format(subblock[pin]) 
-					print "# ble", index, "pin", pin, ":", selection, "(", subblock[pin], ")"
-					inputs[index * self.bitgen.inputs + pin - 1] = selection
-
+				inputs[index * self.bitgen.inputs + pin] = selection
+				print "# ble", index, "pin", pin, ":", selection, "(", net, ")"
 
 		self.bitgen.gen_lb(inputs, functions, flops)
 
@@ -316,7 +292,7 @@ if __name__ == '__main__':
 	
 	placement = Placement(sys.argv[1])
 	routing = Routing(sys.argv[2])
-	netlist = NET(sys.argv[3])
+	netlist = VPR6Net(sys.argv[3])
 	blif = BLIF(sys.argv[4])
 	tracks = int(sys.argv[5]) / 2
 
